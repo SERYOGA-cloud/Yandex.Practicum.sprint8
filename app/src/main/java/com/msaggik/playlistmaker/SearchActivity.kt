@@ -39,6 +39,7 @@ class SearchActivity : AppCompatActivity() {
                     }
                     R.id.button_clear -> {
                         inputSearch.setText("")
+                        inputSearch.isFocusable = false
                         val keyboardOnOff = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                         keyboardOnOff?.hideSoftInputFromWindow(inputSearch.windowToken, 0)
                     }
