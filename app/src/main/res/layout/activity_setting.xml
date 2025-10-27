@@ -6,9 +6,10 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".SettingActivity">
 
-    <!--    Используемые иллюстрации (иконки) и шрифты в образовательных целях предоставлены Яндекс-Практикумом (practicum.yandex.ru)-->
+    <!--    Используемые иллюстрации (иконки) в образовательных целях предоставлены Яндекс-Практикумом (practicum.yandex.ru)-->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_56"
@@ -19,20 +20,18 @@
             android:layout_width="@dimen/dimen_48"
             android:layout_height="@dimen/dimen_48"
             app:srcCompat="@drawable/ic_back"
-            style="@style/ImageButtonSettingHeader"/>
+            app:tint="@color/grey_100" />
 
         <TextView
             android:id="@+id/panel_header"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dimen_48"
             android:layout_marginStart="@dimen/dimen_60"
+            android:textColor="@color/grey_100"
             android:textSize="@dimen/dimen_22s"
             android:textStyle="bold"
             android:gravity="center_vertical"
-            android:text="@string/setting"
-            android:fontFamily="@font/ys_display_medium"
-            android:textFontWeight="500"
-            style="@style/TextViewSettingHeader"/>
+            android:text="@string/setting" />
     </FrameLayout>
 
     <FrameLayout
@@ -41,7 +40,13 @@
 
         <TextView
             android:id="@+id/header_theme"
-            style="@style/TextViewSetting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dimen_16s"
+            android:paddingStart="@dimen/dimen_16"
+            android:gravity="center_vertical"
+            android:layout_gravity="start|center_vertical"
             android:text="@string/dark_theme"
             tools:ignore="RtlSymmetry" />
 
@@ -55,7 +60,8 @@
             android:paddingHorizontal="@dimen/dimen_10"
             android:paddingVertical="@dimen/dimen_11"
             android:layout_marginEnd="@dimen/dimen_6"
-            style="@style/SwitchSetting"
+            android:thumbTint="@color/grey_500"
+            android:trackTint="@color/grey_700"
             android:checked="false"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
     </FrameLayout>
@@ -66,16 +72,26 @@
 
         <TextView
             android:id="@+id/header_share"
-            style="@style/TextViewSetting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dimen_16s"
+            android:paddingStart="@dimen/dimen_16"
+            android:gravity="center_vertical"
+            android:layout_gravity="start|center_vertical"
             android:text="@string/header_share"
             tools:ignore="RtlSymmetry" />
 
         <ImageView
             android:id="@+id/button_share"
-            style="@style/ImageViewSetting"
+            android:layout_width="@dimen/dimen_24"
+            android:layout_height="@dimen/dimen_24"
             android:paddingHorizontal="@dimen/dimen_4"
             android:paddingVertical="@dimen/dimen_3"
-            app:srcCompat="@drawable/ic_share"/>
+            app:srcCompat="@drawable/ic_share"
+            app:tint="@color/grey_500"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="@dimen/dimen_16"/>
     </FrameLayout>
 
     <FrameLayout
@@ -84,16 +100,26 @@
 
         <TextView
             android:id="@+id/header_support"
-            style="@style/TextViewSetting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dimen_16s"
+            android:paddingStart="@dimen/dimen_16"
+            android:gravity="center_vertical"
+            android:layout_gravity="start|center_vertical"
             android:text="@string/header_support"
-            tools:ignore="RtlSymmetry"/>
+            tools:ignore="RtlSymmetry" />
 
         <ImageView
             android:id="@+id/button_support"
-            style="@style/ImageViewSetting"
+            android:layout_width="@dimen/dimen_24"
+            android:layout_height="@dimen/dimen_24"
             android:paddingHorizontal="@dimen/dimen_2"
             android:paddingVertical="@dimen/dimen_3"
-            app:srcCompat="@drawable/ic_support"/>
+            app:srcCompat="@drawable/ic_support"
+            app:tint="@color/grey_500"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="16dp"/>
     </FrameLayout>
 
     <FrameLayout
@@ -102,15 +128,25 @@
 
         <TextView
             android:id="@+id/header_agreement"
-            style="@style/TextViewSetting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dimen_16s"
+            android:paddingStart="@dimen/dimen_16"
+            android:gravity="center_vertical"
+            android:layout_gravity="start|center_vertical"
             android:text="@string/header_agreement"
             tools:ignore="RtlSymmetry" />
 
         <ImageView
             android:id="@+id/button_agreement"
-            style="@style/ImageViewSetting"
+            android:layout_width="@dimen/dimen_24"
+            android:layout_height="@dimen/dimen_24"
             android:paddingHorizontal="@dimen/dimen_8"
             android:paddingVertical="@dimen/dimen_5"
-            app:srcCompat="@drawable/ic_arrow_forward"/>
+            app:srcCompat="@drawable/ic_arrow_forward"
+            app:tint="@color/grey_500"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="@dimen/dimen_16"/>
     </FrameLayout>
 </LinearLayout>
