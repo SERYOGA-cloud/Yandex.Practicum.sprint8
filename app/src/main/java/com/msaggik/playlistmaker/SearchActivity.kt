@@ -19,50 +19,48 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class SearchActivity : AppCompatActivity() {
+
     private var textSearch = ""
+
+    // делаем полем, чтобы был доступен в onRestoreInstanceState
+    private lateinit var inputSearch: EditText
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val inputSearch = findViewById<EditText>(R.id.input_search)
+        inputSearch = findViewById(R.id.input_search)
         val buttonBack = findViewById<ImageView>(R.id.button_back)
         val buttonClear = findViewById<ImageView>(R.id.button_clear)
 
+        // если есть сохранённое состояние — сразу восстановим в поле
+        savedInstanceState?.getString(KEY_TEXT_SEARCH)?.let { saved ->
+            textSearch = saved
+        }
         inputSearch.setText(textSearch)
+        inputSearch.setSelection(textSearch.length)
 
-        val listener: View.OnClickListener = object: View.OnClickListener {
-            override fun onClick(p0: View?) {
-                when(p0?.id) {
-                    R.id.button_back -> {
-                        val backIntent = Intent(this@SearchActivity, MainActivity::class.java)
-                        startActivity(backIntent)
-                    }
-                    R.id.button_clear -> {
-                        inputSearch.setText("")
-                        val keyboardOnOff = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                        keyboardOnOff?.hideSoftInputFromWindow(inputSearch.windowToken, 0)
-                    }
+        val listener = View.OnClickListener { v ->
+            when (v?.id) {
+                R.id.button_back -> {
+                    // НИКАКИХ startActivity(MainActivity) для «Назад»
+                    onBackPressedDispatcher.onBackPressed() // или finish()
+                }
+                R.id.button_clear -> {
+                    inputSearch.setText("")
+                    (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                        ?.hideSoftInputFromWindow(inputSearch.windowToken, 0)
                 }
             }
         }
 
         val inputSearchWatcher = object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                // просмотр старого текста
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                buttonClear.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
             }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                // просмотр введённого текста
-                if(p0.isNullOrEmpty()) {
-                    buttonClear.visibility = View.GONE
-                } else {
-                    buttonClear.visibility = View.VISIBLE
-                }
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-                // просмотр отредактированного текста
-                textSearch = p0.toString()
+            override fun afterTextChanged(s: Editable?) {
+                textSearch = s?.toString().orEmpty()
             }
         }
 
@@ -73,12 +71,16 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(KEY_TEXT_SEARCH, textSearch)
+        // надёжнее сохранять прямо из поля
+        outState.putString(KEY_TEXT_SEARCH, inputSearch.text.toString())
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        textSearch = savedInstanceState.getString(KEY_TEXT_SEARCH, TEXT_SEARCH_DEFAULT)
+        val restored = savedInstanceState.getString(KEY_TEXT_SEARCH, TEXT_SEARCH_DEFAULT)
+        textSearch = restored
+        inputSearch.setText(restored)            // <<< кладём в EditText
+        inputSearch.setSelection(restored.length)
     }
 
     companion object {
