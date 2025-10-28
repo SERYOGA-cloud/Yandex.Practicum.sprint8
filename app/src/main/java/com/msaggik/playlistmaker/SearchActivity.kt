@@ -22,7 +22,6 @@ class SearchActivity : AppCompatActivity() {
 
     private var textSearch = ""
 
-    // делаем полем, чтобы был доступен в onRestoreInstanceState
     private lateinit var inputSearch: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +32,6 @@ class SearchActivity : AppCompatActivity() {
         val buttonBack = findViewById<ImageView>(R.id.button_back)
         val buttonClear = findViewById<ImageView>(R.id.button_clear)
 
-        // если есть сохранённое состояние — сразу восстановим в поле
         savedInstanceState?.getString(KEY_TEXT_SEARCH)?.let { saved ->
             textSearch = saved
         }
@@ -43,8 +41,7 @@ class SearchActivity : AppCompatActivity() {
         val listener = View.OnClickListener { v ->
             when (v?.id) {
                 R.id.button_back -> {
-                    // НИКАКИХ startActivity(MainActivity) для «Назад»
-                    onBackPressedDispatcher.onBackPressed() // или finish()
+                    onBackPressedDispatcher.onBackPressed()
                 }
                 R.id.button_clear -> {
                     inputSearch.setText("")
@@ -71,7 +68,6 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        // надёжнее сохранять прямо из поля
         outState.putString(KEY_TEXT_SEARCH, inputSearch.text.toString())
     }
 
@@ -79,7 +75,7 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         val restored = savedInstanceState.getString(KEY_TEXT_SEARCH, TEXT_SEARCH_DEFAULT)
         textSearch = restored
-        inputSearch.setText(restored)            // <<< кладём в EditText
+        inputSearch.setText(restored)
         inputSearch.setSelection(restored.length)
     }
 

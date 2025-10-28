@@ -26,7 +26,7 @@ class SettingActivity : AppCompatActivity() {
         val listener = View.OnClickListener { v ->
             when (v?.id) {
                 R.id.button_back -> {
-                    onBackPressedDispatcher.onBackPressed() // <<< фикс
+                    onBackPressedDispatcher.onBackPressed()
                 }
                 R.id.button_share -> {
                     val formShareIntent = Intent().apply {
