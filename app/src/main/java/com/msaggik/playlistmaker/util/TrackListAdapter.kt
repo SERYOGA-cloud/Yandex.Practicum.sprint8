@@ -44,7 +44,7 @@ class TrackListAdapter (private val trackList: List<Track>) : RecyclerView.Adapt
                 .into(imageAlbumTrack)
             trackName.text = model.trackName
             groupName.text = model.artistName
-            trackLength.text = model.trackTime
+            trackLength.text = formatTime(model.trackTimeMillis)
             buttonTrack.setOnClickListener(View.OnClickListener {
                 Toast.makeText(
                     itemView.context.applicationContext,
@@ -60,6 +60,12 @@ class TrackListAdapter (private val trackList: List<Track>) : RecyclerView.Adapt
                 dp,
                 context.resources.displayMetrics
             ).toInt()
+        }
+        private fun formatTime(millis: Long): String {
+            val totalSeconds = millis / 1000
+            val minutes = totalSeconds / 60
+            val seconds = totalSeconds % 60
+            return String.format("%d:%02d", minutes, seconds)
         }
     }
 }
