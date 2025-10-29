@@ -1,6 +1,5 @@
-package com.msaggik.playlistmaker
+package com.msaggik.playlistmaker.activity
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.Intent.ACTION_SENDTO
 import android.content.Intent.EXTRA_EMAIL
@@ -12,6 +11,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.msaggik.playlistmaker.R
 
 class SettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +23,6 @@ class SettingActivity : AppCompatActivity() {
         val buttonSupport = findViewById<ImageView>(R.id.button_support)
         val buttonAgreement = findViewById<ImageView>(R.id.button_agreement)
 
-<<<<<<< HEAD
         val listener: View.OnClickListener = object: View.OnClickListener {
             override fun onClick(p0: View?) {
                 when(p0?.id) {
@@ -59,34 +58,6 @@ class SettingActivity : AppCompatActivity() {
                         //if(agreementIntent.resolveActivity(packageManager) != null) startActivity(agreementIntent)
                         startActivity(agreementIntent)
                     }
-=======
-        val listener = View.OnClickListener { v ->
-            when (v?.id) {
-                R.id.button_back -> {
-                    onBackPressedDispatcher.onBackPressed()
-                }
-                R.id.button_share -> {
-                    val formShareIntent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, getString(R.string.uri_yandex_course))
-                        type = "text/plain"
-                    }
-                    startActivity(Intent.createChooser(formShareIntent, getString(R.string.default_user)))
-                }
-                R.id.button_support -> {
-                    val supportIntent = Intent().apply {
-                        action = ACTION_SENDTO
-                        data = Uri.parse("mailto:")
-                        putExtra(EXTRA_EMAIL, arrayOf(getString(R.string.email)))
-                        putExtra(EXTRA_SUBJECT, getString(R.string.email_title))
-                        putExtra(EXTRA_TEXT, getString(R.string.email_text))
-                    }
-                    startActivity(createChooser(supportIntent, null))
-                }
-                R.id.button_agreement -> {
-                    val agreementUri = Uri.parse(getString(R.string.uri_agreement))
-                    startActivity(Intent(Intent.ACTION_VIEW, agreementUri))
->>>>>>> eaa454241cebca8af0269fe2d0330f74f2251098
                 }
             }
         }
