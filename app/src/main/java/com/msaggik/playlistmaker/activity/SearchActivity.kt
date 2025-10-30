@@ -186,8 +186,7 @@ class SearchActivity : AppCompatActivity() {
         override fun onClick(p0: View?) {
             when(p0?.id) {
                 R.id.button_back -> {
-                    val backIntent = Intent(this@SearchActivity, MainActivity::class.java)
-                    startActivity(backIntent)
+                    finish() // ← закрываем текущую Activity и возвращаемся назад
                 }
                 R.id.button_clear -> {
                     inputSearch.setText("")
