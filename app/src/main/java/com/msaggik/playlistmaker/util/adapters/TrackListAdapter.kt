@@ -18,7 +18,8 @@ import java.util.Locale
 
 private const val TRACK_LIST_PREFERENCES = "track_list_preferences"
 
-class TrackListAdapter (private val trackListAdd: List<Track>) : RecyclerView.Adapter<TrackListAdapter.TrackViewHolder> () {
+class TrackListAdapter(private val trackListAdd: List<Track>) :
+    RecyclerView.Adapter<TrackListAdapter.TrackViewHolder>() {
 
     private var trackList = trackListAdd
 
@@ -27,17 +28,18 @@ class TrackListAdapter (private val trackListAdd: List<Track>) : RecyclerView.Ad
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_track_list, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_track_list, parent, false)
         return TrackViewHolder(view)
     }
+
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(trackList[position])
     }
-    override fun getItemCount(): Int {
-        return trackList.size
-    }
 
-    class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    override fun getItemCount(): Int = trackList.size
+
+    class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val imageAlbumTrack: ImageView = itemView.findViewById(R.id.image_album_track)
         private val trackName: TextView = itemView.findViewById(R.id.name_track)
@@ -50,17 +52,30 @@ class TrackListAdapter (private val trackListAdd: List<Track>) : RecyclerView.Ad
                 .load(model.artworkUrl100)
                 .placeholder(R.drawable.ic_placeholder)
                 .centerCrop()
-                .transform(RoundedCorners(doToPx(2f, itemView.context.applicationContext)))
+                .transform(
+                    RoundedCorners(
+                        doToPx(2f, itemView.context.applicationContext)
+                    )
+                )
                 .into(imageAlbumTrack)
+
             trackName.text = model.trackName
             groupName.text = model.artistName
-            trackLength.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis)
-            buttonTrack.setOnClickListener(View.OnClickListener {
-                // получение объекта настроек и их обновление новым треком
-                val sharedPreferences = itemView.context.applicationContext.getSharedPreferences(TRACK_LIST_PREFERENCES, Context.MODE_PRIVATE)
-                val searchHistory = SearchHistory()
-                searchHistory.addTrackListHistorySharedPreferences(sharedPreferences, model)
-            })
+            trackLength.text =
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis)
+
+            // единая операция "добавить в историю"
+            val addToHistory: () -> Unit = {
+                val ctx = itemView.context.applicationContext
+                val prefs = ctx.getSharedPreferences(TRACK_LIST_PREFERENCES, Context.MODE_PRIVATE)
+                SearchHistory().addTrackListHistorySharedPreferences(prefs, model)
+            }
+
+            // ✅ клик по всей карточке
+            itemView.setOnClickListener { addToHistory() }
+
+            // ✅ клик по стрелке делает то же самое
+            buttonTrack.setOnClickListener { addToHistory() }
         }
 
         private fun doToPx(dp: Float, context: Context): Int {
