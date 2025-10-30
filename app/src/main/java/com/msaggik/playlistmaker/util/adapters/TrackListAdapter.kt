@@ -1,36 +1,45 @@
 package com.msaggik.playlistmaker.util.adapters
 
 import android.content.Context
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.msaggik.playlistmaker.R
 import com.msaggik.playlistmaker.entity.Track
+import com.msaggik.playlistmaker.util.additionally.SearchHistory
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class TrackListAdapter (private val trackList: List<Track>) : RecyclerView.Adapter<TrackListAdapter.TrackViewHolder> () {
+private const val TRACK_LIST_PREFERENCES = "track_list_preferences"
+
+class TrackListAdapter(private val trackListAdd: List<Track>) :
+    RecyclerView.Adapter<TrackListAdapter.TrackViewHolder>() {
+
+    private var trackList = trackListAdd
+
+    fun setTrackList(trackListUpdate: List<Track>) {
+        trackList = trackListUpdate
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_track_list, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_track_list, parent, false)
         return TrackViewHolder(view)
     }
+
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(trackList[position])
     }
-    override fun getItemCount(): Int {
-        return trackList.size
-    }
 
-    class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    override fun getItemCount(): Int = trackList.size
+
+    class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val imageAlbumTrack: ImageView = itemView.findViewById(R.id.image_album_track)
         private val trackName: TextView = itemView.findViewById(R.id.name_track)
@@ -43,18 +52,30 @@ class TrackListAdapter (private val trackList: List<Track>) : RecyclerView.Adapt
                 .load(model.artworkUrl100)
                 .placeholder(R.drawable.ic_placeholder)
                 .centerCrop()
-                .transform(RoundedCorners(doToPx(2f, itemView.context.applicationContext)))
+                .transform(
+                    RoundedCorners(
+                        doToPx(2f, itemView.context.applicationContext)
+                    )
+                )
                 .into(imageAlbumTrack)
+
             trackName.text = model.trackName
             groupName.text = model.artistName
-            trackLength.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis)
-            buttonTrack.setOnClickListener(View.OnClickListener {
-                Toast.makeText(
-                    itemView.context.applicationContext,
-                    model.trackName,
-                    Toast.LENGTH_SHORT
-                ).show()
-            })
+            trackLength.text =
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis)
+
+            // единая операция "добавить в историю"
+            val addToHistory: () -> Unit = {
+                val ctx = itemView.context.applicationContext
+                val prefs = ctx.getSharedPreferences(TRACK_LIST_PREFERENCES, Context.MODE_PRIVATE)
+                SearchHistory().addTrackListHistorySharedPreferences(prefs, model)
+            }
+
+            // ✅ клик по всей карточке
+            itemView.setOnClickListener { addToHistory() }
+
+            // ✅ клик по стрелке делает то же самое
+            buttonTrack.setOnClickListener { addToHistory() }
         }
 
         private fun doToPx(dp: Float, context: Context): Int {
