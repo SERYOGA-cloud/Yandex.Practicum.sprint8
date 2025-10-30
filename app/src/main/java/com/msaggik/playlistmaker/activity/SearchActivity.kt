@@ -102,6 +102,18 @@ class SearchActivity : AppCompatActivity() {
         buttonClear.setOnClickListener(listener)
         buttonUpdate.setOnClickListener(listener)
         buttonClearSearchHistory.setOnClickListener(listener)
+
+        //подгружаем историю и сразу пытаемся показать
+        trackListHistoryAdapter.setTrackList(
+            searchHistory.readTrackListHistorySharedPreferences(sharedPreferences)
+        )
+        trackListHistoryAdapter.notifyDataSetChanged()
+
+        //показываем историю сразу при открытии, если поле пустое и история не пуста
+        visibleLayoutSearchHistory(true)
+
+        // сфокусировать поле
+        inputSearch.requestFocus()
     }
 
     @SuppressLint("NotifyDataSetChanged")
