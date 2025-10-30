@@ -102,6 +102,17 @@ class SearchActivity : AppCompatActivity() {
         buttonClear.setOnClickListener(listener)
         buttonUpdate.setOnClickListener(listener)
         buttonClearSearchHistory.setOnClickListener(listener)
+        trackListHistoryAdapter.setTrackList(
+            searchHistory.readTrackListHistorySharedPreferences(sharedPreferences)
+        )
+        trackListHistoryAdapter.notifyDataSetChanged()
+        visibleLayoutSearchHistory(true)
+    }
+    override fun onResume() {
+        super.onResume()
+        if (inputSearch.text.isNullOrEmpty()) {
+            visibleLayoutSearchHistory(true)
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -174,8 +185,7 @@ class SearchActivity : AppCompatActivity() {
         override fun onClick(p0: View?) {
             when(p0?.id) {
                 R.id.button_back -> {
-                    val backIntent = Intent(this@SearchActivity, MainActivity::class.java)
-                    startActivity(backIntent)
+                    finish()
                 }
                 R.id.button_clear -> {
                     inputSearch.setText("")
@@ -233,15 +243,22 @@ class SearchActivity : AppCompatActivity() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun visibleLayoutSearchHistory(flag: Boolean) {
-        val trackListHistory = searchHistory.readTrackListHistorySharedPreferences(sharedPreferences)
-        if (flag && inputSearch.text.isEmpty() && inputSearch.hasFocus() && trackListHistory.isNotEmpty()) {
+    private fun visibleLayoutSearchHistory(forceTryShow: Boolean) {
+        val history = searchHistory.readTrackListHistorySharedPreferences(sharedPreferences)
+        val shouldShow = forceTryShow && inputSearch.text.isEmpty() && history.isNotEmpty()
+
+        if (shouldShow) {
             layoutSearchHistory.visibility = View.VISIBLE
             trackListView.visibility = View.GONE
-            trackListHistoryAdapter.setTrackList(trackListHistory)
+
+            trackListHistoryAdapter.setTrackList(history)
             trackListHistoryAdapter.notifyDataSetChanged()
+
+            layoutNothingFound.visibility = View.GONE
+            layoutCommunicationProblems.visibility = View.GONE
         } else {
             layoutSearchHistory.visibility = View.GONE
+            // не трогаем trackListView тут — им управляет поиск
         }
     }
 
