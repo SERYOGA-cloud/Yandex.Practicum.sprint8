@@ -122,6 +122,18 @@ class SearchActivity : AppCompatActivity() {
         buttonClear.setOnClickListener(listener)
         buttonUpdate.setOnClickListener(listener)
         buttonClearSearchHistory.setOnClickListener(listener)
+
+        //подгружаем историю и сразу пытаемся показать
+        trackListHistoryAdapter.setTrackList(
+            searchHistory.readTrackListHistorySharedPreferences(sharedPreferences)
+        )
+        trackListHistoryAdapter.notifyDataSetChanged()
+
+        //показываем историю сразу при открытии, если поле пустое и история не пуста
+        visibleLayoutSearchHistory(true)
+
+        // сфокусировать поле
+        inputSearch.requestFocus()
     }
 
     private fun trackSelection(track: Track) {
@@ -189,8 +201,7 @@ class SearchActivity : AppCompatActivity() {
         override fun onClick(p0: View?) {
             when(p0?.id) {
                 R.id.button_back -> {
-                    val backIntent = Intent(this@SearchActivity, MainActivity::class.java)
-                    startActivity(backIntent)
+                    finish()
                 }
                 R.id.button_clear -> {
                     inputSearch.setText("")
