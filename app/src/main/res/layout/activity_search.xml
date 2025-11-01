@@ -78,7 +78,7 @@
         android:layout_height="@dimen/dimen_44"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dimen_140"
-        android:indeterminateTint="@color/violet_170"
+        android:indeterminateTint="@color/progress_blue"
         android:visibility="gone"/>
 
     <LinearLayout
