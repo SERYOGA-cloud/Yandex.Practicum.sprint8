@@ -109,7 +109,6 @@
         app:layout_constraintTop_toTopOf="@id/guideline_vertical_5"
         app:layout_constraintBottom_toTopOf="@id/guideline_vertical_6" />
 
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_vertical_6"
         android:layout_width="wrap_content"
@@ -164,6 +163,7 @@
 
     <ImageButton
         android:id="@+id/button_play_pause"
+        android:enabled="false"
         android:layout_width="@dimen/dimen_100"
         android:layout_height="@dimen/dimen_100"
         android:background="@null"
@@ -264,14 +264,13 @@
     <TextView
         android:id="@+id/track_album_name"
         style="@style/TextViewYSMediumThreeTheme"
-
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:ellipsize="end"
         android:gravity="end"
         android:textAlignment="viewEnd"
-        android:layout_marginStart="@dimen/dimen_8"
+        android:text="@string/default_string"
         app:layout_constrainedWidth="true"
         app:layout_constraintStart_toEndOf="@id/header_album_name"
         app:layout_constraintEnd_toStartOf="@id/guideline_end_two"
@@ -283,7 +282,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="header_album_name,track_album_name" />
+        app:constraint_referenced_tags="album_name" />
 
     <TextView
         android:id="@+id/header_track_year"

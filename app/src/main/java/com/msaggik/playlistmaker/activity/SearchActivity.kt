@@ -6,9 +6,10 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.InputMethodManager
@@ -16,11 +17,10 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ScrollView
-import android.widget.TextView
-import android.widget.TextView.OnEditorActionListener
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.msaggik.playlistmaker.R
@@ -37,6 +37,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 private const val TRACK_LIST_PREFERENCES = "track_list_preferences"
 private const val TRACK_LIST_HISTORY_KEY = "track_list_history_key"
+private const val DELAY_SEARCH_TRACKS = 2000L
+private const val DELAY_CLICK_TRACK = 1000L
 
 class SearchActivity : AppCompatActivity() {
 
@@ -50,12 +52,20 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var layoutSearchHistory: LinearLayout
     private lateinit var buttonUpdate: Button
     private lateinit var buttonClearSearchHistory: Button
+    private lateinit var loadingTime: ProgressBar
 
     private var textSearch = ""
     private var trackList: MutableList<Track> = mutableListOf()
     private lateinit var searchHistory: SearchHistory
     private lateinit var trackListAdapter: TrackListAdapter
     private lateinit var trackListHistoryAdapter: TrackListAdapter
+
+    private val handlerSearchTrack = Handler(Looper.getMainLooper())
+    private var searchTrack = ""
+    private val searchTracksRunnable = Runnable { searchTracks(searchTrack) }
+
+    private val handlerClickTrack = Handler(Looper.getMainLooper())
+    private var isClickTrackAllowed = true
 
     private val itunesBaseURL = "https://itunes.apple.com"
     private val retrofit = Retrofit.Builder()
@@ -80,22 +90,32 @@ class SearchActivity : AppCompatActivity() {
         layoutSearchHistory = findViewById(R.id.layout_search_history)
         buttonUpdate = findViewById(R.id.button_update)
         buttonClearSearchHistory = findViewById(R.id.button_clear_search_history)
+        loadingTime = findViewById(R.id.loading_time)
 
         trackListView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         trackListHistoryView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         // вывод списка треков в RecyclerView trackListView
-        trackListAdapter = TrackListAdapter(trackList)
+        trackListAdapter = TrackListAdapter(trackList) {
+            // реализация метода интерфейса адаптера с Debounce
+            if(clickTracksDebounce()) {
+                trackSelection(it)
+            }
+        }
         trackListView.adapter = trackListAdapter
 
         sharedPreferences = getSharedPreferences(TRACK_LIST_PREFERENCES, MODE_PRIVATE)
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
         // вывод списка истории треков в RecyclerView trackListHistoryView
         searchHistory = SearchHistory()
-        trackListHistoryAdapter = TrackListAdapter(searchHistory.readTrackListHistorySharedPreferences(sharedPreferences))
+        trackListHistoryAdapter = TrackListAdapter(searchHistory.readTrackListHistorySharedPreferences(sharedPreferences)) {
+            // реализация метода интерфейса адаптера с Debounce
+            if(clickTracksDebounce()) {
+                trackSelection(it)
+            }
+        }
         trackListHistoryView.adapter = trackListHistoryAdapter
 
-        inputSearch.setOnEditorActionListener(editorActionListener)
         inputSearch.setOnFocusChangeListener(focusChangeListener)
         inputSearch.addTextChangedListener(inputSearchWatcher)
         buttonBack.setOnClickListener(listener)
@@ -116,6 +136,17 @@ class SearchActivity : AppCompatActivity() {
         inputSearch.requestFocus()
     }
 
+    private fun trackSelection(track: Track) {
+        // получение объекта настроек и их обновление новым треком
+        val sharedPreferences = applicationContext.getSharedPreferences(TRACK_LIST_PREFERENCES, Context.MODE_PRIVATE)
+        val searchHistory = SearchHistory()
+        searchHistory.addTrackListHistorySharedPreferences(sharedPreferences, track)
+        // переход в активность аудиоплеера
+        val intent = Intent(applicationContext, PlayerActivity::class.java)
+        intent.putExtra(Track::class.java.simpleName, track)
+        startActivity(intent)
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     private var sharedPreferenceChangeListener: OnSharedPreferenceChangeListener =
         OnSharedPreferenceChangeListener { sharedPreferences, key ->
@@ -132,18 +163,10 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private val editorActionListener = object: OnEditorActionListener {
-        override fun onEditorAction(p0: TextView?, p1: Int, p2: KeyEvent?): Boolean {
-            // поиск треков с помощью REST API
-            textSearch = inputSearch.text.toString()
-            searchTracks(textSearch)
-            return true
-        }
-    }
-
     private fun searchTracks(searchNameTracks: String) {
         // поиск треков с помощью REST API
         if (searchNameTracks.isNotEmpty()) {
+            visibilityView(loadingTime)
             itunesRestService.search(searchNameTracks).enqueue(object :
                 Callback<TrackResponse> {
                 @SuppressLint("NotifyDataSetChanged")
@@ -152,29 +175,21 @@ class SearchActivity : AppCompatActivity() {
                     if (response.code() == 200) {
                         trackList.clear()
                         if (response.body()?.results?.isNotEmpty() == true) {
-                            trackListView.visibility = View.VISIBLE
-                            layoutNothingFound.visibility = View.GONE
-                            layoutCommunicationProblems.visibility = View.GONE
+                            visibilityView(trackListView)
                             trackList.addAll(response.body()?.results!!)
                             trackListAdapter.notifyDataSetChanged()
                         }
                         if (trackList.isEmpty()) {
-                            trackListView.visibility = View.GONE
-                            layoutNothingFound.visibility = View.VISIBLE
-                            layoutCommunicationProblems.visibility = View.GONE
+                            visibilityView(layoutNothingFound)
                         }
                     } else {
-                        trackListView.visibility = View.GONE
-                        layoutNothingFound.visibility = View.GONE
-                        layoutCommunicationProblems.visibility = View.VISIBLE
+                        visibilityView(layoutCommunicationProblems)
                         Toast.makeText(applicationContext, response.code().toString(), Toast.LENGTH_LONG).show()
                     }
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    trackListView.visibility = View.GONE
-                    layoutNothingFound.visibility = View.GONE
-                    layoutCommunicationProblems.visibility = View.VISIBLE
+                    visibilityView(layoutCommunicationProblems)
                     Toast.makeText(applicationContext, t.message.toString(), Toast.LENGTH_LONG).show()
                 }
             })
@@ -186,7 +201,7 @@ class SearchActivity : AppCompatActivity() {
         override fun onClick(p0: View?) {
             when(p0?.id) {
                 R.id.button_back -> {
-                    finish() // ← закрываем текущую Activity и возвращаемся назад
+                    finish()
                 }
                 R.id.button_clear -> {
                     inputSearch.setText("")
@@ -195,10 +210,8 @@ class SearchActivity : AppCompatActivity() {
                     keyboardOnOff?.hideSoftInputFromWindow(inputSearch.windowToken, 0)
                     trackList.clear()
                     trackListAdapter.notifyDataSetChanged()
-                    trackListView.visibility = View.VISIBLE
                     visibleLayoutSearchHistory(true)
-                    layoutNothingFound.visibility = View.GONE
-                    layoutCommunicationProblems.visibility = View.GONE
+                    visibilityView(layoutSearchHistory)
                 }
                 R.id.button_update -> {
                     searchTracks(textSearch)
@@ -218,19 +231,33 @@ class SearchActivity : AppCompatActivity() {
 
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             // просмотр введённого текста
-            if(p0.isNullOrEmpty()) {
-                buttonClear.visibility = View.GONE
-            } else {
-                buttonClear.visibility = View.VISIBLE
+            val isInputText = !p0.isNullOrEmpty()
+            buttonClear.isVisible = isInputText
+            if(isInputText) {
+                searchTrack = p0.toString()
+                searchTracksDebounce()
             }
-
-            visibleLayoutSearchHistory(p0?.isEmpty() == true)
+            visibleLayoutSearchHistory(!isInputText)
         }
 
         override fun afterTextChanged(p0: Editable?) {
             // просмотр отредактированного текста
             textSearch = p0.toString()
         }
+    }
+
+    private fun searchTracksDebounce() {
+        handlerSearchTrack.removeCallbacks(searchTracksRunnable)
+        handlerSearchTrack.postDelayed(searchTracksRunnable, DELAY_SEARCH_TRACKS)
+    }
+
+    private fun clickTracksDebounce(): Boolean {
+        val current = isClickTrackAllowed
+        if(isClickTrackAllowed) {
+            isClickTrackAllowed = false
+            handlerClickTrack.postDelayed({ isClickTrackAllowed = true }, DELAY_CLICK_TRACK)
+        }
+        return current
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -247,12 +274,27 @@ class SearchActivity : AppCompatActivity() {
     private fun visibleLayoutSearchHistory(flag: Boolean) {
         val trackListHistory = searchHistory.readTrackListHistorySharedPreferences(sharedPreferences)
         if (flag && inputSearch.text.isEmpty() && inputSearch.hasFocus() && trackListHistory.isNotEmpty()) {
-            layoutSearchHistory.visibility = View.VISIBLE
-            trackListView.visibility = View.GONE
+            visibilityView(layoutSearchHistory)
             trackListHistoryAdapter.setTrackList(trackListHistory)
             trackListHistoryAdapter.notifyDataSetChanged()
         } else {
             layoutSearchHistory.visibility = View.GONE
+        }
+    }
+
+    private fun visibilityView(v: View? = null) {
+        loadingTime.visibility = View.GONE
+        layoutSearchHistory.visibility = View.GONE
+        trackListView.visibility = View.GONE
+        layoutNothingFound.visibility = View.GONE
+        layoutCommunicationProblems.visibility = View.GONE
+
+        when(v) {
+            loadingTime -> loadingTime.visibility = View.VISIBLE
+            layoutSearchHistory -> layoutSearchHistory.visibility = View.VISIBLE
+            trackListView -> trackListView.visibility = View.VISIBLE
+            layoutNothingFound -> layoutNothingFound.visibility = View.VISIBLE
+            layoutCommunicationProblems -> layoutCommunicationProblems.visibility = View.VISIBLE
         }
     }
 
