@@ -136,6 +136,13 @@ class SearchActivity : AppCompatActivity() {
         inputSearch.requestFocus()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (inputSearch.text.isNullOrEmpty()) {
+            visibleLayoutSearchHistory(true)
+        }
+    }
+
     private fun trackSelection(track: Track) {
         // получение объекта настроек и их обновление новым треком
         val sharedPreferences = applicationContext.getSharedPreferences(TRACK_LIST_PREFERENCES, Context.MODE_PRIVATE)
@@ -271,14 +278,22 @@ class SearchActivity : AppCompatActivity() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun visibleLayoutSearchHistory(flag: Boolean) {
-        val trackListHistory = searchHistory.readTrackListHistorySharedPreferences(sharedPreferences)
-        if (flag && inputSearch.text.isEmpty() && inputSearch.hasFocus() && trackListHistory.isNotEmpty()) {
-            visibilityView(layoutSearchHistory)
-            trackListHistoryAdapter.setTrackList(trackListHistory)
+    private fun visibleLayoutSearchHistory(forceTryShow: Boolean) {
+        val history = searchHistory.readTrackListHistorySharedPreferences(sharedPreferences)
+        val shouldShow = forceTryShow && inputSearch.text.isEmpty() && history.isNotEmpty()
+
+        if (shouldShow) {
+            layoutSearchHistory.visibility = View.VISIBLE
+            trackListView.visibility = View.GONE
+
+            trackListHistoryAdapter.setTrackList(history)
             trackListHistoryAdapter.notifyDataSetChanged()
+
+            layoutNothingFound.visibility = View.GONE
+            layoutCommunicationProblems.visibility = View.GONE
         } else {
             layoutSearchHistory.visibility = View.GONE
+            // не трогаем trackListView тут — им управляет поиск
         }
     }
 
