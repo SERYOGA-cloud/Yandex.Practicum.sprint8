@@ -101,12 +101,13 @@
         android:id="@+id/track_name"
         style="@style/TextViewYSMediumOneTheme"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/name_track"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_vertical_6"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end_one"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start_one"
-        app:layout_constraintTop_toTopOf="@+id/guideline_vertical_5" />
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintStart_toStartOf="@id/guideline_start_one"
+        app:layout_constraintEnd_toStartOf="@id/guideline_end_one"
+        app:layout_constraintTop_toTopOf="@id/guideline_vertical_5"
+        app:layout_constraintBottom_toTopOf="@id/guideline_vertical_6" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_vertical_6"
@@ -263,13 +264,18 @@
     <TextView
         android:id="@+id/track_album_name"
         style="@style/TextViewYSMediumThreeTheme"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:gravity="end"
+        android:textAlignment="viewEnd"
         android:text="@string/default_string"
-        app:layout_constraintBottom_toBottomOf="@+id/header_album_name"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end_two"
-        app:layout_constraintTag="album_name"
-        app:layout_constraintTop_toTopOf="@+id/header_album_name" />
+        app:layout_constrainedWidth="true"
+        app:layout_constraintStart_toEndOf="@id/header_album_name"
+        app:layout_constraintEnd_toStartOf="@id/guideline_end_two"
+        app:layout_constraintTop_toTopOf="@id/header_album_name"
+        app:layout_constraintBottom_toBottomOf="@id/header_album_name" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_album_name"

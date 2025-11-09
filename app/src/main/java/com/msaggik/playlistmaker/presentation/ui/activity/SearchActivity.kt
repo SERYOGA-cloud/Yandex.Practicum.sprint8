@@ -134,12 +134,23 @@ class SearchActivity : AppCompatActivity(R.layout.activity_search) {
         buttonClearSearchHistory.setOnClickListener(listener)
     }
 
+    override fun onResume() {
+        super.onResume()
+        // если история могла измениться в другом Activity — перезагрузим её
+        readTrackListHistory()
+    }
+
     private fun readTrackListHistory() {
         spInteractor.readTrackListHistory(object : SpInteractor.SpTracksHistoryConsumer {
             @SuppressLint("NotifyDataSetChanged")
             override fun consume(listHistoryTracks: List<Track>) {
                 trackListHistory.clear()
                 trackListHistory.addAll(listHistoryTracks)
+                // Обновляем адаптер сразу после получения данных
+                trackListHistoryAdapter.setTrackList(trackListHistory)
+                trackListHistoryAdapter.notifyDataSetChanged()
+                // После обновления данных пересчитываем, показывать ли историю
+                runOnUiThread { updateHistoryVisibility() }
             }
         })
     }
@@ -169,7 +180,23 @@ class SearchActivity : AppCompatActivity(R.layout.activity_search) {
 
     private val focusChangeListener = object : OnFocusChangeListener {
         override fun onFocusChange(p0: View?, p1: Boolean) {
-            visibleLayoutSearchHistory(p1)
+            updateHistoryVisibility()
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun updateHistoryVisibility() {
+        // предварительно убедимся, что список истории актуален (readTrackListHistory асинхронен)
+        // если trackListHistory уже заполнен — дальше используем его
+        val isQueryEmpty = inputSearch.text.isNullOrEmpty()
+        val hasHistory = trackListHistory.isNotEmpty()
+
+        if (isQueryEmpty && hasHistory) {
+            Utils.visibilityView(viewArray, layoutSearchHistory)
+            trackListHistoryAdapter.setTrackList(trackListHistory)
+            trackListHistoryAdapter.notifyDataSetChanged()
+        } else {
+            layoutSearchHistory.visibility = View.GONE
         }
     }
 
@@ -228,8 +255,8 @@ class SearchActivity : AppCompatActivity(R.layout.activity_search) {
                     keyboardOnOff?.hideSoftInputFromWindow(inputSearch.windowToken, 0)
                     trackList.clear()
                     trackListAdapter.notifyDataSetChanged()
-                    visibleLayoutSearchHistory(true)
-                    Utils.visibilityView(viewArray, layoutSearchHistory)
+                    // не полагаемся на фокус, просто обновляем видимость
+                    updateHistoryVisibility()
                 }
 
                 R.id.button_update -> {
@@ -239,7 +266,9 @@ class SearchActivity : AppCompatActivity(R.layout.activity_search) {
                 R.id.button_clear_search_history -> {
                     clearTrackListHistory()
                     trackListHistory.clear()
-                    visibleLayoutSearchHistory(true)
+                    trackListHistoryAdapter.setTrackList(trackListHistory)
+                    trackListHistoryAdapter.notifyDataSetChanged()
+                    updateHistoryVisibility()
                 }
             }
         }
