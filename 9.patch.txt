@@ -1,0 +1,2300 @@
+From b4a8e5eef2f57b1807e082dd7ab700d081841e38 Mon Sep 17 00:00:00 2001
+From: Denis <d-e-n-2011@yandex.ru>
+Date: Sat, 2 Aug 2025 00:14:48 +0300
+Subject: [PATCH 1/2] =?UTF-8?q?=D0=A7=D0=B8=D1=81=D1=82=D0=B0=D1=8F=20?=
+ =?UTF-8?q?=D0=B0=D1=80=D1=85=D0=B8=D1=82=D0=B5=D0=BA=D1=82=D1=83=D1=80?=
+ =?UTF-8?q?=D0=B0=20(=D0=B2=D1=80=D0=BE=D0=B4=D0=B5=20=D0=B1=D1=8B)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ app/src/main/AndroidManifest.xml              |  12 +-
+ .../com/example/playlistmaker/ITunesApi.kt    |  11 --
+ .../example/playlistmaker/TracksResponse.kt   |   3 -
+ .../java/com/example/playlistmaker/Util.kt    |  25 ---
+ .../playlistmaker/data/NetworkClient.kt       |   7 +
+ .../playlistmaker/data/dto/Response.kt        |   5 +
+ .../playlistmaker/data/dto/TrackDto.kt        |  25 +++
+ .../data/dto/TrackSearchRequest.kt            |   3 +
+ .../data/dto/TrackSearchResponse.kt           |   3 +
+ .../data/impl/AudioPlayerRepositoryImpl.kt    |  51 ++++++
+ .../data/impl/DelayHandlerImpl.kt             |  20 ++
+ .../impl/SearchHistoryRepositoryImpl.kt}      |  38 ++--
+ .../data/impl/ThemeRepositoryImpl.kt          |  22 +++
+ .../data/impl/TracksRepositoryImpl.kt         |  34 ++++
+ .../data/mapper/TrackListFromDtoMapper.kt     |  24 +++
+ .../playlistmaker/data/network/ITunesApi.kt   |  12 ++
+ .../data/network/RetrofitNetworkClient.kt     |  34 ++++
+ .../domain/api/AudioPlayerInteractor.kt       |  12 ++
+ .../domain/api/AudioPlayerRepository.kt       |  17 ++
+ .../example/playlistmaker/domain/api/Delay.kt |   8 +
+ .../domain/api/PlayerStateListener.kt         |   7 +
+ .../domain/api/SearchHistoryInteractor.kt     |  10 +
+ .../domain/api/SearchHistoryRepository.kt     |  12 ++
+ .../domain/api/ThemeInteractor.kt             |  10 +
+ .../domain/api/ThemeRepository.kt             |  10 +
+ .../domain/api/TrackSearchInteractor.kt       |  13 ++
+ .../domain/api/TracksRepository.kt            |   8 +
+ .../domain/consumer/TrackConsumer.kt          |   8 +
+ .../domain/entity/PlayerState.kt              |   8 +
+ .../playlistmaker/domain/entity/Resource.kt   |   6 +
+ .../{ => domain/entity}/Track.kt              |   4 +-
+ .../domain/impl/AudioPlayerInteractorImpl.kt  |  49 +++++
+ .../impl/SearchHistoryInteractorImpl.kt       |  25 +++
+ .../domain/impl/ThemeInteractorImpl.kt        |  19 ++
+ .../domain/impl/TrackSearchInteractorImpl.kt  |  35 ++++
+ .../domain/mapper/TrackToDtoConverter.kt      |  23 +++
+ .../playlistmaker/{ => presentation}/App.kt   |  25 +--
+ .../{ => presentation/main}/MainActivity.kt   |   6 +-
+ .../mediateka}/MediatekaActivity.kt           |   3 +-
+ .../player}/PlayerActivity.kt                 | 112 ++++++------
+ .../search}/SearchActivity.kt                 | 171 +++++++-----------
+ .../{ => presentation/search}/TrackAdapter.kt |  14 +-
+ .../search}/TrackViewHolder.kt                |   8 +-
+ .../settings}/SettingsActivity.kt             |  13 +-
+ .../com/example/playlistmaker/util/Creator.kt |  84 +++++++++
+ .../com/example/playlistmaker/util/Util.kt    |  35 ++++
+ .../main/res/layout/activity_mediateka.xml    |   2 +-
+ app/src/main/res/layout/activity_player.xml   |   2 +-
+ 48 files changed, 836 insertions(+), 252 deletions(-)
+ delete mode 100644 app/src/main/java/com/example/playlistmaker/ITunesApi.kt
+ delete mode 100644 app/src/main/java/com/example/playlistmaker/TracksResponse.kt
+ delete mode 100644 app/src/main/java/com/example/playlistmaker/Util.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/data/NetworkClient.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/data/dto/Response.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/data/dto/TrackDto.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/data/dto/TrackSearchRequest.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/data/dto/TrackSearchResponse.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/data/impl/AudioPlayerRepositoryImpl.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/data/impl/DelayHandlerImpl.kt
+ rename app/src/main/java/com/example/playlistmaker/{SearchHistory.kt => data/impl/SearchHistoryRepositoryImpl.kt} (61%)
+ create mode 100644 app/src/main/java/com/example/playlistmaker/data/impl/ThemeRepositoryImpl.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/data/impl/TracksRepositoryImpl.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/data/mapper/TrackListFromDtoMapper.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/data/network/ITunesApi.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/data/network/RetrofitNetworkClient.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/api/AudioPlayerInteractor.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/api/AudioPlayerRepository.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/api/Delay.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/api/PlayerStateListener.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/api/SearchHistoryInteractor.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/api/SearchHistoryRepository.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/api/ThemeInteractor.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/api/ThemeRepository.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/api/TrackSearchInteractor.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/api/TracksRepository.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/consumer/TrackConsumer.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/entity/PlayerState.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/entity/Resource.kt
+ rename app/src/main/java/com/example/playlistmaker/{ => domain/entity}/Track.kt (86%)
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/impl/AudioPlayerInteractorImpl.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/impl/SearchHistoryInteractorImpl.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/impl/ThemeInteractorImpl.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/impl/TrackSearchInteractorImpl.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/domain/mapper/TrackToDtoConverter.kt
+ rename app/src/main/java/com/example/playlistmaker/{ => presentation}/App.kt (64%)
+ rename app/src/main/java/com/example/playlistmaker/{ => presentation/main}/MainActivity.kt (81%)
+ rename app/src/main/java/com/example/playlistmaker/{ => presentation/mediateka}/MediatekaActivity.kt (75%)
+ rename app/src/main/java/com/example/playlistmaker/{ => presentation/player}/PlayerActivity.kt (57%)
+ rename app/src/main/java/com/example/playlistmaker/{ => presentation/search}/SearchActivity.kt (65%)
+ rename app/src/main/java/com/example/playlistmaker/{ => presentation/search}/TrackAdapter.kt (76%)
+ rename app/src/main/java/com/example/playlistmaker/{ => presentation/search}/TrackViewHolder.kt (80%)
+ rename app/src/main/java/com/example/playlistmaker/{ => presentation/settings}/SettingsActivity.kt (87%)
+ create mode 100644 app/src/main/java/com/example/playlistmaker/util/Creator.kt
+ create mode 100644 app/src/main/java/com/example/playlistmaker/util/Util.kt
+
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+index a4f1740..c486dbb 100644
+--- a/app/src/main/AndroidManifest.xml
++++ b/app/src/main/AndroidManifest.xml
+@@ -5,7 +5,7 @@
+     <uses-permission android:name="android.permission.INTERNET" />
+ 
+     <application
+-        android:name=".App"
++        android:name=".presentation.App"
+         android:allowBackup="true"
+         android:dataExtractionRules="@xml/data_extraction_rules"
+         android:fullBackupContent="@xml/backup_rules"
+@@ -16,20 +16,20 @@
+         android:theme="@style/Theme.PlaylistMaker"
+         tools:targetApi="31">
+         <activity
+-            android:name=".PlayerActivity"
++            android:name=".presentation.player.PlayerActivity"
+             android:exported="false" />
+         <activity
+-            android:name=".MediatekaActivity"
++            android:name=".presentation.mediateka.MediatekaActivity"
+             android:exported="false" />
+         <activity
+-            android:name=".SearchActivity"
++            android:name=".presentation.search.SearchActivity"
+             android:exported="false"
+             android:windowSoftInputMode="adjustResize|stateHidden" />
+         <activity
+-            android:name=".SettingsActivity"
++            android:name=".presentation.settings.SettingsActivity"
+             android:exported="false" />
+         <activity
+-            android:name=".MainActivity"
++            android:name=".presentation.main.MainActivity"
+             android:exported="true">
+             <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+diff --git a/app/src/main/java/com/example/playlistmaker/ITunesApi.kt b/app/src/main/java/com/example/playlistmaker/ITunesApi.kt
+deleted file mode 100644
+index a8950eb..0000000
+--- a/app/src/main/java/com/example/playlistmaker/ITunesApi.kt
++++ /dev/null
+@@ -1,11 +0,0 @@
+-package com.example.playlistmaker
+-
+-import retrofit2.Call
+-import retrofit2.http.GET
+-import retrofit2.http.Query
+-
+-interface ITunesApi {
+-
+-    @GET("/search?entity=song")
+-    fun search(@Query("term") query: String): Call<TracksResponse>
+-}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/TracksResponse.kt b/app/src/main/java/com/example/playlistmaker/TracksResponse.kt
+deleted file mode 100644
+index 4141a43..0000000
+--- a/app/src/main/java/com/example/playlistmaker/TracksResponse.kt
++++ /dev/null
+@@ -1,3 +0,0 @@
+-package com.example.playlistmaker
+-
+-data class TracksResponse(val results: List<Track>)
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/Util.kt b/app/src/main/java/com/example/playlistmaker/Util.kt
+deleted file mode 100644
+index 830afdc..0000000
+--- a/app/src/main/java/com/example/playlistmaker/Util.kt
++++ /dev/null
+@@ -1,25 +0,0 @@
+-package com.example.playlistmaker
+-
+-import android.content.Context
+-import android.util.TypedValue
+-import java.text.SimpleDateFormat
+-import java.util.Locale
+-
+-class Util {
+-    companion object {
+-        fun millisToMmSs(millis: Int) : String {
+-            return SimpleDateFormat("mm:ss", Locale.getDefault()).format(millis)
+-        }
+-
+-        fun dpToPx(dp: Float, context: Context): Int {
+-            return TypedValue.applyDimension(
+-                TypedValue.COMPLEX_UNIT_DIP,
+-                dp,
+-                context.resources.displayMetrics).toInt()
+-        }
+-
+-        fun getCoverArtwork512(url100: String?) : String? {
+-            return url100?.replaceAfterLast('/',"512x512bb.jpg")
+-        }
+-    }
+-}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/data/NetworkClient.kt b/app/src/main/java/com/example/playlistmaker/data/NetworkClient.kt
+new file mode 100644
+index 0000000..3dd7c95
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/data/NetworkClient.kt
+@@ -0,0 +1,7 @@
++package com.example.playlistmaker.data
++
++import com.example.playlistmaker.data.dto.Response
++
++interface NetworkClient {
++    fun doRequest(dto: Any): Response
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/data/dto/Response.kt b/app/src/main/java/com/example/playlistmaker/data/dto/Response.kt
+new file mode 100644
+index 0000000..6b2ace7
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/data/dto/Response.kt
+@@ -0,0 +1,5 @@
++package com.example.playlistmaker.data.dto
++
++open class Response() {
++    var resultCode = 0
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/data/dto/TrackDto.kt b/app/src/main/java/com/example/playlistmaker/data/dto/TrackDto.kt
+new file mode 100644
+index 0000000..136034d
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/data/dto/TrackDto.kt
+@@ -0,0 +1,25 @@
++package com.example.playlistmaker.data.dto
++
++data class TrackDto(
++    val trackId: Int,
++    val trackName: String,
++    val artistName: String,
++    val collectionName: String?,
++    val releaseDate: String,
++    val primaryGenreName: String,
++    val country: String,
++    val trackTimeMillis: Int,
++    val artworkUrl100: String,
++    val previewUrl: String?
++) {
++    override fun equals(other: Any?): Boolean {
++        if (this === other) return true
++        if (other !is TrackDto) return false
++
++        return this.trackId == other.trackId
++    }
++
++    override fun hashCode(): Int {
++        return trackId
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/data/dto/TrackSearchRequest.kt b/app/src/main/java/com/example/playlistmaker/data/dto/TrackSearchRequest.kt
+new file mode 100644
+index 0000000..0a2d37e
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/data/dto/TrackSearchRequest.kt
+@@ -0,0 +1,3 @@
++package com.example.playlistmaker.data.dto
++
++data class TrackSearchRequest(val expression: String)
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/data/dto/TrackSearchResponse.kt b/app/src/main/java/com/example/playlistmaker/data/dto/TrackSearchResponse.kt
+new file mode 100644
+index 0000000..a281382
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/data/dto/TrackSearchResponse.kt
+@@ -0,0 +1,3 @@
++package com.example.playlistmaker.data.dto
++
++data class TrackSearchResponse(val results: List<TrackDto>) : Response()
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/data/impl/AudioPlayerRepositoryImpl.kt b/app/src/main/java/com/example/playlistmaker/data/impl/AudioPlayerRepositoryImpl.kt
+new file mode 100644
+index 0000000..a0cf24b
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/data/impl/AudioPlayerRepositoryImpl.kt
+@@ -0,0 +1,51 @@
++package com.example.playlistmaker.data.impl
++
++import android.media.MediaPlayer
++import com.example.playlistmaker.domain.api.AudioPlayerRepository
++import com.example.playlistmaker.domain.entity.PlayerState
++
++class AudioPlayerRepositoryImpl(private val previewUrl: String?) : AudioPlayerRepository {
++
++    private val player = MediaPlayer()
++    private var playerState: PlayerState = PlayerState.DEFAULT
++
++    init {
++        preparePlayer()
++    }
++
++    override fun startPlayer() {
++        player.start()
++        playerState = PlayerState.PLAYING
++    }
++
++    override fun pausePlayer() {
++        player.pause()
++        playerState = PlayerState.PAUSED
++    }
++
++    override fun getCurrentPosition(): Int {
++        return player.currentPosition
++    }
++
++    override fun getPlayerState(): PlayerState {
++        return playerState
++    }
++
++    override fun releasePlayer() {
++        player.release()
++    }
++
++    private fun preparePlayer() {
++        if (previewUrl == null) {
++            throw Exception("Ошибка. Отсутствует ссылка на отрывок трека")
++        }
++        player.setDataSource(previewUrl)
++        player.prepareAsync()
++        player.setOnPreparedListener {
++            playerState = PlayerState.PREPARED
++        }
++        player.setOnCompletionListener {
++            playerState = PlayerState.PREPARED
++        }
++    }
++}
+diff --git a/app/src/main/java/com/example/playlistmaker/data/impl/DelayHandlerImpl.kt b/app/src/main/java/com/example/playlistmaker/data/impl/DelayHandlerImpl.kt
+new file mode 100644
+index 0000000..fdec059
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/data/impl/DelayHandlerImpl.kt
+@@ -0,0 +1,20 @@
++package com.example.playlistmaker.data.impl
++
++import android.os.Handler
++import com.example.playlistmaker.domain.api.Delay
++
++class DelayHandlerImpl(private val handler: Handler) : Delay {
++
++    private var runnable: Runnable? = null
++
++    override fun postDelayed(interval: Long, callback: () -> Unit) {
++
++        runnable = Runnable { callback.invoke() }
++        handler.postDelayed(runnable!!, interval)
++    }
++
++    override fun stop() {
++        runnable?.let { handler.removeCallbacks(it) }
++        runnable = null
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/SearchHistory.kt b/app/src/main/java/com/example/playlistmaker/data/impl/SearchHistoryRepositoryImpl.kt
+similarity index 61%
+rename from app/src/main/java/com/example/playlistmaker/SearchHistory.kt
+rename to app/src/main/java/com/example/playlistmaker/data/impl/SearchHistoryRepositoryImpl.kt
+index bce38e0..b387bba 100644
+--- a/app/src/main/java/com/example/playlistmaker/SearchHistory.kt
++++ b/app/src/main/java/com/example/playlistmaker/data/impl/SearchHistoryRepositoryImpl.kt
+@@ -1,28 +1,23 @@
+-package com.example.playlistmaker
++package com.example.playlistmaker.data.impl
+ 
+ import android.content.SharedPreferences
++import com.example.playlistmaker.data.dto.TrackDto
++import com.example.playlistmaker.domain.api.SearchHistoryRepository
+ import com.google.gson.Gson
+ 
+ const val SEARCH_HISTORY = "search_history"
+ 
+-class SearchHistory(private val prefs: SharedPreferences) {
++class SearchHistoryRepositoryImpl(private val prefs: SharedPreferences) :
++    SearchHistoryRepository {
++
+     private val gson = Gson()
+-    private val tracksHistory = mutableListOf<Track>()
++    private val tracksHistory = mutableListOf<TrackDto>()
+ 
+     init {
+         loadHistoryFromPrefs()
+     }
+ 
+-    fun getTrackHistoryList(): MutableList<Track> {
+-        return tracksHistory
+-    }
+-
+-    fun clearHistory() {
+-        tracksHistory.clear()
+-        saveHistoryToPrefs()
+-    }
+-
+-    fun addToHistory(track: Track) {
++    override fun saveTrackToHistory(track: TrackDto) {
+         removeTrackIfExists(track)
+         tracksHistory.add(0, track)
+         if (tracksHistory.size > MAX_HISTORY_SIZE) {
+@@ -31,13 +26,22 @@ class SearchHistory(private val prefs: SharedPreferences) {
+         saveHistoryToPrefs()
+     }
+ 
+-    fun loadHistoryFromPrefs() {
++    override fun getHistoryList(): MutableList<TrackDto> {
++        return tracksHistory
++    }
++
++    override fun clearHistory() {
++        tracksHistory.clear()
++        saveHistoryToPrefs()
++    }
++
++    private fun loadHistoryFromPrefs() {
+         val json = prefs.getString(SEARCH_HISTORY, null)
+-        val arrayFromPrefs = gson.fromJson(json, Array<Track>::class.java) ?: emptyArray()
++        val arrayFromPrefs = gson.fromJson(json, Array<TrackDto>::class.java) ?: emptyArray()
+         tracksHistory.addAll(arrayFromPrefs)
+     }
+ 
+-    private fun removeTrackIfExists(track: Track) {
++    private fun removeTrackIfExists(track: TrackDto) {
+         val iterator = tracksHistory.iterator()
+         while (iterator.hasNext()) {
+             val currentTrack = iterator.next()
+@@ -47,7 +51,7 @@ class SearchHistory(private val prefs: SharedPreferences) {
+         }
+     }
+ 
+-    fun saveHistoryToPrefs() {
++    private fun saveHistoryToPrefs() {
+         val json = gson.toJson(tracksHistory.take(MAX_HISTORY_SIZE)).toString()
+         prefs.edit().putString(SEARCH_HISTORY, json).apply()
+     }
+diff --git a/app/src/main/java/com/example/playlistmaker/data/impl/ThemeRepositoryImpl.kt b/app/src/main/java/com/example/playlistmaker/data/impl/ThemeRepositoryImpl.kt
+new file mode 100644
+index 0000000..e57ec59
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/data/impl/ThemeRepositoryImpl.kt
+@@ -0,0 +1,22 @@
++package com.example.playlistmaker.data.impl
++
++import android.content.SharedPreferences
++import com.example.playlistmaker.domain.api.ThemeRepository
++
++const val DARK_THEME_ENABLED = "dark_theme_enabled"
++
++class ThemeRepositoryImpl(private val prefs: SharedPreferences) : ThemeRepository {
++    override fun saveDarkThemeEnabled(enabled: Boolean) {
++        prefs.edit()
++            .putBoolean(DARK_THEME_ENABLED, enabled)
++            .apply()
++    }
++
++    override fun isDarkThemeEnabled(): Boolean {
++        return prefs.getBoolean(DARK_THEME_ENABLED, false)
++    }
++
++    override fun isThemeSaved(): Boolean {
++        return prefs.contains(DARK_THEME_ENABLED)
++    }
++}
+diff --git a/app/src/main/java/com/example/playlistmaker/data/impl/TracksRepositoryImpl.kt b/app/src/main/java/com/example/playlistmaker/data/impl/TracksRepositoryImpl.kt
+new file mode 100644
+index 0000000..7ecd504
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/data/impl/TracksRepositoryImpl.kt
+@@ -0,0 +1,34 @@
++package com.example.playlistmaker.data.impl
++
++import com.example.playlistmaker.data.NetworkClient
++import com.example.playlistmaker.data.dto.TrackSearchRequest
++import com.example.playlistmaker.data.dto.TrackSearchResponse
++import com.example.playlistmaker.data.mapper.TrackListFromDtoMapper
++import com.example.playlistmaker.domain.api.TracksRepository
++import com.example.playlistmaker.domain.entity.Track
++import com.example.playlistmaker.domain.entity.Resource
++
++class TracksRepositoryImpl(private val networkClient: NetworkClient) : TracksRepository {
++    override fun searchTracks(expression: String): Resource<List<Track>> {
++
++        val response = networkClient.doRequest(TrackSearchRequest(expression))
++
++        if (response is TrackSearchResponse) {
++            return when {
++                response.resultCode != 200 -> {
++                    Resource.Error(response.resultCode)
++                }
++
++                response.results.isNotEmpty() -> {
++                    Resource.Success(results = TrackListFromDtoMapper.map(response.results))
++                }
++
++                else -> {
++                    Resource.Success(emptyList())
++                }
++            }
++        } else {
++            return Resource.Error(-1)
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/data/mapper/TrackListFromDtoMapper.kt b/app/src/main/java/com/example/playlistmaker/data/mapper/TrackListFromDtoMapper.kt
+new file mode 100644
+index 0000000..c1a36d3
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/data/mapper/TrackListFromDtoMapper.kt
+@@ -0,0 +1,24 @@
++package com.example.playlistmaker.data.mapper
++
++import com.example.playlistmaker.data.dto.TrackDto
++import com.example.playlistmaker.domain.entity.Track
++import com.example.playlistmaker.util.Util.Companion.millisToMmSs
++
++object TrackListFromDtoMapper {
++    fun map(listDto: List<TrackDto>): List<Track> {
++        return listDto.map {
++            Track(
++                trackId = it.trackId,
++                trackName = it.trackName,
++                artistName = it.artistName,
++                collectionName = it.collectionName,
++                releaseDate = it.releaseDate,
++                primaryGenreName = it.primaryGenreName,
++                country = it.country,
++                trackTimeConverted = millisToMmSs(it.trackTimeMillis),
++                artworkUrl100 = it.artworkUrl100,
++                previewUrl = it.previewUrl
++            )
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/data/network/ITunesApi.kt b/app/src/main/java/com/example/playlistmaker/data/network/ITunesApi.kt
+new file mode 100644
+index 0000000..49c3f21
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/data/network/ITunesApi.kt
+@@ -0,0 +1,12 @@
++package com.example.playlistmaker.data.network
++
++import com.example.playlistmaker.data.dto.TrackSearchResponse
++import retrofit2.Call
++import retrofit2.http.GET
++import retrofit2.http.Query
++
++interface ITunesApi {
++
++    @GET("/search?entity=song")
++    fun search(@Query("term") query: String): Call<TrackSearchResponse>
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/data/network/RetrofitNetworkClient.kt b/app/src/main/java/com/example/playlistmaker/data/network/RetrofitNetworkClient.kt
+new file mode 100644
+index 0000000..056ded4
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/data/network/RetrofitNetworkClient.kt
+@@ -0,0 +1,34 @@
++package com.example.playlistmaker.data.network
++
++import com.example.playlistmaker.data.NetworkClient
++import com.example.playlistmaker.data.dto.Response
++import com.example.playlistmaker.data.dto.TrackSearchRequest
++import retrofit2.Retrofit
++import retrofit2.converter.gson.GsonConverterFactory
++
++class RetrofitNetworkClient : NetworkClient {
++
++    private val iTunesBaseUrl = "https://itunes.apple.com"
++    private val retrofit = Retrofit.Builder()
++        .baseUrl(iTunesBaseUrl)
++        .addConverterFactory(GsonConverterFactory.create())
++        .build()
++    private val iTunesService = retrofit.create(ITunesApi::class.java)
++
++    override fun doRequest(dto: Any): Response {
++
++        if (dto !is TrackSearchRequest) {
++            return Response().apply { resultCode = -1 }
++        }
++
++        try {
++            val retrofitResponse = iTunesService.search(dto.expression).execute()
++
++            return retrofitResponse.body()?.apply { resultCode = 200 }
++                ?: Response().apply { resultCode = 0 }
++
++        } catch (e: Exception) {
++            return Response().apply { resultCode = -1 }
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/api/AudioPlayerInteractor.kt b/app/src/main/java/com/example/playlistmaker/domain/api/AudioPlayerInteractor.kt
+new file mode 100644
+index 0000000..d41501d
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/api/AudioPlayerInteractor.kt
+@@ -0,0 +1,12 @@
++package com.example.playlistmaker.domain.api
++
++interface AudioPlayerInteractor {
++
++    fun onPlayButtonClicked()
++
++    fun pausePlayer()
++
++    fun getCurrentPositionConverted() : String
++
++    fun releasePlayer()
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/api/AudioPlayerRepository.kt b/app/src/main/java/com/example/playlistmaker/domain/api/AudioPlayerRepository.kt
+new file mode 100644
+index 0000000..d7a6691
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/api/AudioPlayerRepository.kt
+@@ -0,0 +1,17 @@
++package com.example.playlistmaker.domain.api
++
++import com.example.playlistmaker.domain.entity.PlayerState
++
++interface AudioPlayerRepository {
++
++    fun startPlayer()
++
++    fun pausePlayer()
++
++    fun getCurrentPosition(): Int
++
++    fun getPlayerState(): PlayerState
++
++    fun releasePlayer()
++
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/api/Delay.kt b/app/src/main/java/com/example/playlistmaker/domain/api/Delay.kt
+new file mode 100644
+index 0000000..eb8c493
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/api/Delay.kt
+@@ -0,0 +1,8 @@
++package com.example.playlistmaker.domain.api
++
++interface Delay {
++
++    fun postDelayed(interval: Long, callback: () -> Unit)
++
++    fun stop()
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/api/PlayerStateListener.kt b/app/src/main/java/com/example/playlistmaker/domain/api/PlayerStateListener.kt
+new file mode 100644
+index 0000000..4ce6090
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/api/PlayerStateListener.kt
+@@ -0,0 +1,7 @@
++package com.example.playlistmaker.domain.api
++
++import com.example.playlistmaker.domain.entity.PlayerState
++
++fun interface PlayerStateListener {
++    fun onStateChanged(state: PlayerState)
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/api/SearchHistoryInteractor.kt b/app/src/main/java/com/example/playlistmaker/domain/api/SearchHistoryInteractor.kt
+new file mode 100644
+index 0000000..7436d27
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/api/SearchHistoryInteractor.kt
+@@ -0,0 +1,10 @@
++package com.example.playlistmaker.domain.api
++
++interface SearchHistoryInteractor<Track> {
++
++    fun saveTrackToHistory(track: Track)
++
++    fun getHistoryList(): MutableList<Track>
++
++    fun clearHistory()
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/api/SearchHistoryRepository.kt b/app/src/main/java/com/example/playlistmaker/domain/api/SearchHistoryRepository.kt
+new file mode 100644
+index 0000000..e415943
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/api/SearchHistoryRepository.kt
+@@ -0,0 +1,12 @@
++package com.example.playlistmaker.domain.api
++
++import com.example.playlistmaker.data.dto.TrackDto
++
++interface SearchHistoryRepository {
++
++    fun saveTrackToHistory(track: TrackDto)
++
++    fun getHistoryList(): List<TrackDto>
++
++    fun clearHistory()
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/api/ThemeInteractor.kt b/app/src/main/java/com/example/playlistmaker/domain/api/ThemeInteractor.kt
+new file mode 100644
+index 0000000..eed96f6
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/api/ThemeInteractor.kt
+@@ -0,0 +1,10 @@
++package com.example.playlistmaker.domain.api
++
++interface ThemeInteractor {
++
++    fun saveTheme(isDarkThemeEnabled: Boolean)
++
++    fun getTheme(): Boolean
++
++    fun isThemeSaved(): Boolean
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/api/ThemeRepository.kt b/app/src/main/java/com/example/playlistmaker/domain/api/ThemeRepository.kt
+new file mode 100644
+index 0000000..779f8cc
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/api/ThemeRepository.kt
+@@ -0,0 +1,10 @@
++package com.example.playlistmaker.domain.api
++
++interface ThemeRepository {
++
++    fun saveDarkThemeEnabled(enabled: Boolean)
++
++    fun isDarkThemeEnabled(): Boolean
++
++    fun isThemeSaved(): Boolean
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/api/TrackSearchInteractor.kt b/app/src/main/java/com/example/playlistmaker/domain/api/TrackSearchInteractor.kt
+new file mode 100644
+index 0000000..7b0b742
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/api/TrackSearchInteractor.kt
+@@ -0,0 +1,13 @@
++package com.example.playlistmaker.domain.api
++
++import com.example.playlistmaker.domain.consumer.TrackConsumer
++
++interface TrackSearchInteractor {
++
++    fun searchTracks(expression: String, consumer: TrackConsumer)
++
++    fun searchTracksDebounce(expression: String, consumer: TrackConsumer)
++
++    fun removeSearchCallbacks()
++
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/api/TracksRepository.kt b/app/src/main/java/com/example/playlistmaker/domain/api/TracksRepository.kt
+new file mode 100644
+index 0000000..cfbeaae
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/api/TracksRepository.kt
+@@ -0,0 +1,8 @@
++package com.example.playlistmaker.domain.api
++
++import com.example.playlistmaker.domain.entity.Resource
++import com.example.playlistmaker.domain.entity.Track
++
++interface TracksRepository {
++    fun searchTracks(expression: String) : Resource<List<Track>>
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/consumer/TrackConsumer.kt b/app/src/main/java/com/example/playlistmaker/domain/consumer/TrackConsumer.kt
+new file mode 100644
+index 0000000..a19f8dc
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/consumer/TrackConsumer.kt
+@@ -0,0 +1,8 @@
++package com.example.playlistmaker.domain.consumer
++
++import com.example.playlistmaker.domain.entity.Resource
++import com.example.playlistmaker.domain.entity.Track
++
++fun interface TrackConsumer {
++    fun consume(result: Resource<List<Track>>)
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/entity/PlayerState.kt b/app/src/main/java/com/example/playlistmaker/domain/entity/PlayerState.kt
+new file mode 100644
+index 0000000..900b8ee
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/entity/PlayerState.kt
+@@ -0,0 +1,8 @@
++package com.example.playlistmaker.domain.entity
++
++sealed class PlayerState {
++    data object PLAYING : PlayerState()
++    data object PAUSED : PlayerState()
++    data object PREPARED: PlayerState()
++    data object DEFAULT: PlayerState()
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/entity/Resource.kt b/app/src/main/java/com/example/playlistmaker/domain/entity/Resource.kt
+new file mode 100644
+index 0000000..2b0a0ed
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/entity/Resource.kt
+@@ -0,0 +1,6 @@
++package com.example.playlistmaker.domain.entity
++
++sealed class Resource<T> {
++    data class Success<T>(val results: T) : Resource<T>()
++    data class Error<T>(val resultCode: Int) : Resource<T>()
++}
+diff --git a/app/src/main/java/com/example/playlistmaker/Track.kt b/app/src/main/java/com/example/playlistmaker/domain/entity/Track.kt
+similarity index 86%
+rename from app/src/main/java/com/example/playlistmaker/Track.kt
+rename to app/src/main/java/com/example/playlistmaker/domain/entity/Track.kt
+index 26b4b97..54e07cf 100644
+--- a/app/src/main/java/com/example/playlistmaker/Track.kt
++++ b/app/src/main/java/com/example/playlistmaker/domain/entity/Track.kt
+@@ -1,4 +1,4 @@
+-package com.example.playlistmaker
++package com.example.playlistmaker.domain.entity
+ 
+ data class Track(
+     val trackId: Int,
+@@ -8,7 +8,7 @@ data class Track(
+     val releaseDate: String,
+     val primaryGenreName: String,
+     val country: String,
+-    val trackTimeMillis: Int,
++    val trackTimeConverted: String,
+     val artworkUrl100: String,
+     val previewUrl: String?
+ ) {
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/impl/AudioPlayerInteractorImpl.kt b/app/src/main/java/com/example/playlistmaker/domain/impl/AudioPlayerInteractorImpl.kt
+new file mode 100644
+index 0000000..6e1bd8e
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/impl/AudioPlayerInteractorImpl.kt
+@@ -0,0 +1,49 @@
++package com.example.playlistmaker.domain.impl
++
++import com.example.playlistmaker.domain.api.AudioPlayerInteractor
++import com.example.playlistmaker.domain.api.AudioPlayerRepository
++import com.example.playlistmaker.domain.api.PlayerStateListener
++import com.example.playlistmaker.domain.entity.PlayerState
++import com.example.playlistmaker.util.Util.Companion.millisToMmSs
++
++class AudioPlayerInteractorImpl(
++    private val repository: AudioPlayerRepository,
++    private val listener: PlayerStateListener
++) : AudioPlayerInteractor {
++
++    override fun onPlayButtonClicked() {
++        val playerState = repository.getPlayerState()
++
++        when (playerState) {
++            is PlayerState.PLAYING -> {
++                pausePlayer()
++            }
++
++            is PlayerState.DEFAULT -> {
++                throw Exception("Ошибка, плеер не подготовлен")
++            }
++
++            else -> {
++                startPlayer()
++            }
++        }
++    }
++
++    override fun pausePlayer() {
++        repository.pausePlayer()
++        listener.onStateChanged(PlayerState.PAUSED)
++    }
++
++    override fun getCurrentPositionConverted(): String {
++        return millisToMmSs(repository.getCurrentPosition())
++    }
++
++    override fun releasePlayer() {
++        repository.releasePlayer()
++    }
++
++    private fun startPlayer() {
++        repository.startPlayer()
++        listener.onStateChanged(PlayerState.PLAYING)
++    }
++}
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/impl/SearchHistoryInteractorImpl.kt b/app/src/main/java/com/example/playlistmaker/domain/impl/SearchHistoryInteractorImpl.kt
+new file mode 100644
+index 0000000..a1c9eb9
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/impl/SearchHistoryInteractorImpl.kt
+@@ -0,0 +1,25 @@
++package com.example.playlistmaker.domain.impl
++
++import com.example.playlistmaker.data.mapper.TrackListFromDtoMapper
++import com.example.playlistmaker.domain.api.SearchHistoryInteractor
++import com.example.playlistmaker.domain.api.SearchHistoryRepository
++import com.example.playlistmaker.domain.entity.Track
++import com.example.playlistmaker.domain.mapper.TrackToDtoConverter
++
++class SearchHistoryInteractorImpl(private val repository: SearchHistoryRepository) :
++    SearchHistoryInteractor<Track> {
++
++    override fun saveTrackToHistory(track: Track) {
++        val dto = TrackToDtoConverter.convert(track)
++        repository.saveTrackToHistory(dto)
++    }
++
++    override fun getHistoryList(): MutableList<Track> {
++        val dto = repository.getHistoryList()
++        return TrackListFromDtoMapper.map(dto).toMutableList()
++    }
++
++    override fun clearHistory() {
++        repository.clearHistory()
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/impl/ThemeInteractorImpl.kt b/app/src/main/java/com/example/playlistmaker/domain/impl/ThemeInteractorImpl.kt
+new file mode 100644
+index 0000000..73687d2
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/impl/ThemeInteractorImpl.kt
+@@ -0,0 +1,19 @@
++package com.example.playlistmaker.domain.impl
++
++import com.example.playlistmaker.domain.api.ThemeInteractor
++import com.example.playlistmaker.domain.api.ThemeRepository
++
++class ThemeInteractorImpl(private val repository: ThemeRepository) : ThemeInteractor {
++
++    override fun saveTheme(isDarkThemeEnabled: Boolean) {
++        repository.saveDarkThemeEnabled(isDarkThemeEnabled)
++    }
++
++    override fun getTheme(): Boolean {
++        return repository.isDarkThemeEnabled()
++    }
++
++    override fun isThemeSaved(): Boolean {
++        return repository.isThemeSaved()
++    }
++}
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/impl/TrackSearchInteractorImpl.kt b/app/src/main/java/com/example/playlistmaker/domain/impl/TrackSearchInteractorImpl.kt
+new file mode 100644
+index 0000000..3741e3e
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/impl/TrackSearchInteractorImpl.kt
+@@ -0,0 +1,35 @@
++package com.example.playlistmaker.domain.impl
++
++import com.example.playlistmaker.data.impl.DelayHandlerImpl
++import com.example.playlistmaker.domain.api.TrackSearchInteractor
++import com.example.playlistmaker.domain.api.TracksRepository
++import com.example.playlistmaker.domain.consumer.TrackConsumer
++import com.example.playlistmaker.util.Creator
++import java.util.concurrent.Executors
++
++const val SEARCH_DEBOUNCE_DELAY = 2000L
++
++class TrackSearchInteractorImpl(private val repository: TracksRepository) : TrackSearchInteractor {
++
++    private val executor = Executors.newSingleThreadExecutor()
++    private val delay = DelayHandlerImpl(Creator.provideMainHandler())
++
++    override fun searchTracks(expression: String, consumer: TrackConsumer) {
++        executeSearchInNewThread(expression, consumer)
++    }
++
++    override fun searchTracksDebounce(expression: String, consumer: TrackConsumer) {
++        delay.postDelayed(SEARCH_DEBOUNCE_DELAY) { executeSearchInNewThread(expression, consumer) }
++    }
++
++    override fun removeSearchCallbacks() {
++        delay.stop()
++    }
++
++    private fun executeSearchInNewThread(expression: String, consumer: TrackConsumer) {
++        executor.execute {
++            val result = repository.searchTracks(expression)
++            consumer.consume(result)
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/mapper/TrackToDtoConverter.kt b/app/src/main/java/com/example/playlistmaker/domain/mapper/TrackToDtoConverter.kt
+new file mode 100644
+index 0000000..2789818
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/domain/mapper/TrackToDtoConverter.kt
+@@ -0,0 +1,23 @@
++package com.example.playlistmaker.domain.mapper
++
++import com.example.playlistmaker.data.dto.TrackDto
++import com.example.playlistmaker.domain.entity.Track
++import com.example.playlistmaker.util.Util.Companion.mmSsToMillis
++
++object TrackToDtoConverter {
++
++    fun convert(track: Track): TrackDto {
++        return TrackDto(
++            trackId = track.trackId,
++            trackName = track.trackName,
++            artistName = track.artistName,
++            collectionName = track.collectionName,
++            releaseDate = track.releaseDate,
++            primaryGenreName = track.primaryGenreName,
++            country = track.country,
++            trackTimeMillis = mmSsToMillis(track.trackTimeConverted),
++            artworkUrl100 = track.artworkUrl100,
++            previewUrl = track.previewUrl
++        )
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/App.kt b/app/src/main/java/com/example/playlistmaker/presentation/App.kt
+similarity index 64%
+rename from app/src/main/java/com/example/playlistmaker/App.kt
+rename to app/src/main/java/com/example/playlistmaker/presentation/App.kt
+index a1e68bb..57426ff 100644
+--- a/app/src/main/java/com/example/playlistmaker/App.kt
++++ b/app/src/main/java/com/example/playlistmaker/presentation/App.kt
+@@ -1,34 +1,31 @@
+-package com.example.playlistmaker
++package com.example.playlistmaker.presentation
+ 
+ import android.app.Application
+-import android.content.SharedPreferences
+ import android.content.res.Configuration
+ import androidx.appcompat.app.AppCompatDelegate
+ import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+ import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+ import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+-
+-const val APP_PREFERENCES = "playlist_maker_preferences"
+-const val DARK_THEME_ENABLED = "dark_theme_enabled"
++import com.example.playlistmaker.domain.api.ThemeInteractor
++import com.example.playlistmaker.util.Creator
+ 
+ class App : Application() {
+ 
+-    var darkTheme = false
+-    lateinit var sharedPrefs: SharedPreferences
++    private val themeInteractor: ThemeInteractor by lazy { Creator.provideThemeInteractor() }
++
++    private var darkTheme = false
+ 
+     override fun onCreate() {
+         super.onCreate()
++        Creator.initApplication(this)
+ 
+-        sharedPrefs = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
+-        if (!sharedPrefs.contains(DARK_THEME_ENABLED)) {
++        if (!themeInteractor.isThemeSaved()) {
+             AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
+             val isSystemDarkThemeEnabled =
+                 (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+             darkTheme = isSystemDarkThemeEnabled
+         } else {
+-            darkTheme = sharedPrefs.getBoolean(
+-                DARK_THEME_ENABLED, false
+-            )
++            darkTheme = themeInteractor.getTheme()
+             AppCompatDelegate.setDefaultNightMode(
+                 if (darkTheme) MODE_NIGHT_YES else MODE_NIGHT_NO
+             )
+@@ -37,9 +34,7 @@ class App : Application() {
+ 
+     fun switchTheme(darkThemeEnabled: Boolean) {
+         darkTheme = darkThemeEnabled
+-        sharedPrefs.edit()
+-            .putBoolean(DARK_THEME_ENABLED, darkTheme)
+-            .apply()
++        themeInteractor.saveTheme(darkThemeEnabled)
+ 
+         AppCompatDelegate.setDefaultNightMode(
+             if (darkThemeEnabled) MODE_NIGHT_YES else MODE_NIGHT_NO
+diff --git a/app/src/main/java/com/example/playlistmaker/MainActivity.kt b/app/src/main/java/com/example/playlistmaker/presentation/main/MainActivity.kt
+similarity index 81%
+rename from app/src/main/java/com/example/playlistmaker/MainActivity.kt
+rename to app/src/main/java/com/example/playlistmaker/presentation/main/MainActivity.kt
+index d25e2a0..eec8ba4 100644
+--- a/app/src/main/java/com/example/playlistmaker/MainActivity.kt
++++ b/app/src/main/java/com/example/playlistmaker/presentation/main/MainActivity.kt
+@@ -1,4 +1,4 @@
+-package com.example.playlistmaker
++package com.example.playlistmaker.presentation.main
+ 
+ import android.content.Intent
+ import android.os.Bundle
+@@ -6,6 +6,10 @@ import android.view.View
+ import android.view.View.OnClickListener
+ import android.widget.Button
+ import androidx.appcompat.app.AppCompatActivity
++import com.example.playlistmaker.R
++import com.example.playlistmaker.presentation.mediateka.MediatekaActivity
++import com.example.playlistmaker.presentation.search.SearchActivity
++import com.example.playlistmaker.presentation.settings.SettingsActivity
+ 
+ class MainActivity : AppCompatActivity() {
+ 
+diff --git a/app/src/main/java/com/example/playlistmaker/MediatekaActivity.kt b/app/src/main/java/com/example/playlistmaker/presentation/mediateka/MediatekaActivity.kt
+similarity index 75%
+rename from app/src/main/java/com/example/playlistmaker/MediatekaActivity.kt
+rename to app/src/main/java/com/example/playlistmaker/presentation/mediateka/MediatekaActivity.kt
+index 9965e97..3b2c594 100644
+--- a/app/src/main/java/com/example/playlistmaker/MediatekaActivity.kt
++++ b/app/src/main/java/com/example/playlistmaker/presentation/mediateka/MediatekaActivity.kt
+@@ -1,7 +1,8 @@
+-package com.example.playlistmaker
++package com.example.playlistmaker.presentation.mediateka
+ 
+ import android.os.Bundle
+ import androidx.appcompat.app.AppCompatActivity
++import com.example.playlistmaker.R
+ 
+ class MediatekaActivity : AppCompatActivity() {
+ 
+diff --git a/app/src/main/java/com/example/playlistmaker/PlayerActivity.kt b/app/src/main/java/com/example/playlistmaker/presentation/player/PlayerActivity.kt
+similarity index 57%
+rename from app/src/main/java/com/example/playlistmaker/PlayerActivity.kt
+rename to app/src/main/java/com/example/playlistmaker/presentation/player/PlayerActivity.kt
+index 8b5f0f4..ff47f1f 100644
+--- a/app/src/main/java/com/example/playlistmaker/PlayerActivity.kt
++++ b/app/src/main/java/com/example/playlistmaker/presentation/player/PlayerActivity.kt
+@@ -1,6 +1,5 @@
+-package com.example.playlistmaker
++package com.example.playlistmaker.presentation.player
+ 
+-import android.media.MediaPlayer
+ import android.os.Bundle
+ import android.os.Handler
+ import android.os.Looper
+@@ -12,25 +11,29 @@ import androidx.appcompat.app.AppCompatActivity
+ import androidx.core.view.isGone
+ import com.bumptech.glide.Glide
+ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+-import com.example.playlistmaker.Util.Companion.dpToPx
+-import com.example.playlistmaker.Util.Companion.getCoverArtwork512
+-import com.example.playlistmaker.Util.Companion.millisToMmSs
++import com.example.playlistmaker.R
++import com.example.playlistmaker.domain.api.AudioPlayerInteractor
++import com.example.playlistmaker.domain.entity.PlayerState
++import com.example.playlistmaker.util.Creator
++import com.example.playlistmaker.util.Util.Companion.dpToPx
++import com.example.playlistmaker.util.Util.Companion.getCoverArtwork512
++import com.example.playlistmaker.util.Util.Companion.millisToMmSs
+ import com.google.android.material.appbar.MaterialToolbar
+ 
+ class PlayerActivity : AppCompatActivity() {
+-    private val player = MediaPlayer()
+-    private var playerState = STATE_DEFAULT
+-    private val handler = Handler(Looper.getMainLooper())
+ 
+     private var previewUrl: String? = null
+     private lateinit var playButton: ImageButton
+     private lateinit var listeningTimeText: TextView
++    private lateinit var audioPlayerInteractor: AudioPlayerInteractor
++
++    private val handler = Handler(Looper.getMainLooper())
++
+     private val timeRefreshRunnable = object : Runnable {
++
+         override fun run() {
+-            if (playerState == STATE_PLAYING) {
+-                listeningTimeText.text = millisToMmSs(player.currentPosition)
+-                handler.postDelayed(this, TIME_REFRESH_DELAY)
+-            }
++            listeningTimeText.text = audioPlayerInteractor.getCurrentPositionConverted()
++            handler.postDelayed(this, TIME_REFRESH_DELAY)
+         }
+     }
+ 
+@@ -46,7 +49,7 @@ class PlayerActivity : AppCompatActivity() {
+         val trackName: TextView = findViewById(R.id.track_name)
+         val artistName: TextView = findViewById(R.id.artist_name)
+         val trackTime: TextView = findViewById(R.id.track_time)
+-        val collectionName:TextView = findViewById(R.id.album_name)
++        val collectionName: TextView = findViewById(R.id.album_name)
+         val releaseDate: TextView = findViewById(R.id.year_value)
+         val primaryGenreName: TextView = findViewById(R.id.genre)
+         val country: TextView = findViewById(R.id.country)
+@@ -56,7 +59,7 @@ class PlayerActivity : AppCompatActivity() {
+         // Секция с информацией о треке
+         trackName.text = intent.getStringExtra("track_name")
+         artistName.text = intent.getStringExtra("artist_name")
+-        trackTime.text = millisToMmSs(intent.getIntExtra("track_time_millis", 0))
++        trackTime.text = millisToMmSs(intent.getIntExtra("track_time_converted", 0))
+         releaseDate.text = intent.getStringExtra("release_date")?.take(4)
+         primaryGenreName.text = intent.getStringExtra("primary_genre_name")
+         country.text = intent.getStringExtra("country")
+@@ -64,7 +67,34 @@ class PlayerActivity : AppCompatActivity() {
+         listeningTimeText.text = millisToMmSs(LISTENING_TIME_DEFAULT)
+         previewUrl = intent.getStringExtra("preview_url")
+ 
+-        preparePlayer()
++        try {
++            audioPlayerInteractor = Creator.provideAudioPlayerInteractor(
++                previewUrl = previewUrl,
++                onStateChangedListener = { state ->
++                    when (state) {
++                        is PlayerState.PAUSED -> {
++                            handler.removeCallbacks(timeRefreshRunnable)
++                            playButton.setImageResource(R.drawable.button_play)
++                        }
++
++                        is PlayerState.PLAYING -> {
++                            handler.post(timeRefreshRunnable)
++                            playButton.setImageResource(R.drawable.button_pause)
++                        }
++
++                        is PlayerState.PREPARED -> {
++                            handler.removeCallbacks(timeRefreshRunnable)
++                            listeningTimeText.text = millisToMmSs(LISTENING_TIME_DEFAULT)
++                            playButton.setImageResource(R.drawable.button_play)
++                        }
++
++                        is PlayerState.DEFAULT -> {}
++                    }
++                }
++            )
++        } catch (e: Exception) {
++            showToast(e.message.toString())
++        }
+ 
+         val albumName = intent.getStringExtra("collection_name")
+         if (albumName == null) {
+@@ -85,63 +115,31 @@ class PlayerActivity : AppCompatActivity() {
+             .into(albumCover)
+ 
+         playButton.setOnClickListener {
+-            when (playerState) {
+-                STATE_PREPARED, STATE_PAUSED -> startPlayer()
+-                STATE_PLAYING -> pausePlayer()
+-                else -> Toast.makeText(this, getString(R.string.error_player_not_prepared), Toast.LENGTH_SHORT).show()
++            try {
++                audioPlayerInteractor.onPlayButtonClicked()
++            } catch (e: Exception) {
++                showToast(e.message.toString())
+             }
+         }
+     }
+ 
+     override fun onPause() {
+         super.onPause()
+-        pausePlayer()
++        audioPlayerInteractor.pausePlayer()
+     }
+ 
+     override fun onDestroy() {
+         super.onDestroy()
+         handler.removeCallbacks(timeRefreshRunnable)
+-        player.release()
++        audioPlayerInteractor.releasePlayer()
+     }
+ 
+-    private fun preparePlayer() {
+-        if (previewUrl == null) {
+-            Toast.makeText(this, getString(R.string.error_missing_link_to_track_preview), Toast.LENGTH_SHORT).show()
+-            return
+-        }
+-        player.setDataSource(previewUrl)
+-        player.prepareAsync()
+-        player.setOnPreparedListener {
+-            playerState = STATE_PREPARED
+-        }
+-        player.setOnCompletionListener {
+-            handler.removeCallbacks(timeRefreshRunnable)
+-            listeningTimeText.text = millisToMmSs(LISTENING_TIME_DEFAULT)
+-            playButton.setImageResource(R.drawable.button_play)
+-            playerState = STATE_PREPARED
+-        }
+-    }
+-
+-    private fun startPlayer() {
+-        player.start()
+-        playerState = STATE_PLAYING
+-        handler.post(timeRefreshRunnable)
+-        playButton.setImageResource(R.drawable.button_pause)
+-    }
+-
+-    private fun pausePlayer() {
+-        player.pause()
+-        playerState = STATE_PAUSED
+-        handler.removeCallbacks(timeRefreshRunnable)
+-        playButton.setImageResource(R.drawable.button_play)
++    private fun showToast(msg: String) {
++        Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+     }
+ 
+     companion object {
+-        const val STATE_DEFAULT: Byte = 0
+-        const val STATE_PREPARED: Byte = 1
+-        const val STATE_PLAYING: Byte = 2
+-        const val STATE_PAUSED: Byte = 3
+-        const val LISTENING_TIME_DEFAULT: Int = 0
+-        const val TIME_REFRESH_DELAY: Long = 300L
++        const val TIME_REFRESH_DELAY = 300L
++        const val LISTENING_TIME_DEFAULT = 0
+     }
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/SearchActivity.kt b/app/src/main/java/com/example/playlistmaker/presentation/search/SearchActivity.kt
+similarity index 65%
+rename from app/src/main/java/com/example/playlistmaker/SearchActivity.kt
+rename to app/src/main/java/com/example/playlistmaker/presentation/search/SearchActivity.kt
+index 9f32082..944463f 100644
+--- a/app/src/main/java/com/example/playlistmaker/SearchActivity.kt
++++ b/app/src/main/java/com/example/playlistmaker/presentation/search/SearchActivity.kt
+@@ -1,7 +1,6 @@
+-package com.example.playlistmaker
++package com.example.playlistmaker.presentation.search
+ 
+ import android.annotation.SuppressLint
+-import android.content.Context
+ import android.os.Bundle
+ import android.os.Handler
+ import android.os.Looper
+@@ -14,7 +13,6 @@ import android.widget.ImageView
+ import android.widget.LinearLayout
+ import android.widget.ProgressBar
+ import android.widget.TextView
+-import android.widget.Toast
+ import androidx.appcompat.app.AppCompatActivity
+ import androidx.appcompat.content.res.AppCompatResources
+ import androidx.core.view.WindowCompat
+@@ -22,49 +20,58 @@ import androidx.core.view.isGone
+ import androidx.core.view.isVisible
+ import androidx.recyclerview.widget.LinearLayoutManager
+ import androidx.recyclerview.widget.RecyclerView
++import com.example.playlistmaker.util.Creator
++import com.example.playlistmaker.R
++import com.example.playlistmaker.domain.consumer.TrackConsumer
++import com.example.playlistmaker.domain.entity.Resource
++import com.example.playlistmaker.domain.entity.Track
+ import com.google.android.material.appbar.MaterialToolbar
+-import retrofit2.Call
+-import retrofit2.Callback
+-import retrofit2.Response
+-import retrofit2.Retrofit
+-import retrofit2.converter.gson.GsonConverterFactory
+ 
+ class SearchActivity : AppCompatActivity() {
+ 
+     private val handler = Handler(Looper.getMainLooper())
+ 
+-    private val iTunesBaseUrl = "https://itunes.apple.com"
+-    private val retrofit = Retrofit.Builder()
+-        .baseUrl(iTunesBaseUrl)
+-        .addConverterFactory(GsonConverterFactory.create())
+-        .build()
+-    private val iTunesService = retrofit.create(ITunesApi::class.java)
++    private val trackSearchInteractor = Creator.provideTrackSearchInteractor()
++    private val searchHistoryInteractor = Creator.provideSearchHistoryInteractor()
++
++    private var searchSavedInput: String = INPUT_DEF
++    private val searchResultsList = mutableListOf<Track>()
+ 
+     @SuppressLint("NotifyDataSetChanged")
+-    private val searchRunnable = Runnable {
+-        if (searchResultsList.isNotEmpty()) {
+-            searchResultsList.clear()
+-            searchResultsAdapter.notifyDataSetChanged()
++    private val trackSearchConsumer = TrackConsumer { result ->
++        handler.post {
++            hideProgressBar()
++
++            when (result) {
++                is Resource.Error -> {
++                    showSearchPlaceholder(CONNECTION_ISSUES)
++                }
++
++                is Resource.Success -> {
++                    searchResultsList.clear()
++                    searchResultsList.addAll(result.results)
++                    searchResultsAdapter.notifyDataSetChanged()
++
++                    if (searchResultsList.isEmpty()) {
++                        showSearchPlaceholder(NOTHING_FOUND)
++                    }
++                }
++            }
+         }
+-        tracksSearch()
+     }
+ 
+-    private var searchSavedInput: String = INPUT_DEF
+-    private val searchResultsList = mutableListOf<Track>()
+-    private lateinit var searchHistoryList: MutableList<Track>
+-
+     private lateinit var searchResultsAdapter: TrackAdapter
+     private lateinit var searchHistoryAdapter: TrackAdapter
++
+     private lateinit var placeHolderImg: ImageView
+     private lateinit var placeHolderText: TextView
+-    private lateinit var placeHolderButton: Button
+-    private lateinit var clearButton: Button
++    private lateinit var placeHolderTryAgainButton: Button
++    private lateinit var clearHistoryButton: Button
+     private lateinit var searchHistoryView: LinearLayout
+     private lateinit var searchHistoryRecyclerView: RecyclerView
+     private lateinit var searchInput: EditText
+     private lateinit var searchResultsRecyclerView: RecyclerView
+     private lateinit var progressBar: ProgressBar
+-    private lateinit var searchHistory: SearchHistory
+ 
+     @SuppressLint("NotifyDataSetChanged")
+     override fun onCreate(savedInstanceState: Bundle?) {
+@@ -83,23 +90,22 @@ class SearchActivity : AppCompatActivity() {
+ 
+         placeHolderImg = findViewById(R.id.search_placeholder_image)
+         placeHolderText = findViewById(R.id.search_placeholder_text)
+-        placeHolderButton = findViewById(R.id.search_placeholder_button)
++        placeHolderTryAgainButton = findViewById(R.id.search_placeholder_button)
+ 
+         searchHistoryView = findViewById(R.id.search_history_view_group)
+         searchHistoryRecyclerView = findViewById(R.id.search_history_recycler_view)
+-        clearButton = findViewById(R.id.search_history_clear_button)
+-        searchHistory = SearchHistory((applicationContext as App).sharedPrefs)
++        clearHistoryButton = findViewById(R.id.search_history_clear_button)
+ 
+         searchResultsRecyclerView.layoutManager =
+             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+         searchHistoryRecyclerView.layoutManager =
+             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+ 
+-        searchHistoryList = searchHistory.getTrackHistoryList()
+-        searchHistoryAdapter = TrackAdapter(searchHistoryList, searchHistory)
++        searchHistoryAdapter =
++            TrackAdapter(searchHistoryInteractor.getHistoryList(), searchHistoryInteractor)
+         searchHistoryRecyclerView.adapter = searchHistoryAdapter
+ 
+-        searchResultsAdapter = TrackAdapter(searchResultsList, searchHistory)
++        searchResultsAdapter = TrackAdapter(searchResultsList, searchHistoryInteractor)
+         searchResultsRecyclerView.adapter = searchResultsAdapter
+ 
+         toolbar.setNavigationOnClickListener {
+@@ -112,15 +118,28 @@ class SearchActivity : AppCompatActivity() {
+             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                 clearEditTextButton.isVisible = !s.isNullOrEmpty()
+                 if (searchInput.hasFocus()) {
++
+                     if (s?.isEmpty() == true) {
+                         searchResultsList.clear()
+                         searchResultsAdapter.notifyDataSetChanged()
+                         showSearchHistory()
++
++                    } else {
++                        hideSearchHistory()
++                        searchSavedInput = s.toString()
++
++                        if (searchResultsList.isNotEmpty()) {
++                            searchResultsList.clear()
++                            searchResultsAdapter.notifyDataSetChanged()
++                        }
++                        showProgressBar()
++                        trackSearchInteractor.searchTracksDebounce(
++                            searchSavedInput,
++                            trackSearchConsumer
++                        )
++
+                     }
+-                    else hideSearchHistory()
+                 }
+-                searchSavedInput = s.toString()
+-                searchDebounce()
+             }
+ 
+             override fun afterTextChanged(s: Editable?) {}
+@@ -134,29 +153,29 @@ class SearchActivity : AppCompatActivity() {
+         }
+ 
+         clearEditTextButton.setOnClickListener {
+-            handler.removeCallbacks(searchRunnable)
++            trackSearchInteractor.removeSearchCallbacks()
+             searchInput.text.clear()
+             searchResultsList.clear()
+             searchResultsAdapter.notifyDataSetChanged()
+ 
+ 
+             val inputMethodManager =
+-                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
++                getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+             if (currentFocus != null) {
+                 inputMethodManager?.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+             }
+             searchInput.clearFocus()
+         }
+ 
+-        clearButton.setOnClickListener {
+-            searchHistory.clearHistory()
++        clearHistoryButton.setOnClickListener {
++            searchHistoryInteractor.clearHistory()
+             searchHistoryAdapter.notifyDataSetChanged()
+             hideSearchHistory()
+         }
+ 
+-        placeHolderButton.setOnClickListener {
++        placeHolderTryAgainButton.setOnClickListener {
+             hideSearchPlaceholders()
+-            tracksSearch()
++            trackSearchInteractor.searchTracks(searchSavedInput, trackSearchConsumer)
+         }
+     }
+ 
+@@ -171,60 +190,18 @@ class SearchActivity : AppCompatActivity() {
+ 
+         if (searchSavedInput.isNotEmpty()) {
+             searchInput.setText(searchSavedInput)
+-            tracksSearch()
++            trackSearchInteractor.searchTracks(searchSavedInput, trackSearchConsumer)
+         }
+     }
+ 
+-    override fun onPause() {
+-        super.onPause()
+-        searchHistory.saveHistoryToPrefs()
+-    }
+-
+     @SuppressLint("NotifyDataSetChanged")
+     override fun onResume() {
+         super.onResume()
+         searchHistoryAdapter.notifyDataSetChanged()
+     }
+ 
+-    private fun tracksSearch() {
+-        hideSearchPlaceholders()
+-        showProgressBar()
+-        if (searchSavedInput.isEmpty()) {
+-            hideProgressBar()
+-            return
+-        }
+-        iTunesService.search(searchSavedInput).enqueue(object : Callback<TracksResponse> {
+-            @SuppressLint("NotifyDataSetChanged")
+-            override fun onResponse(
+-                call: Call<TracksResponse>,
+-                response: Response<TracksResponse>
+-            ) {
+-                if (response.isSuccessful) {
+-                    searchResultsList.clear()
+-                    val results = response.body()?.results ?: emptyList()
+-                    if (results.isNotEmpty()) {
+-                        hideProgressBar()
+-                        searchResultsList.addAll(results)
+-                        searchResultsAdapter.notifyDataSetChanged()
+-                    }
+-                    if (searchResultsList.isEmpty()) {
+-                        hideProgressBar()
+-                        showSearchPlaceholder(NOTHING_FOUND, "")
+-                    }
+-                } else {
+-                    hideProgressBar()
+-                    showSearchPlaceholder(CONNECTION_ISSUES, "Response code: ${response.code()}")
+-                }
+-            }
+-
+-            override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
+-                showSearchPlaceholder(CONNECTION_ISSUES, t.message.toString())
+-            }
+-        })
+-    }
+-
+     @SuppressLint("NotifyDataSetChanged")
+-    private fun showSearchPlaceholder(reason: Byte, toastMessage: String) {
++    private fun showSearchPlaceholder(reason: Int) {
+         hideSearchHistory()
+         when (reason) {
+             NOTHING_FOUND -> {
+@@ -257,36 +234,29 @@ class SearchActivity : AppCompatActivity() {
+                 placeHolderText.text = message
+                 placeHolderImg.isVisible = true
+                 placeHolderText.isVisible = true
+-                placeHolderButton.isVisible = true
+-                if (toastMessage.isNotEmpty()) {
+-                    Toast.makeText(applicationContext, toastMessage, Toast.LENGTH_LONG).show()
+-                }
++                placeHolderTryAgainButton.isVisible = true
+             }
+         }
+     }
+ 
+     private fun showSearchHistory() {
+-        if (searchHistoryList.isNotEmpty()) {
++        val history = searchHistoryInteractor.getHistoryList()
++        if (history.isNotEmpty()) {
+             hideSearchPlaceholders()
+             searchHistoryView.isVisible = true
+-            clearButton.isVisible = true
++            clearHistoryButton.isVisible = true
+         }
+     }
+ 
+     private fun hideSearchHistory() {
+         searchHistoryView.isGone = true
+-        clearButton.isGone = true
++        clearHistoryButton.isGone = true
+     }
+ 
+     private fun hideSearchPlaceholders() {
+         placeHolderImg.isGone = true
+         placeHolderText.isGone = true
+-        placeHolderButton.isGone = true
+-    }
+-
+-    private fun searchDebounce() {
+-        handler.removeCallbacks(searchRunnable)
+-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
++        placeHolderTryAgainButton.isGone = true
+     }
+ 
+     private fun showProgressBar() {
+@@ -300,8 +270,7 @@ class SearchActivity : AppCompatActivity() {
+     companion object {
+         const val SAVED_INPUT = "SAVED_INPUT"
+         const val INPUT_DEF = ""
+-        const val NOTHING_FOUND: Byte = 0
+-        const val CONNECTION_ISSUES: Byte = -1
+-        const val SEARCH_DEBOUNCE_DELAY = 2000L
++        const val NOTHING_FOUND: Int = 0
++        const val CONNECTION_ISSUES: Int = -1
+     }
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/TrackAdapter.kt b/app/src/main/java/com/example/playlistmaker/presentation/search/TrackAdapter.kt
+similarity index 76%
+rename from app/src/main/java/com/example/playlistmaker/TrackAdapter.kt
+rename to app/src/main/java/com/example/playlistmaker/presentation/search/TrackAdapter.kt
+index 1cca369..4102100 100644
+--- a/app/src/main/java/com/example/playlistmaker/TrackAdapter.kt
++++ b/app/src/main/java/com/example/playlistmaker/presentation/search/TrackAdapter.kt
+@@ -1,15 +1,20 @@
+-package com.example.playlistmaker
++package com.example.playlistmaker.presentation.search
+ 
+ import android.content.Intent
+ import android.os.Handler
+ import android.os.Looper
++import android.util.Log
+ import android.view.LayoutInflater
+ import android.view.ViewGroup
+ import androidx.recyclerview.widget.RecyclerView
++import com.example.playlistmaker.R
++import com.example.playlistmaker.domain.api.SearchHistoryInteractor
++import com.example.playlistmaker.domain.entity.Track
++import com.example.playlistmaker.presentation.player.PlayerActivity
+ 
+ class TrackAdapter(
+     private val tracks: MutableList<Track>,
+-    private val searchHistory: SearchHistory
++    private val searchHistoryInteractor: SearchHistoryInteractor<Track>
+ ) : RecyclerView.Adapter<TrackViewHolder>() {
+     private var isClickAllowed = true
+     private val handler = Handler(Looper.getMainLooper())
+@@ -25,12 +30,13 @@ class TrackAdapter(
+         holder.bind(currentTrack)
+         holder.itemView.setOnClickListener {
+             if (clickDebounce()) {
+-                searchHistory.addToHistory(currentTrack)
++                searchHistoryInteractor.saveTrackToHistory(currentTrack)
++                Log.d("adapter", "saved track ${currentTrack.artistName + " - " + currentTrack.trackName}")
+                 val playerIntent =
+                     Intent(holder.itemView.context, PlayerActivity::class.java).apply {
+                         putExtra("track_name", currentTrack.trackName)
+                         putExtra("artist_name", currentTrack.artistName)
+-                        putExtra("track_time_millis", currentTrack.trackTimeMillis)
++                        putExtra("track_time_converted", currentTrack.trackTimeConverted)
+                         putExtra("collection_name", currentTrack.collectionName)
+                         putExtra("release_date", currentTrack.releaseDate)
+                         putExtra("primary_genre_name", currentTrack.primaryGenreName)
+diff --git a/app/src/main/java/com/example/playlistmaker/TrackViewHolder.kt b/app/src/main/java/com/example/playlistmaker/presentation/search/TrackViewHolder.kt
+similarity index 80%
+rename from app/src/main/java/com/example/playlistmaker/TrackViewHolder.kt
+rename to app/src/main/java/com/example/playlistmaker/presentation/search/TrackViewHolder.kt
+index 3e39b14..aa2974c 100644
+--- a/app/src/main/java/com/example/playlistmaker/TrackViewHolder.kt
++++ b/app/src/main/java/com/example/playlistmaker/presentation/search/TrackViewHolder.kt
+@@ -1,4 +1,4 @@
+-package com.example.playlistmaker
++package com.example.playlistmaker.presentation.search
+ 
+ import android.view.View
+ import android.widget.ImageView
+@@ -6,7 +6,9 @@ import android.widget.TextView
+ import androidx.recyclerview.widget.RecyclerView
+ import com.bumptech.glide.Glide
+ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+-import com.example.playlistmaker.Util.Companion.dpToPx
++import com.example.playlistmaker.R
++import com.example.playlistmaker.util.Util.Companion.dpToPx
++import com.example.playlistmaker.domain.entity.Track
+ 
+ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+     private val trackName: TextView = itemView.findViewById(R.id.track_name)
+@@ -19,7 +21,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+         trackId = model.trackId
+         trackName.text = model.trackName
+         artistName.text = model.artistName
+-        trackTime.text = Util.millisToMmSs(model.trackTimeMillis)
++        trackTime.text = model.trackTimeConverted
+         Glide.with(itemView)
+             .load(model.artworkUrl100)
+             .placeholder(R.drawable.album_placeholder)
+diff --git a/app/src/main/java/com/example/playlistmaker/SettingsActivity.kt b/app/src/main/java/com/example/playlistmaker/presentation/settings/SettingsActivity.kt
+similarity index 87%
+rename from app/src/main/java/com/example/playlistmaker/SettingsActivity.kt
+rename to app/src/main/java/com/example/playlistmaker/presentation/settings/SettingsActivity.kt
+index ba49e90..a408f1c 100644
+--- a/app/src/main/java/com/example/playlistmaker/SettingsActivity.kt
++++ b/app/src/main/java/com/example/playlistmaker/presentation/settings/SettingsActivity.kt
+@@ -1,10 +1,13 @@
+-package com.example.playlistmaker
++package com.example.playlistmaker.presentation.settings
+ 
+ import android.content.Intent
+ import android.net.Uri
+ import android.os.Bundle
+ import android.widget.ImageView
+ import androidx.appcompat.app.AppCompatActivity
++import com.example.playlistmaker.presentation.App
++import com.example.playlistmaker.R
++import com.example.playlistmaker.util.Creator
+ import com.google.android.material.appbar.MaterialToolbar
+ import com.google.android.material.switchmaterial.SwitchMaterial
+ 
+@@ -13,15 +16,17 @@ class SettingsActivity : AppCompatActivity() {
+         super.onCreate(savedInstanceState)
+         setContentView(R.layout.activity_settings)
+ 
++        val themeInteractor = Creator.provideThemeInteractor()
++
+         val toolbar = findViewById<MaterialToolbar>(R.id.settings_toolbar)
+         toolbar.setNavigationOnClickListener {
+             finish()
+         }
+ 
+         val themeSwitcher = findViewById<SwitchMaterial>(R.id.theme_switcher)
+-        if ((applicationContext as App).darkTheme) {
+-            themeSwitcher.isChecked = true
+-        }
++
++        themeSwitcher.isChecked = themeInteractor.getTheme()
++
+         themeSwitcher.setOnCheckedChangeListener { _, checked ->
+             (applicationContext as App).switchTheme(checked)
+             recreate()
+diff --git a/app/src/main/java/com/example/playlistmaker/util/Creator.kt b/app/src/main/java/com/example/playlistmaker/util/Creator.kt
+new file mode 100644
+index 0000000..d92b6e2
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/util/Creator.kt
+@@ -0,0 +1,84 @@
++package com.example.playlistmaker.util
++
++import android.app.Application
++import android.content.Context.MODE_PRIVATE
++import android.content.SharedPreferences
++import android.os.Handler
++import android.os.Looper
++import com.example.playlistmaker.data.impl.SearchHistoryRepositoryImpl
++import com.example.playlistmaker.data.network.RetrofitNetworkClient
++import com.example.playlistmaker.data.impl.TracksRepositoryImpl
++import com.example.playlistmaker.data.impl.AudioPlayerRepositoryImpl
++import com.example.playlistmaker.data.impl.ThemeRepositoryImpl
++import com.example.playlistmaker.domain.api.AudioPlayerInteractor
++import com.example.playlistmaker.domain.api.AudioPlayerRepository
++import com.example.playlistmaker.domain.api.PlayerStateListener
++import com.example.playlistmaker.domain.api.SearchHistoryInteractor
++import com.example.playlistmaker.domain.api.SearchHistoryRepository
++import com.example.playlistmaker.domain.api.ThemeInteractor
++import com.example.playlistmaker.domain.api.ThemeRepository
++import com.example.playlistmaker.domain.api.TrackSearchInteractor
++import com.example.playlistmaker.domain.api.TracksRepository
++import com.example.playlistmaker.domain.entity.Track
++import com.example.playlistmaker.domain.impl.AudioPlayerInteractorImpl
++import com.example.playlistmaker.domain.impl.SearchHistoryInteractorImpl
++import com.example.playlistmaker.domain.impl.ThemeInteractorImpl
++import com.example.playlistmaker.domain.impl.TrackSearchInteractorImpl
++
++const val APP_PREFERENCES = "playlist_maker_preferences"
++
++object Creator {
++
++    private lateinit var application: Application
++
++    fun initApplication(application: Application) {
++        this.application = application
++    }
++
++    fun provideMainHandler(): Handler {
++        return Handler(Looper.getMainLooper())
++    }
++
++    //Interactors
++    //
++    fun provideTrackSearchInteractor(): TrackSearchInteractor {
++        return TrackSearchInteractorImpl(getTracksRepository())
++    }
++
++    fun provideSearchHistoryInteractor(): SearchHistoryInteractor<Track> {
++        return SearchHistoryInteractorImpl(getHistoryRepository())
++    }
++
++    fun provideAudioPlayerInteractor(
++        previewUrl: String?,
++        onStateChangedListener: PlayerStateListener
++    ): AudioPlayerInteractor {
++        return AudioPlayerInteractorImpl(getAudioPlayerRepository(previewUrl), onStateChangedListener)
++    }
++
++    fun provideThemeInteractor(): ThemeInteractor {
++        return ThemeInteractorImpl(getThemeRepository())
++    }
++
++    //Internal
++    //
++    private fun getTracksRepository(): TracksRepository {
++        return TracksRepositoryImpl(RetrofitNetworkClient())
++    }
++
++    private fun getHistoryRepository(): SearchHistoryRepository {
++        return SearchHistoryRepositoryImpl(getSharedPreferences())
++    }
++
++    private fun getAudioPlayerRepository(previewUrl: String?): AudioPlayerRepository {
++        return AudioPlayerRepositoryImpl(previewUrl)
++    }
++
++    private fun getThemeRepository(): ThemeRepository {
++        return ThemeRepositoryImpl(getSharedPreferences())
++    }
++
++    private fun getSharedPreferences(): SharedPreferences {
++        return application.getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
++    }
++}
+diff --git a/app/src/main/java/com/example/playlistmaker/util/Util.kt b/app/src/main/java/com/example/playlistmaker/util/Util.kt
+new file mode 100644
+index 0000000..737352f
+--- /dev/null
++++ b/app/src/main/java/com/example/playlistmaker/util/Util.kt
+@@ -0,0 +1,35 @@
++package com.example.playlistmaker.util
++
++import android.content.Context
++import android.util.TypedValue
++import java.text.SimpleDateFormat
++import java.util.Locale
++
++class Util {
++    companion object {
++        fun millisToMmSs(millis: Int): String {
++            return SimpleDateFormat("mm:ss", Locale.getDefault()).format(millis)
++        }
++
++        fun mmSsToMillis(mmSs: String): Int {
++            val parts = mmSs.split(":")
++
++            val minutes = parts[0].toInt()
++            val seconds = parts[1].toInt()
++
++            return (minutes * 60 + seconds) * 1000
++        }
++
++        fun dpToPx(dp: Float, context: Context): Int {
++            return TypedValue.applyDimension(
++                TypedValue.COMPLEX_UNIT_DIP,
++                dp,
++                context.resources.displayMetrics
++            ).toInt()
++        }
++
++        fun getCoverArtwork512(url100: String?): String? {
++            return url100?.replaceAfterLast('/', "512x512bb.jpg")
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/res/layout/activity_mediateka.xml b/app/src/main/res/layout/activity_mediateka.xml
+index c0e6c8b..9f6e67d 100644
+--- a/app/src/main/res/layout/activity_mediateka.xml
++++ b/app/src/main/res/layout/activity_mediateka.xml
+@@ -4,6 +4,6 @@
+     android:id="@+id/main"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+-    tools:context=".MediatekaActivity">
++    tools:context=".presentation.mediateka.MediatekaActivity">
+ 
+ </androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+diff --git a/app/src/main/res/layout/activity_player.xml b/app/src/main/res/layout/activity_player.xml
+index 6f26930..3e84fd7 100644
+--- a/app/src/main/res/layout/activity_player.xml
++++ b/app/src/main/res/layout/activity_player.xml
+@@ -6,7 +6,7 @@
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:background="?attr/colorPrimary"
+-    tools:context=".PlayerActivity">
++    tools:context=".presentation.player.PlayerActivity">
+ 
+     <com.google.android.material.appbar.MaterialToolbar
+         android:id="@+id/player_toolbar"
+
+From 045624365eb33afc64141d3f28413e6430b9d788 Mon Sep 17 00:00:00 2001
+From: Denis <d-e-n-2011@yandex.ru>
+Date: Sun, 3 Aug 2025 14:54:14 +0300
+Subject: [PATCH 2/2] =?UTF-8?q?=D0=98=D1=81=D0=BF=D1=80=D0=B0=D0=B2=D0=BB?=
+ =?UTF-8?q?=D0=B5=D0=BD=D1=8B=20=D0=B7=D0=B0=D0=BC=D0=B5=D1=87=D0=B0=D0=BD?=
+ =?UTF-8?q?=D0=B8=D1=8F,=20=D0=B8=D1=81=D0=BF=D1=80=D0=B0=D0=B2=D0=BB?=
+ =?UTF-8?q?=D0=B5=D0=BD=20=D0=B1=D0=B0=D0=B3=20=D0=BF=D1=80=D0=B8=20=D0=B1?=
+ =?UTF-8?q?=D1=8B=D1=81=D1=82=D1=80=D0=BE=D0=BC=20=D1=81=D1=82=D0=B8=D1=80?=
+ =?UTF-8?q?=D0=B0=D0=BD=D0=B8=D0=B8=20=D1=82=D0=B5=D0=BA=D1=81=D1=82=D0=B0?=
+ =?UTF-8?q?=20=D0=BF=D0=BE=D0=B8=D1=81=D0=BA=D0=B0?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .../data/impl/DelayHandlerImpl.kt             | 20 --------
+ .../data/impl/ThemeRepositoryImpl.kt          |  2 +-
+ .../example/playlistmaker/domain/api/Delay.kt |  8 ---
+ .../domain/api/SearchHistoryInteractor.kt     |  4 +-
+ .../domain/api/TrackSearchInteractor.kt       |  7 +--
+ .../domain/entity/PlayerState.kt              | 10 ++--
+ .../impl/SearchHistoryInteractorImpl.kt       |  2 +-
+ .../domain/impl/TrackSearchInteractorImpl.kt  | 13 -----
+ .../presentation/player/PlayerActivity.kt     |  4 +-
+ .../presentation/search/SearchActivity.kt     | 51 +++++++++++++------
+ .../presentation/search/TrackAdapter.kt       |  2 +-
+ .../com/example/playlistmaker/util/Creator.kt |  9 +---
+ 12 files changed, 50 insertions(+), 82 deletions(-)
+ delete mode 100644 app/src/main/java/com/example/playlistmaker/data/impl/DelayHandlerImpl.kt
+ delete mode 100644 app/src/main/java/com/example/playlistmaker/domain/api/Delay.kt
+
+diff --git a/app/src/main/java/com/example/playlistmaker/data/impl/DelayHandlerImpl.kt b/app/src/main/java/com/example/playlistmaker/data/impl/DelayHandlerImpl.kt
+deleted file mode 100644
+index fdec059..0000000
+--- a/app/src/main/java/com/example/playlistmaker/data/impl/DelayHandlerImpl.kt
++++ /dev/null
+@@ -1,20 +0,0 @@
+-package com.example.playlistmaker.data.impl
+-
+-import android.os.Handler
+-import com.example.playlistmaker.domain.api.Delay
+-
+-class DelayHandlerImpl(private val handler: Handler) : Delay {
+-
+-    private var runnable: Runnable? = null
+-
+-    override fun postDelayed(interval: Long, callback: () -> Unit) {
+-
+-        runnable = Runnable { callback.invoke() }
+-        handler.postDelayed(runnable!!, interval)
+-    }
+-
+-    override fun stop() {
+-        runnable?.let { handler.removeCallbacks(it) }
+-        runnable = null
+-    }
+-}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/data/impl/ThemeRepositoryImpl.kt b/app/src/main/java/com/example/playlistmaker/data/impl/ThemeRepositoryImpl.kt
+index e57ec59..ecbea9a 100644
+--- a/app/src/main/java/com/example/playlistmaker/data/impl/ThemeRepositoryImpl.kt
++++ b/app/src/main/java/com/example/playlistmaker/data/impl/ThemeRepositoryImpl.kt
+@@ -3,7 +3,7 @@ package com.example.playlistmaker.data.impl
+ import android.content.SharedPreferences
+ import com.example.playlistmaker.domain.api.ThemeRepository
+ 
+-const val DARK_THEME_ENABLED = "dark_theme_enabled"
++private const val DARK_THEME_ENABLED = "dark_theme_enabled"
+ 
+ class ThemeRepositoryImpl(private val prefs: SharedPreferences) : ThemeRepository {
+     override fun saveDarkThemeEnabled(enabled: Boolean) {
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/api/Delay.kt b/app/src/main/java/com/example/playlistmaker/domain/api/Delay.kt
+deleted file mode 100644
+index eb8c493..0000000
+--- a/app/src/main/java/com/example/playlistmaker/domain/api/Delay.kt
++++ /dev/null
+@@ -1,8 +0,0 @@
+-package com.example.playlistmaker.domain.api
+-
+-interface Delay {
+-
+-    fun postDelayed(interval: Long, callback: () -> Unit)
+-
+-    fun stop()
+-}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/api/SearchHistoryInteractor.kt b/app/src/main/java/com/example/playlistmaker/domain/api/SearchHistoryInteractor.kt
+index 7436d27..519e835 100644
+--- a/app/src/main/java/com/example/playlistmaker/domain/api/SearchHistoryInteractor.kt
++++ b/app/src/main/java/com/example/playlistmaker/domain/api/SearchHistoryInteractor.kt
+@@ -1,6 +1,8 @@
+ package com.example.playlistmaker.domain.api
+ 
+-interface SearchHistoryInteractor<Track> {
++import com.example.playlistmaker.domain.entity.Track
++
++interface SearchHistoryInteractor {
+ 
+     fun saveTrackToHistory(track: Track)
+ 
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/api/TrackSearchInteractor.kt b/app/src/main/java/com/example/playlistmaker/domain/api/TrackSearchInteractor.kt
+index 7b0b742..34b1ff9 100644
+--- a/app/src/main/java/com/example/playlistmaker/domain/api/TrackSearchInteractor.kt
++++ b/app/src/main/java/com/example/playlistmaker/domain/api/TrackSearchInteractor.kt
+@@ -5,9 +5,4 @@ import com.example.playlistmaker.domain.consumer.TrackConsumer
+ interface TrackSearchInteractor {
+ 
+     fun searchTracks(expression: String, consumer: TrackConsumer)
+-
+-    fun searchTracksDebounce(expression: String, consumer: TrackConsumer)
+-
+-    fun removeSearchCallbacks()
+-
+-}
+\ No newline at end of file
++}
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/entity/PlayerState.kt b/app/src/main/java/com/example/playlistmaker/domain/entity/PlayerState.kt
+index 900b8ee..1ac0589 100644
+--- a/app/src/main/java/com/example/playlistmaker/domain/entity/PlayerState.kt
++++ b/app/src/main/java/com/example/playlistmaker/domain/entity/PlayerState.kt
+@@ -1,8 +1,8 @@
+ package com.example.playlistmaker.domain.entity
+ 
+-sealed class PlayerState {
+-    data object PLAYING : PlayerState()
+-    data object PAUSED : PlayerState()
+-    data object PREPARED: PlayerState()
+-    data object DEFAULT: PlayerState()
++sealed interface PlayerState {
++    data object PLAYING : PlayerState
++    data object PAUSED : PlayerState
++    data object PREPARED : PlayerState
++    data object DEFAULT : PlayerState
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/impl/SearchHistoryInteractorImpl.kt b/app/src/main/java/com/example/playlistmaker/domain/impl/SearchHistoryInteractorImpl.kt
+index a1c9eb9..eecbe66 100644
+--- a/app/src/main/java/com/example/playlistmaker/domain/impl/SearchHistoryInteractorImpl.kt
++++ b/app/src/main/java/com/example/playlistmaker/domain/impl/SearchHistoryInteractorImpl.kt
+@@ -7,7 +7,7 @@ import com.example.playlistmaker.domain.entity.Track
+ import com.example.playlistmaker.domain.mapper.TrackToDtoConverter
+ 
+ class SearchHistoryInteractorImpl(private val repository: SearchHistoryRepository) :
+-    SearchHistoryInteractor<Track> {
++    SearchHistoryInteractor {
+ 
+     override fun saveTrackToHistory(track: Track) {
+         val dto = TrackToDtoConverter.convert(track)
+diff --git a/app/src/main/java/com/example/playlistmaker/domain/impl/TrackSearchInteractorImpl.kt b/app/src/main/java/com/example/playlistmaker/domain/impl/TrackSearchInteractorImpl.kt
+index 3741e3e..a247839 100644
+--- a/app/src/main/java/com/example/playlistmaker/domain/impl/TrackSearchInteractorImpl.kt
++++ b/app/src/main/java/com/example/playlistmaker/domain/impl/TrackSearchInteractorImpl.kt
+@@ -1,31 +1,18 @@
+ package com.example.playlistmaker.domain.impl
+ 
+-import com.example.playlistmaker.data.impl.DelayHandlerImpl
+ import com.example.playlistmaker.domain.api.TrackSearchInteractor
+ import com.example.playlistmaker.domain.api.TracksRepository
+ import com.example.playlistmaker.domain.consumer.TrackConsumer
+-import com.example.playlistmaker.util.Creator
+ import java.util.concurrent.Executors
+ 
+-const val SEARCH_DEBOUNCE_DELAY = 2000L
+-
+ class TrackSearchInteractorImpl(private val repository: TracksRepository) : TrackSearchInteractor {
+ 
+     private val executor = Executors.newSingleThreadExecutor()
+-    private val delay = DelayHandlerImpl(Creator.provideMainHandler())
+ 
+     override fun searchTracks(expression: String, consumer: TrackConsumer) {
+         executeSearchInNewThread(expression, consumer)
+     }
+ 
+-    override fun searchTracksDebounce(expression: String, consumer: TrackConsumer) {
+-        delay.postDelayed(SEARCH_DEBOUNCE_DELAY) { executeSearchInNewThread(expression, consumer) }
+-    }
+-
+-    override fun removeSearchCallbacks() {
+-        delay.stop()
+-    }
+-
+     private fun executeSearchInNewThread(expression: String, consumer: TrackConsumer) {
+         executor.execute {
+             val result = repository.searchTracks(expression)
+diff --git a/app/src/main/java/com/example/playlistmaker/presentation/player/PlayerActivity.kt b/app/src/main/java/com/example/playlistmaker/presentation/player/PlayerActivity.kt
+index ff47f1f..8c7acdf 100644
+--- a/app/src/main/java/com/example/playlistmaker/presentation/player/PlayerActivity.kt
++++ b/app/src/main/java/com/example/playlistmaker/presentation/player/PlayerActivity.kt
+@@ -139,7 +139,7 @@ class PlayerActivity : AppCompatActivity() {
+     }
+ 
+     companion object {
+-        const val TIME_REFRESH_DELAY = 300L
+-        const val LISTENING_TIME_DEFAULT = 0
++        private const val TIME_REFRESH_DELAY = 300L
++        private const val LISTENING_TIME_DEFAULT = 0
+     }
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/presentation/search/SearchActivity.kt b/app/src/main/java/com/example/playlistmaker/presentation/search/SearchActivity.kt
+index 944463f..fb7f745 100644
+--- a/app/src/main/java/com/example/playlistmaker/presentation/search/SearchActivity.kt
++++ b/app/src/main/java/com/example/playlistmaker/presentation/search/SearchActivity.kt
+@@ -44,6 +44,7 @@ class SearchActivity : AppCompatActivity() {
+ 
+             when (result) {
+                 is Resource.Error -> {
++                    hideSearchResults()
+                     showSearchPlaceholder(CONNECTION_ISSUES)
+                 }
+ 
+@@ -51,8 +52,10 @@ class SearchActivity : AppCompatActivity() {
+                     searchResultsList.clear()
+                     searchResultsList.addAll(result.results)
+                     searchResultsAdapter.notifyDataSetChanged()
++                    showSearchResults()
+ 
+                     if (searchResultsList.isEmpty()) {
++                        hideSearchResults()
+                         showSearchPlaceholder(NOTHING_FOUND)
+                     }
+                 }
+@@ -60,6 +63,11 @@ class SearchActivity : AppCompatActivity() {
+         }
+     }
+ 
++    private val searchRunnable = Runnable {
++        showProgressBar()
++        trackSearchInteractor.searchTracks(searchSavedInput, trackSearchConsumer)
++    }
++
+     private lateinit var searchResultsAdapter: TrackAdapter
+     private lateinit var searchHistoryAdapter: TrackAdapter
+ 
+@@ -120,24 +128,16 @@ class SearchActivity : AppCompatActivity() {
+                 if (searchInput.hasFocus()) {
+ 
+                     if (s?.isEmpty() == true) {
++                        handler.removeCallbacks(searchRunnable)
+                         searchResultsList.clear()
+                         searchResultsAdapter.notifyDataSetChanged()
++                        hideSearchResults()
+                         showSearchHistory()
+ 
+                     } else {
+                         hideSearchHistory()
+                         searchSavedInput = s.toString()
+-
+-                        if (searchResultsList.isNotEmpty()) {
+-                            searchResultsList.clear()
+-                            searchResultsAdapter.notifyDataSetChanged()
+-                        }
+-                        showProgressBar()
+-                        trackSearchInteractor.searchTracksDebounce(
+-                            searchSavedInput,
+-                            trackSearchConsumer
+-                        )
+-
++                        searchDebounce()
+                     }
+                 }
+             }
+@@ -148,15 +148,17 @@ class SearchActivity : AppCompatActivity() {
+         searchInput.addTextChangedListener(textWatcher)
+         searchInput.setOnFocusChangeListener { _, hasFocus ->
+             if (hasFocus && searchInput.text.isEmpty()) {
++                hideSearchResults()
+                 showSearchHistory()
+             } else hideSearchHistory()
+         }
+ 
+         clearEditTextButton.setOnClickListener {
+-            trackSearchInteractor.removeSearchCallbacks()
++            handler.removeCallbacks(searchRunnable)
+             searchInput.text.clear()
+             searchResultsList.clear()
+             searchResultsAdapter.notifyDataSetChanged()
++            hideSearchResults()
+ 
+ 
+             val inputMethodManager =
+@@ -200,6 +202,14 @@ class SearchActivity : AppCompatActivity() {
+         searchHistoryAdapter.notifyDataSetChanged()
+     }
+ 
++    private fun searchDebounce() {
++        if (searchSavedInput.isEmpty()) {
++            return
++        } else {
++            handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
++        }
++    }
++
+     @SuppressLint("NotifyDataSetChanged")
+     private fun showSearchPlaceholder(reason: Int) {
+         hideSearchHistory()
+@@ -253,6 +263,14 @@ class SearchActivity : AppCompatActivity() {
+         clearHistoryButton.isGone = true
+     }
+ 
++    private fun showSearchResults() {
++        searchResultsRecyclerView.isVisible = true
++    }
++
++    private fun hideSearchResults() {
++        searchResultsRecyclerView.isGone = true
++    }
++
+     private fun hideSearchPlaceholders() {
+         placeHolderImg.isGone = true
+         placeHolderText.isGone = true
+@@ -268,9 +286,10 @@ class SearchActivity : AppCompatActivity() {
+     }
+ 
+     companion object {
+-        const val SAVED_INPUT = "SAVED_INPUT"
+-        const val INPUT_DEF = ""
+-        const val NOTHING_FOUND: Int = 0
+-        const val CONNECTION_ISSUES: Int = -1
++        private const val SAVED_INPUT = "SAVED_INPUT"
++        private const val INPUT_DEF = ""
++        private const val NOTHING_FOUND: Int = 0
++        private const val CONNECTION_ISSUES: Int = -1
++        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+     }
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/playlistmaker/presentation/search/TrackAdapter.kt b/app/src/main/java/com/example/playlistmaker/presentation/search/TrackAdapter.kt
+index 4102100..f2fa0cc 100644
+--- a/app/src/main/java/com/example/playlistmaker/presentation/search/TrackAdapter.kt
++++ b/app/src/main/java/com/example/playlistmaker/presentation/search/TrackAdapter.kt
+@@ -14,7 +14,7 @@ import com.example.playlistmaker.presentation.player.PlayerActivity
+ 
+ class TrackAdapter(
+     private val tracks: MutableList<Track>,
+-    private val searchHistoryInteractor: SearchHistoryInteractor<Track>
++    private val searchHistoryInteractor: SearchHistoryInteractor
+ ) : RecyclerView.Adapter<TrackViewHolder>() {
+     private var isClickAllowed = true
+     private val handler = Handler(Looper.getMainLooper())
+diff --git a/app/src/main/java/com/example/playlistmaker/util/Creator.kt b/app/src/main/java/com/example/playlistmaker/util/Creator.kt
+index d92b6e2..f681a48 100644
+--- a/app/src/main/java/com/example/playlistmaker/util/Creator.kt
++++ b/app/src/main/java/com/example/playlistmaker/util/Creator.kt
+@@ -3,8 +3,6 @@ package com.example.playlistmaker.util
+ import android.app.Application
+ import android.content.Context.MODE_PRIVATE
+ import android.content.SharedPreferences
+-import android.os.Handler
+-import android.os.Looper
+ import com.example.playlistmaker.data.impl.SearchHistoryRepositoryImpl
+ import com.example.playlistmaker.data.network.RetrofitNetworkClient
+ import com.example.playlistmaker.data.impl.TracksRepositoryImpl
+@@ -19,7 +17,6 @@ import com.example.playlistmaker.domain.api.ThemeInteractor
+ import com.example.playlistmaker.domain.api.ThemeRepository
+ import com.example.playlistmaker.domain.api.TrackSearchInteractor
+ import com.example.playlistmaker.domain.api.TracksRepository
+-import com.example.playlistmaker.domain.entity.Track
+ import com.example.playlistmaker.domain.impl.AudioPlayerInteractorImpl
+ import com.example.playlistmaker.domain.impl.SearchHistoryInteractorImpl
+ import com.example.playlistmaker.domain.impl.ThemeInteractorImpl
+@@ -35,17 +32,13 @@ object Creator {
+         this.application = application
+     }
+ 
+-    fun provideMainHandler(): Handler {
+-        return Handler(Looper.getMainLooper())
+-    }
+-
+     //Interactors
+     //
+     fun provideTrackSearchInteractor(): TrackSearchInteractor {
+         return TrackSearchInteractorImpl(getTracksRepository())
+     }
+ 
+-    fun provideSearchHistoryInteractor(): SearchHistoryInteractor<Track> {
++    fun provideSearchHistoryInteractor(): SearchHistoryInteractor {
+         return SearchHistoryInteractorImpl(getHistoryRepository())
+     }
+ 

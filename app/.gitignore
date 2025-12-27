@@ -1,11 +1,1 @@
-.DS_Store
-.idea/
-.gradle/
 /build
-*.class
-*.apk
-app/release/*
-local.properties
-*.keystore
-vcs.xml
-#.gitignore

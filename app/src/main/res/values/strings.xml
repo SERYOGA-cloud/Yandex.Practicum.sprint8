@@ -1,43 +1,43 @@
 <resources>
-    <string name="app_name" translatable="false">Playlist Maker</string>
+    <string name="app_name">Playlist Maker</string>
+    <string name="search">Поиск</string>
+    <string name="mediateka">Медиатека</string>
+    <string name="setting">Настройки</string>
+    <string name="dark_theme">Темная тема</string>
+    <string name="share_app">Поделиться приложением</string>
+    <string name="text_support">Написать в поддержку</string>
+    <string name="user_agreement">Пользовательское соглашение</string>
+    <string name="android_dev_course_link">https://practicum.yandex.ru/android-developer/</string>
+    <string name="support_email_address">d-e-n-2010@mail.ru</string>
+    <string name="support_email_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="support_email_text">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="user_agreement_link">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="nothing_found">Ничего не нашлось</string>
+    <string name="connection_issues">Проблемы со связью</string>
+    <string name="load_failed_check_connection">Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="error_player_not_prepared">Ошибка, плеер не подготовлен</string>
+    <string name="error_missing_link_to_track_preview">Ошибка. Отсутствует ссылка на отрывок трека</string>
+    <string name="reload">Обновить</string>
+    <string name="you_searched">Вы искали</string>
+    <string name="clear_history">Очистить историю</string>
+    <string name="track_time">Длительность</string>
+    <string name="album_name">Альбом</string>
+    <string name="year">Год</string>
+    <string name="genre">Жанр</string>
+    <string name="country">Страна</string>
     <string name="header_one">Вопрос:</string>
-    <string name="value_one" translatable="false">2/10</string>
-    <string name="question">Рейтинг этого фильма больше, чем 9?</string>
+    <string name="question">Этот фильм имеет рейтинг выше 9?</string>
     <string name="no">Нет</string>
     <string name="yes">Да</string>
-    <string name="panel_header" translatable="false">Playlist maker</string>
-    <string name="search">Поиск</string>
     <string name="media">Медиатека</string>
-    <string name="setting">Настройки</string>
     <string name="light_theme">Светлая тема</string>
-    <string name="dark_theme">Темная тема</string>
-    <string name="header_share">Поделиться приложением</string>
+    <string name="header_share">Поделиться</string>
     <string name="header_support">Написать в поддержку</string>
     <string name="header_agreement">Пользовательское соглашение</string>
-    <string name="uri_yandex_course" translatable="false">https://practicum.yandex.ru/catalog/programming/</string>
-    <string name="default_user" translatable="false">DefaultUser</string>
-    <string name="email" translatable="false">example@example.example</string>
-    <string name="email_title" translatable="false">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
-    <string name="email_text" translatable="false">Спасибо разработчикам и разработчицам за крутое приложение!</string>
-    <string name="uri_agreement" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
-    <string name="input_clear" translatable="false">Очистить</string>
-    <string name="name_track" translatable="false">Название трека</string>
-    <string name="name_group" translatable="false">Группа</string>
-    <string name="inter_punctum" translatable="false">·</string>
-    <string name="length_track" translatable="false">длина трека</string>
-    <string name="track_selection" translatable="false">Выбор трека</string>
-    <string name="nothing_found" translatable="false">Ничего не нашлось</string>
-    <string name="communication_problems" translatable="false">Проблемы со связью\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
-    <string name="update" translatable="false">Обновить</string>
-    <string name="header_search" translatable="false">Вы искали</string>
-    <string name="clear_search_history" translatable="false">Очистить историю</string>
-    <string name="time_track" translatable="false">0:00</string>
-    <string name="header_length_track" translatable="false">Длительность</string>
-    <string name="header_album" translatable="false">Альбом</string>
-    <string name="name_album" translatable="false">Название альбома</string>
-    <string name="header_year_album" translatable="false">Год</string>
-    <string name="default_string" translatable="false">—</string>
-    <string name="header_genre" translatable="false">Жанр</string>
-    <string name="header_country" translatable="false">Страна</string>
-    <string name="time_track_reverse">0:30</string>
+    <string name="settings">Настройки</string>
+    <string name="name_track">Название трека</string>
+    <string name="name_group">Исполнитель</string>
+    <string name="length_track">00:00</string>
+    <string name="inter_punctum"> • </string>
+
 </resources>

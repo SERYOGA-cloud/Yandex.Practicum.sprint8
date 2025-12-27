@@ -2,153 +2,77 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.ui.activity.SearchActivity">
+    android:background="?attr/colorPrimary"
+    android:orientation="vertical">
 
-    <!--    Используемые иллюстрации (иконки) и шрифты в образовательных целях предоставлены Яндекс-Практикумом (practicum.yandex.ru)-->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_56"
-        android:padding="@dimen/dimen_4">
+    <!-- Заголовок -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/search_toolbar"
+        style="@style/ScreenTitle"
+        android:layout_marginBottom="@dimen/search_toolbar_margin_bottom"
+        app:navigationIcon="@drawable/icon_arrow_back"
+        app:title="@string/search"
+        app:titleTextAppearance="@style/TitleTextAppearance" />
 
-        <ImageView
-            android:id="@+id/button_back"
-            android:layout_width="@dimen/dimen_48"
-            android:layout_height="@dimen/dimen_48"
-            app:srcCompat="@drawable/ic_back"
-            style="@style/ImageButtonSettingHeader"/>
-
-        <TextView
-            android:id="@+id/panel_header"
-            android:text="@string/search"
-            style="@style/TextViewSettingHeader"/>
-    </FrameLayout>
-
+    <!-- Окно поиска -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dimen_8">
+        android:layout_marginHorizontal="@dimen/horizontal_margin"
+        android:layout_marginBottom="@dimen/search_bar_margin_bottom">
 
         <EditText
-            android:id="@+id/input_search"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_36"
-            android:ems="10"
-            android:lines="1"
-            android:layout_marginHorizontal="@dimen/dimen_8"
-            android:background="@drawable/shape_edit_text"
-            android:inputType="text"
+            android:id="@+id/edit_text_search"
+            style="@style/SearchEditText"
             android:hint="@string/search"
-            android:fontFamily="@font/ys_display_regular"
-            android:textFontWeight="400"
-            android:drawableStart="@drawable/ic_search_small"
-            android:paddingStart="@dimen/dimen_12"
-            android:textSize="@dimen/dimen_16s"
-            style="@style/EditTextSearch"
-            android:drawablePadding="@dimen/dimen_8"
-            tools:ignore="RtlSymmetry"
             android:imeOptions="actionDone"
-            android:singleLine="true"/>
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:singleLine="true" />
 
         <ImageView
-            android:id="@+id/button_clear"
-            android:layout_width="@dimen/dimen_16"
-            android:layout_height="@dimen/dimen_16"
-            android:layout_gravity="center_vertical|end"
-            android:layout_marginEnd="@dimen/dimen_24"
-            android:background="@drawable/shape_edit_text"
-            app:srcCompat="@drawable/ic_clear"
-            android:visibility="gone" />
+            android:id="@+id/search_edit_text_clear_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:foreground="?attr/selectableItemBackground"
+            android:paddingHorizontal="@dimen/search_x_horizontal_padding"
+            android:src="@drawable/icon_x"
+            android:visibility="gone"
+            app:tint="?attr/colorOnPrimaryFixedVariant"
+            tools:ignore="ContentDescription" />
 
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/track_list"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dimen_16"
-        android:visibility="visible"/>
-    
-    <ProgressBar
-        android:id="@+id/loading_time"
-        android:layout_width="@dimen/dimen_44"
-        android:layout_height="@dimen/dimen_44"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dimen_140"
-        android:indeterminateTint="@color/progress_blue"
-        android:visibility="gone"/>
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/layout_search_history"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/dimen_24"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/header_search"
-            style="@style/TextViewHeaderSearchColor"
-            android:layout_marginTop="@dimen/dimen_18"
+        <ProgressBar
+            android:id="@+id/progress_circular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/progress_bar_margin_top"
             android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:text="@string/header_search" />
+            android:indeterminateTint="@color/blue"
+            android:visibility="gone" />
 
+        <!-- Список с результатами поиска -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/search_history_track_list"
+            android:id="@+id/search_results_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="@dimen/dimen_8" />
-
-        <Button
-            android:id="@+id/button_clear_search_history"
-            style="@style/ButtonClearSearchHistory"
-            android:text="@string/clear_search_history"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_nothing_found"
-        style="@style/LayoutStyle"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_nothing_found" />
+            android:nestedScrollingEnabled="false" />
 
-        <TextView
-            android:id="@+id/textView2"
-            style="@style/TextPlaceHolder"
-            android:text="@string/nothing_found" />
+        <!-- Список с историей поиска -->
+        <include layout="@layout/search_history_layout" />
 
-    </LinearLayout>
+        <!-- Заглушка -->
+        <include layout="@layout/search_placeholder_layout" />
 
-    <LinearLayout
-        android:id="@+id/layout_communication_problems"
-        style="@style/LayoutStyle"
-        android:visibility="gone">
+    </FrameLayout>
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_communication_problems" />
-
-        <TextView
-            android:id="@+id/textView3"
-            style="@style/TextPlaceHolder"
-            android:text="@string/communication_problems" />
-
-        <Button
-            android:id="@+id/button_update"
-            style="@style/ButtonPlaceHolder"
-            android:text="@string/update" />
-    </LinearLayout>
 
 </LinearLayout>
