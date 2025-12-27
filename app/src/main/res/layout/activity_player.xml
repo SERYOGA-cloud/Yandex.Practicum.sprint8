@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
-    tools:context=".presentation.player.PlayerActivity">
+    tools:context=".player.ui.activity.PlayerActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/player_toolbar"
