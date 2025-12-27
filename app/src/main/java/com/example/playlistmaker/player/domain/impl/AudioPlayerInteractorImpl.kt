@@ -8,8 +8,12 @@ import com.example.playlistmaker.util.Util.Companion.millisToMmSs
 
 class AudioPlayerInteractorImpl(
     private val repository: AudioPlayerRepository,
-    private val listener: PlayerStateListener
+    listener: PlayerStateListener
 ) : AudioPlayerInteractor {
+
+    init {
+        repository.setPlayerStateListener(listener)
+    }
 
     override fun onPlayButtonClicked(): PlayerState {
 
@@ -32,7 +36,6 @@ class AudioPlayerInteractorImpl(
 
     override fun pausePlayer() {
         repository.pausePlayer()
-        listener.onStateChanged(PlayerState.PAUSED)
     }
 
     override fun getCurrentPositionConverted(): String {
@@ -45,6 +48,5 @@ class AudioPlayerInteractorImpl(
 
     private fun startPlayer() {
         repository.startPlayer()
-        listener.onStateChanged(PlayerState.PLAYING)
     }
 }

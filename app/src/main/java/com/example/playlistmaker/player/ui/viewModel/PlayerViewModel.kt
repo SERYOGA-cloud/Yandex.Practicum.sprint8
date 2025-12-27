@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.player.domain.entity.PlayerState
+import com.example.playlistmaker.player.ui.entity.PlayerScreenState
 import com.example.playlistmaker.util.SingleLiveEvent
 
 class PlayerViewModel(url: String?) : ViewModel() {
@@ -27,27 +28,26 @@ class PlayerViewModel(url: String?) : ViewModel() {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.DEFAULT)
-    fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
-
-    private val progressTimeLiveData = MutableLiveData<String>()
-    fun observeProgressTime(): LiveData<String> = progressTimeLiveData
+    private val screenStateLiveData = MutableLiveData<PlayerScreenState>(PlayerScreenState.DEFAULT)
+    fun observeScreenState(): LiveData<PlayerScreenState> = screenStateLiveData
 
     private val errorMessageLiveData = SingleLiveEvent<String>()
     fun observeErrorMessage(): LiveData<String> = errorMessageLiveData
 
-    init {
-        progressTimeLiveData.postValue(PROGRESS_TIME_DEFAULT)
-    }
-
     private val playerInteractor = Creator.provideAudioPlayerInteractor(
         previewUrl = url,
-        onStateChangedListener = { playerStateLiveData.postValue(it) }
+        onStateChangedListener = { newPlayerState ->
+            val currentScreenState = screenStateLiveData.value ?: PlayerScreenState.DEFAULT
+            screenStateLiveData.value = currentScreenState.copy(playerState = newPlayerState)
+        }
     )
 
     private val timeRefreshRunnable = object : Runnable {
         override fun run() {
-            progressTimeLiveData.postValue(playerInteractor.getCurrentPositionConverted())
+            val currentPosition: String = playerInteractor.getCurrentPositionConverted()
+            val currentScreenState: PlayerScreenState =
+                screenStateLiveData.value ?: PlayerScreenState.DEFAULT
+            screenStateLiveData.value = currentScreenState.copy(currentPosition = currentPosition)
             handler.postDelayed(this, TIME_REFRESH_DELAY)
         }
 
@@ -89,6 +89,7 @@ class PlayerViewModel(url: String?) : ViewModel() {
 
     private fun resetTimer() {
         handler.removeCallbacks(timeRefreshRunnable)
-        progressTimeLiveData.postValue(PROGRESS_TIME_DEFAULT)
+        val currentScreenState = screenStateLiveData.value?: PlayerScreenState.DEFAULT
+        screenStateLiveData.value = currentScreenState.copy(currentPosition = PROGRESS_TIME_DEFAULT)
     }
 }

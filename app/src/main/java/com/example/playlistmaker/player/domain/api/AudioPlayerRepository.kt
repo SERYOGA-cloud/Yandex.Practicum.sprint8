@@ -14,4 +14,5 @@ interface AudioPlayerRepository {
 
     fun releasePlayer()
 
+    fun setPlayerStateListener(listener: PlayerStateListener)
 }

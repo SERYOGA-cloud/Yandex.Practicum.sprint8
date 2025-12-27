@@ -13,10 +13,7 @@ import com.example.playlistmaker.search.domain.entity.Track
 class TrackViewHolder(private val binding: TrackSearchItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    private var trackId: Int = -1
-
     fun bind(model: Track) {
-        trackId = model.trackId
         binding.trackName.text = model.trackName
         binding.artistName.text = model.artistName
         binding.trackTime.text = model.trackTimeConverted

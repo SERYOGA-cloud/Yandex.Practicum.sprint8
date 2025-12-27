@@ -28,12 +28,12 @@ class SearchViewModel : ViewModel() {
         handler.post {
             when (result) {
                 is Resource.Error -> {
-                    postState(SearchState.PlaceHolder.NetworkError)
+                    postState(SearchState.PlaceHolder.NetworkError())
                 }
 
                 is Resource.Success -> {
                     if (result.results.isEmpty()) {
-                        postState(SearchState.PlaceHolder.NothingFound)
+                        postState(SearchState.PlaceHolder.NothingFound())
                     } else {
                         postState(SearchState.SearchResults(result.results))
                     }
@@ -73,6 +73,10 @@ class SearchViewModel : ViewModel() {
     }
 
     private fun searchRequest(searchText: String) {
+        if (searchText.isEmpty()) {
+            updateState()
+            return
+        }
         postState(SearchState.Loading)
         trackSearchInteractor.searchTracks(searchText, trackSearchConsumer)
     }
@@ -87,7 +91,7 @@ class SearchViewModel : ViewModel() {
     }
 
     private fun postState(state: SearchState) {
-        searchStateLiveData.postValue(state)
+        searchStateLiveData.value = state
     }
 
     private fun updateState() {

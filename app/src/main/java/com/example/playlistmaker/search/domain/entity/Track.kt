@@ -1,5 +1,9 @@
 package com.example.playlistmaker.search.domain.entity
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Track(
     val trackId: Int,
     val trackName: String,
@@ -11,7 +15,7 @@ data class Track(
     val trackTimeConverted: String,
     val artworkUrl100: String,
     val previewUrl: String?
-) {
+) :Parcelable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Track) return false
