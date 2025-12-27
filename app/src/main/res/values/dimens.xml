@@ -44,4 +44,26 @@
     <dimen name="player_description_horizontal_padding">16dp</dimen>
     <dimen name="player_description_margin_top">30dp</dimen>
     <dimen name="progress_bar_margin_top">140dp</dimen>
+    <dimen name="dimen_2">2dp</dimen>
+    <dimen name="dimen_4">4dp</dimen>
+    <dimen name="dimen_6">6dp</dimen>
+    <dimen name="dimen_8">8dp</dimen>
+    <dimen name="dimen_9">9dp</dimen>
+    <dimen name="dimen_48">48dp</dimen>
+    <dimen name="dimen_56">56dp</dimen>
+    <dimen name="dimen_61">61dp</dimen>
+    <dimen name="dimen_50s">50dp</dimen>
+    <dimen name="dimen_11">11sp</dimen>
+    <dimen name="dimen_3">3dp</dimen>
+    <dimen name="dimen_5">5dp</dimen>
+    <dimen name="dimen_10">10dp</dimen>
+    <dimen name="dimen_12">12dp</dimen>
+    <dimen name="dimen_40">40dp</dimen>
+    <dimen name="dimen_32">32dp</dimen>
+    <dimen name="dimen_44">44dp</dimen>
+    <dimen name="dimen_45">45dp</dimen>
+    <dimen name="dimen_58">58dp</dimen>
+    <dimen name="dimen_11s">11sp</dimen>
+    <dimen name="dimen_16s">16sp</dimen>
+    <dimen name="dimen_24">24dp</dimen>
 </resources>

@@ -25,7 +25,8 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.consumer.TrackConsumer
 import com.example.playlistmaker.domain.entity.Resource
 import com.example.playlistmaker.domain.entity.Track
-import com.google.android.material.appbar.MaterialToolbar
+import android.view.View
+import android.view.WindowManager
 
 class SearchActivity : AppCompatActivity() {
 
@@ -36,6 +37,7 @@ class SearchActivity : AppCompatActivity() {
 
     private var searchSavedInput: String = INPUT_DEF
     private val searchResultsList = mutableListOf<Track>()
+    private val historyList = mutableListOf<Track>()
 
     @SuppressLint("NotifyDataSetChanged")
     private val trackSearchConsumer = TrackConsumer { result ->
@@ -80,21 +82,24 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchInput: EditText
     private lateinit var searchResultsRecyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
+    private lateinit var recyclerLayout: View
+    private lateinit var placeholderLayout: View
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        val toolbar: MaterialToolbar = findViewById(R.id.search_toolbar)
-        val clearEditTextButton: ImageView = findViewById(R.id.search_edit_text_clear_button)
-
-        progressBar = findViewById(R.id.progress_circular)
-
+        // views
         searchInput = findViewById(R.id.edit_text_search)
-        searchResultsRecyclerView = findViewById(R.id.search_results_recycler_view)
+        val clearEditTextButton: ImageView = findViewById(R.id.search_edit_text_clear_button)
+        progressBar = findViewById(R.id.progress_bar)
+
+        recyclerLayout = findViewById(R.id.recycler_view_layout)
+        placeholderLayout = findViewById(R.id.placeholder_layout)
+
+        searchResultsRecyclerView = recyclerLayout.findViewById(R.id.recycler_view)
 
         placeHolderImg = findViewById(R.id.search_placeholder_image)
         placeHolderText = findViewById(R.id.search_placeholder_text)
@@ -104,78 +109,64 @@ class SearchActivity : AppCompatActivity() {
         searchHistoryRecyclerView = findViewById(R.id.search_history_recycler_view)
         clearHistoryButton = findViewById(R.id.search_history_clear_button)
 
-        searchResultsRecyclerView.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        searchHistoryRecyclerView.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        // списки
+        searchResultsRecyclerView.layoutManager = LinearLayoutManager(this)
+        searchHistoryRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        searchHistoryAdapter =
-            TrackAdapter(searchHistoryInteractor.getHistoryList(), searchHistoryInteractor)
+        searchHistoryAdapter = TrackAdapter(historyList, searchHistoryInteractor)
         searchHistoryRecyclerView.adapter = searchHistoryAdapter
 
         searchResultsAdapter = TrackAdapter(searchResultsList, searchHistoryInteractor)
         searchResultsRecyclerView.adapter = searchResultsAdapter
 
-        hideSearchResults()
-        hideSearchPlaceholders()
-        showSearchHistory()
+        // убрать клавиатуру и фокус
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+        findViewById<View>(android.R.id.content).requestFocus()
 
-        toolbar.setNavigationOnClickListener {
-            finish()
+        // показать историю ПОСЛЕ первого layout-pass
+        searchHistoryView.post {
+            showSearchHistory()
         }
 
-        val textWatcher = object : TextWatcher {
+        // watcher
+        searchInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun afterTextChanged(s: Editable?) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearEditTextButton.isVisible = !s.isNullOrEmpty()
-                if (searchInput.hasFocus()) {
 
-                    if (s?.isEmpty() == true) {
-                        handler.removeCallbacks(searchRunnable)
-                        searchResultsList.clear()
-                        searchResultsAdapter.notifyDataSetChanged()
-                        hideSearchResults()
-                        showSearchHistory()
-
-                    } else {
-                        hideSearchHistory()
-                        searchSavedInput = s.toString()
-                        searchDebounce()
-                    }
+                if (s.isNullOrEmpty()) {
+                    handler.removeCallbacks(searchRunnable)
+                    searchResultsList.clear()
+                    searchResultsAdapter.notifyDataSetChanged()
+                    hideSearchResults()
+                    hideSearchPlaceholders()
+                    showSearchHistory()
+                } else {
+                    hideSearchHistory()
+                    hideSearchPlaceholders()
+                    searchSavedInput = s.toString()
+                    searchDebounce()
                 }
             }
+        })
 
-            override fun afterTextChanged(s: Editable?) {}
-        }
-
-        searchInput.addTextChangedListener(textWatcher)
-        searchInput.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && searchInput.text.isEmpty()) {
-                hideSearchResults()
-                showSearchHistory()
-            } else hideSearchHistory()
-        }
-
+        // очистка
         clearEditTextButton.setOnClickListener {
             handler.removeCallbacks(searchRunnable)
             searchInput.text.clear()
-            searchResultsList.clear()
-            searchResultsAdapter.notifyDataSetChanged()
-            hideSearchResults()
 
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(searchInput.windowToken, 0)
 
-            val inputMethodManager =
-                getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
-            if (currentFocus != null) {
-                inputMethodManager?.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
-            }
-            searchInput.clearFocus()
+            findViewById<View>(android.R.id.content).requestFocus()
             showSearchHistory()
         }
 
         clearHistoryButton.setOnClickListener {
             searchHistoryInteractor.clearHistory()
+            historyList.clear()
             searchHistoryAdapter.notifyDataSetChanged()
             hideSearchHistory()
         }
@@ -185,6 +176,7 @@ class SearchActivity : AppCompatActivity() {
             trackSearchInteractor.searchTracks(searchSavedInput, trackSearchConsumer)
         }
     }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -204,7 +196,13 @@ class SearchActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         super.onResume()
-        searchHistoryAdapter.notifyDataSetChanged()
+
+        searchInput.clearFocus()
+        findViewById<View>(android.R.id.content).requestFocus()
+
+        if (searchInput.text.isNullOrEmpty()) {
+            showSearchHistory()
+        }
     }
 
     private fun searchDebounce() {
@@ -218,6 +216,11 @@ class SearchActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     private fun showSearchPlaceholder(reason: Int) {
         hideSearchHistory()
+        hideSearchResults()
+
+        recyclerLayout.isGone = true
+        placeholderLayout.isVisible = true
+
         when (reason) {
             NOTHING_FOUND -> {
                 searchResultsList.clear()
@@ -232,11 +235,14 @@ class SearchActivity : AppCompatActivity() {
                 placeHolderText.setText(R.string.nothing_found)
                 placeHolderImg.isVisible = true
                 placeHolderText.isVisible = true
+                placeHolderTryAgainButton.isGone = true
             }
 
             CONNECTION_ISSUES -> {
                 val message =
-                    getString(R.string.connection_issues) + "\n\n" + getString(R.string.load_failed_check_connection)
+                    getString(R.string.connection_issues) + "\n\n" +
+                            getString(R.string.load_failed_check_connection)
+
                 searchResultsList.clear()
                 searchResultsAdapter.notifyDataSetChanged()
 
@@ -256,10 +262,20 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showSearchHistory() {
         val history = searchHistoryInteractor.getHistoryList()
-        if (history.isNotEmpty()) {
-            hideSearchPlaceholders()
+
+        historyList.clear()
+        historyList.addAll(history)
+        searchHistoryAdapter.notifyDataSetChanged()
+
+        placeholderLayout.isGone = true
+        recyclerLayout.isGone = true
+        searchHistoryView.isVisible = historyList.isNotEmpty()
+
+        if (historyList.isNotEmpty()) {
             searchHistoryView.isVisible = true
             clearHistoryButton.isVisible = true
+        } else {
+            hideSearchHistory()
         }
     }
 
@@ -269,17 +285,17 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showSearchResults() {
-        searchResultsRecyclerView.isVisible = true
+        placeholderLayout.isGone = true
+        searchHistoryView.isGone = true
+        recyclerLayout.isVisible = true
     }
 
     private fun hideSearchResults() {
-        searchResultsRecyclerView.isGone = true
+        recyclerLayout.isGone = true
     }
 
     private fun hideSearchPlaceholders() {
-        placeHolderImg.isGone = true
-        placeHolderText.isGone = true
-        placeHolderTryAgainButton.isGone = true
+        placeholderLayout.isGone = true
     }
 
     private fun showProgressBar() {

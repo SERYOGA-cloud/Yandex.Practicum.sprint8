@@ -8,4 +8,13 @@
     <color name="light_grey">#E6E8EB</color>
     <color name="dark_grey">#9FBBF3</color>
     <color name="yellow">#FCD452</color>
+    <color name="grey_100">#AEAFB4</color>
+    <color name="blue_100">#3772E7</color>
+    <color name="blue_500">#3772E7</color>
+    <color name="grey_50">#F5F5F5</color>
+    <color name="grey_70">#E0E0E0</color>
+    <color name="grey_500">#9E9E9E</color>
+    <color name="grey_700">#616161</color>
+    <color name="violet_100">#EDE7F6</color>
+    <color name="violet_500">#7C4DFF</color>
 </resources>

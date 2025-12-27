@@ -60,6 +60,13 @@ class TrackAdapter(
         return current
     }
 
+    @Suppress("NotifyDataSetChanged")
+    fun submitList(newTracks: List<Track>) {
+        tracks.clear()
+        tracks.addAll(newTracks)
+        notifyDataSetChanged()
+    }
+
     companion object {
         const val CLICK_DEBOUNCE_DELAY = 1000L
     }

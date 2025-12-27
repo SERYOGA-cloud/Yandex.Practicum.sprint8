@@ -25,4 +25,20 @@
     <string name="year">Год</string>
     <string name="genre">Жанр</string>
     <string name="country">Страна</string>
+    <string name="header_agreement">Terms of use</string>
+    <string name="header_one">Question:</string>
+    <string name="header_share">Share app</string>
+    <string name="header_support">Write to support</string>
+    <string name="light_theme">Light theme</string>
+    <string name="media">Media library</string>
+    <string name="no">No</string>
+    <string name="question">Is this movie rated more than 9?</string>
+    <string name="setting">Settings</string>
+    <string name="yes">Yes</string>
+    <string name="name_track">Track</string>
+    <string name="name_group">Artist</string>
+    <string name="inter_punctum"> • </string>
+    <string name="length_track">00:00</string>
+    <string name="connection_issues">Проблемы со связью</string>
+    <string name="load_failed_check_connection">Загрузка не удалась. Проверьте подключение к интернету</string>
 </resources>

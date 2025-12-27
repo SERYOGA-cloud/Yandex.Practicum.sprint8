@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/search_history_view_group"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:visibility="gone">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <!-- "Вы искали" -->
     <TextView
         android:id="@+id/you_searched_text"
         android:layout_width="match_parent"
@@ -21,14 +20,12 @@
         android:textColor="?attr/colorOnPrimary"
         android:textSize="@dimen/text_size_medium" />
 
-    <!-- Список треков -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!-- Кнопка "Очистить историю" -->
     <Button
         android:id="@+id/history_clear_button"
         android:layout_width="wrap_content"
