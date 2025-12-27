@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+В<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="header_one">Question:</string>
     <string name="question">Is this movie rated more than 9?</string>

@@ -5,350 +5,240 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.PlayerActivity">
+    android:background="?attr/colorPrimary"
+    tools:context=".presentation.player.PlayerActivity">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_start_one"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="@dimen/dimen_24" />
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/player_toolbar"
+        style="@style/ScreenTitle"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/icon_arrow_back" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_end_one"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/dimen_24" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_start_two"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="@dimen/dimen_16" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_end_two"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/dimen_16" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.00481" />
-
+    <!-- Обложка -->
     <ImageView
-        android:id="@+id/button_back"
-        style="@style/ImageButtonSettingHeader"
+        android:id="@+id/album_cover"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="w,1:1"
-        android:layout_marginStart="@dimen/dimen_4"
-        android:foreground="?attr/selectableItemBackground"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_vertical_2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline_vertical_1"
-        app:srcCompat="@drawable/ic_back" />
+        android:layout_marginTop="@dimen/player_album_cover_margin_top"
+        android:importantForAccessibility="no"
+        android:src="@drawable/album_placeholder"
+        app:layout_constraintBottom_toTopOf="@id/track_name"
+        app:layout_constraintDimensionRatio="h, 1:1"
+        app:layout_constraintEnd_toStartOf="@id/right_border"
+        app:layout_constraintStart_toEndOf="@id/left_border"
+        app:layout_constraintTop_toBottomOf="@id/player_toolbar" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.06250" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical_3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.09856" />
-
-    <ImageView
-        android:id="@+id/cover"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        app:layout_constrainedWidth="true"
-        app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_vertical_4"
-        app:layout_constraintDimensionRatio="w,1:1"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end_one"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start_one"
-        app:layout_constraintTop_toTopOf="@+id/guideline_vertical_3"
-        app:srcCompat="@drawable/ic_placeholder" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical_4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.47356" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical_5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.50240" />
-
+    <!-- Название песни -->
     <TextView
         android:id="@+id/track_name"
-        style="@style/TextViewYSMediumOneTheme"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="2"
-        app:layout_constraintStart_toStartOf="@id/guideline_start_one"
-        app:layout_constraintEnd_toStartOf="@id/guideline_end_one"
-        app:layout_constraintTop_toTopOf="@id/guideline_vertical_5"
-        app:layout_constraintBottom_toTopOf="@id/guideline_vertical_6" />
+        android:layout_marginTop="@dimen/player_track_name_margin_top"
+        android:fontFamily="@font/ys_display_medium"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="@dimen/text_size_large"
+        app:layout_constraintEnd_toStartOf="@id/right_border"
+        app:layout_constraintStart_toEndOf="@id/left_border"
+        app:layout_constraintTop_toBottomOf="@id/album_cover" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical_6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.53365" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical_7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.54808" />
-
+    <!-- Имя исполнителя -->
     <TextView
         android:id="@+id/artist_name"
-        style="@style/TextViewYSMediumTwoTheme"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/name_group"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_vertical_8"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end_one"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start_one"
-        app:layout_constraintTop_toTopOf="@+id/guideline_vertical_7" />
+        android:layout_marginTop="@dimen/player_artist_name_margin_top"
+        android:fontFamily="@font/ys_display_medium"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="@dimen/text_size_small"
+        app:layout_constraintEnd_toStartOf="@id/right_border"
+        app:layout_constraintStart_toEndOf="@id/left_border"
+        app:layout_constraintTop_toBottomOf="@id/track_name" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical_8"
+    <!-- Кнопка "добавить" -->
+    <ImageButton
+        android:id="@+id/add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.56731" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical_9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.60337" />
-
-    <ImageButton
-        android:id="@+id/button_add"
-        android:layout_width="@dimen/dimen_51"
-        android:layout_height="@dimen/dimen_51"
-        android:background="@drawable/shape_btn_add"
-        android:elevation="@dimen/dimen_2"
-        android:foreground="?attr/selectableItemBackground"
-        android:scaleType="center"
-        app:layout_constraintBottom_toBottomOf="@+id/button_play_pause"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start_one"
-        app:layout_constraintTop_toTopOf="@+id/button_play_pause"
-        app:srcCompat="@drawable/ic_add" />
-
-    <ImageButton
-        android:id="@+id/button_play_pause"
-        android:enabled="false"
-        android:layout_width="@dimen/dimen_100"
-        android:layout_height="@dimen/dimen_100"
         android:background="@null"
-        android:backgroundTint="@null"
-        android:elevation="@dimen/dimen_4"
-        android:foreground="?attr/selectableItemBackground"
-        android:scaleType="center"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_vertical_10"
-        app:layout_constraintEnd_toStartOf="@+id/button_like"
-        app:layout_constraintStart_toEndOf="@+id/button_add"
-        app:layout_constraintTop_toTopOf="@+id/guideline_vertical_9"
-        app:srcCompat="@drawable/ic_play" />
+        android:importantForAccessibility="no"
+        android:src="@drawable/button_plus"
+        app:layout_constraintBottom_toTopOf="@id/play_button"
+        app:layout_constraintEnd_toStartOf="@id/play_button"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/left_border"
+        app:layout_constraintTop_toBottomOf="@id/play_button" />
 
+    <!-- Кнопка "стоп-плей" -->
     <ImageButton
-        android:id="@+id/button_like"
-        android:layout_width="@dimen/dimen_51"
-        android:layout_height="@dimen/dimen_51"
-        android:background="@drawable/shape_btn_add"
-        android:elevation="@dimen/dimen_2"
-        android:foreground="?attr/selectableItemBackground"
-        android:scaleType="center"
-        app:layout_constraintBottom_toBottomOf="@+id/button_play_pause"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end_one"
-        app:layout_constraintTop_toTopOf="@+id/button_play_pause"
-        app:srcCompat="@drawable/ic_like" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical_10"
+        android:id="@+id/play_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.72356" />
+        android:layout_marginTop="@dimen/player_play_button_margin_top"
+        android:background="@null"
+        android:importantForAccessibility="no"
+        android:src="@drawable/button_play"
+        app:layout_constraintBottom_toTopOf="@id/listening_time"
+        app:layout_constraintEnd_toStartOf="@id/like_button"
+        app:layout_constraintStart_toEndOf="@id/add_button"
+        app:layout_constraintTop_toBottomOf="@id/artist_name" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical_11"
+    <!-- Кнопка "лайк" -->
+    <ImageButton
+        android:id="@+id/like_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.72837" />
-
-    <TextView
-        android:id="@+id/time_track"
-        style="@style/TextViewYSMediumTimeTrack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/time_track"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_vertical_12"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end_one"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start_one"
-        app:layout_constraintTop_toTopOf="@+id/guideline_vertical_11" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical_12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.74760" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical_13"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.79447" />
+        android:background="@null"
+        android:importantForAccessibility="no"
+        android:src="@drawable/button_like"
+        app:layout_constraintBottom_toTopOf="@id/play_button"
+        app:layout_constraintEnd_toStartOf="@id/right_border"
+        app:layout_constraintStart_toEndOf="@id/play_button"
+        app:layout_constraintTop_toBottomOf="@id/play_button" />
 
     <TextView
-        android:id="@+id/header_length_track"
-        style="@style/TextViewYSMediumThreeHeader"
+        android:id="@+id/listening_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/header_length_track"
+        android:layout_marginTop="@dimen/player_listening_time_margin_top"
+        android:fontFamily="@font/ys_display_medium"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="@dimen/text_size_small"
+        app:layout_constraintEnd_toStartOf="@id/right_border"
+        app:layout_constraintStart_toEndOf="@id/left_border"
+        app:layout_constraintTop_toBottomOf="@id/play_button" />
+
+    <!-- Длительность трека -->
+    <TextView
+        android:id="@+id/track_time_text"
+        style="@style/PlayerDescriptionItemsLeftColumn"
+        android:layout_marginTop="@dimen/player_description_margin_top"
+        android:text="@string/track_time"
+        app:layout_constraintBottom_toTopOf="@id/album_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTag="duration_text"
+        app:layout_constraintTop_toBottomOf="@id/listening_time"
         app:layout_constraintVertical_chainStyle="spread_inside"
-        app:layout_constraintBottom_toTopOf="@+id/header_album_name"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start_two"
-        app:layout_constraintTop_toTopOf="@+id/guideline_vertical_13" />
+        tools:ignore="RtlSymmetry" />
 
     <TextView
-        android:id="@+id/track_length"
-        style="@style/TextViewYSMediumThreeTheme"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/default_string"
-        app:layout_constraintBottom_toBottomOf="@+id/header_length_track"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end_two"
-        app:layout_constraintTop_toTopOf="@+id/header_length_track" />
+        android:id="@+id/track_time"
+        style="@style/PlayerDescriptionItemsRightColumn"
+        app:layout_constraintBottom_toBottomOf="@id/track_time_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/text_barrier"
+        app:layout_constraintTop_toTopOf="@id/track_time_text"
+        tools:ignore="RtlSymmetry" />
+
+    <!-- Название альбома -->
+    <TextView
+        android:id="@+id/album_text"
+        style="@style/PlayerDescriptionItemsLeftColumn"
+        android:text="@string/album_name"
+        app:layout_constraintBottom_toTopOf="@id/year_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTag="album_text"
+        app:layout_constraintTop_toBottomOf="@id/track_time_text"
+        tools:ignore="RtlSymmetry" />
 
     <TextView
-        android:id="@+id/header_album_name"
-        style="@style/TextViewYSMediumThreeHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/header_album"
-        app:layout_constraintBottom_toTopOf="@+id/header_track_year"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start_two"
-        app:layout_constraintTag="album_name"
-        app:layout_constraintTop_toBottomOf="@+id/header_length_track" />
+        android:id="@+id/album_name"
+        style="@style/PlayerDescriptionItemsRightColumn"
+        app:layout_constraintBottom_toBottomOf="@id/album_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/text_barrier"
+        app:layout_constraintTop_toTopOf="@id/album_text"
+        tools:ignore="RtlSymmetry" />
+
+    <!-- Год выхода трека -->
+    <TextView
+        android:id="@+id/year_text"
+        style="@style/PlayerDescriptionItemsLeftColumn"
+        android:text="@string/year"
+        app:layout_constraintBottom_toTopOf="@id/genre_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTag="year_text"
+        app:layout_constraintTop_toBottomOf="@id/album_text"
+        tools:ignore="RtlSymmetry" />
 
     <TextView
-        android:id="@+id/track_album_name"
-        style="@style/TextViewYSMediumThreeTheme"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:gravity="end"
-        android:textAlignment="viewEnd"
-        android:text="@string/default_string"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintStart_toEndOf="@id/header_album_name"
-        app:layout_constraintEnd_toStartOf="@id/guideline_end_two"
-        app:layout_constraintTop_toTopOf="@id/header_album_name"
-        app:layout_constraintBottom_toBottomOf="@id/header_album_name" />
+        android:id="@+id/year_value"
+        style="@style/PlayerDescriptionItemsRightColumn"
+        app:layout_constraintBottom_toBottomOf="@id/year_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/text_barrier"
+        app:layout_constraintTop_toTopOf="@id/year_text"
+        tools:ignore="RtlSymmetry" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_album_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_tags="album_name" />
+    <!-- Жанр трека -->
+    <TextView
+        android:id="@+id/genre_text"
+        style="@style/PlayerDescriptionItemsLeftColumn"
+        android:text="@string/genre"
+        app:layout_constraintBottom_toTopOf="@id/country_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTag="genre_text"
+        app:layout_constraintTop_toBottomOf="@id/year_text"
+        tools:ignore="RtlSymmetry" />
 
     <TextView
-        android:id="@+id/header_track_year"
-        style="@style/TextViewYSMediumThreeHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/header_year_album"
-        app:layout_constraintBottom_toTopOf="@+id/header_genre"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start_two"
-        app:layout_constraintTop_toBottomOf="@+id/header_album_name" />
+        android:id="@+id/genre"
+        style="@style/PlayerDescriptionItemsRightColumn"
+        app:layout_constraintBottom_toBottomOf="@id/genre_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/text_barrier"
+        app:layout_constraintTop_toTopOf="@id/genre_text"
+        tools:ignore="RtlSymmetry" />
+
+    <!-- Страна -->
+    <TextView
+        android:id="@+id/country_text"
+        style="@style/PlayerDescriptionItemsLeftColumn"
+        android:text="@string/country"
+        app:layout_constraintBottom_toTopOf="@id/bottom_border"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTag="country_text"
+        app:layout_constraintTop_toBottomOf="@id/genre_text"
+        tools:ignore="RtlSymmetry" />
 
     <TextView
-        android:id="@+id/track_year"
-        style="@style/TextViewYSMediumThreeTheme"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/default_string"
-        app:layout_constraintBottom_toBottomOf="@+id/header_track_year"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end_two"
-        app:layout_constraintTop_toTopOf="@+id/header_track_year" />
+        android:id="@+id/country"
+        style="@style/PlayerDescriptionItemsRightColumn"
+        app:layout_constraintBottom_toBottomOf="@id/country_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/text_barrier"
+        app:layout_constraintTop_toTopOf="@id/country_text"
+        tools:ignore="RtlSymmetry" />
 
-    <TextView
-        android:id="@+id/header_genre"
-        style="@style/TextViewYSMediumThreeHeader"
+    <!-- Отступы и барьеры -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/left_border"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/header_genre"
-        app:layout_constraintBottom_toTopOf="@+id/header_country"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start_two"
-        app:layout_constraintTop_toBottomOf="@+id/header_track_year" />
-
-    <TextView
-        android:id="@+id/track_genre"
-        style="@style/TextViewYSMediumThreeTheme"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/default_string"
-        app:layout_constraintBottom_toBottomOf="@+id/header_genre"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end_two"
-        app:layout_constraintTop_toTopOf="@+id/header_genre" />
-
-    <TextView
-        android:id="@+id/header_country"
-        style="@style/TextViewYSMediumThreeHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/header_country"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_vertical_14"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start_two"
-        app:layout_constraintTop_toBottomOf="@+id/header_genre" />
-
-    <TextView
-        android:id="@+id/track_country"
-        style="@style/TextViewYSMediumThreeTheme"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/default_string"
-        app:layout_constraintBottom_toBottomOf="@+id/header_country"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end_two"
-        app:layout_constraintTop_toTopOf="@+id/header_country" />
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/player_vertical_guide_start" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical_14"
+        android:id="@+id/right_border"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/player_vertical_guide_end" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bottom_border"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.96635" />
+        app:layout_constraintGuide_end="@dimen/player_horizontal_guide_bottom" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/text_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_tags="duration_text, album_text, year_text, genre_text, country_text" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

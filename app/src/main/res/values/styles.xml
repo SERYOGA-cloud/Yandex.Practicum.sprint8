@@ -1,213 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="BackgroundMainActivity">
-        <item name="android:background">@color/blue_100</item>
+    <style name="TitleTextAppearance">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="fontFamily">@font/ys_display_medium</item>
     </style>
 
-    <style name="ButtonMainActivity" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+    <style name="ScreenTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/screen_title_margin_bottom</item>
+        <item name="navigationIconTint">?attr/colorOnPrimary</item>
+        <item name="contentInsetStartWithNavigation">@dimen/search_toolbar_text_nav_icon_padding
+        </item>
+    </style>
+
+    <style name="MainMenuTitle" parent="ScreenTitle">
+        <item name="titleTextColor">?attr/colorOnSecondary</item>
+    </style>
+
+    <style name="ButtonMainMenu" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0dp</item>
+        <item name="android:layout_marginHorizontal">@dimen/horizontal_padding</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:backgroundTint">@color/white</item>
-        <item name="android:textColor">@color/grey_100</item>
-        <item name="android:textSize">@dimen/dimen_22s</item>
-        <item name="android:textAllCaps">false</item>
+        <item name="android:backgroundTint">?attr/colorTertiary</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
-        <item name="android:fontFamily">@font/ys_display_medium</item>
-        <item name="android:textFontWeight">500</item>
-        <item name="cornerRadius">@dimen/dimen_16</item>
-        <item name="iconGravity">textStart</item>
-        <item name="iconPadding">@dimen/dimen_8</item>
-        <item name="iconTint">@color/grey_100</item>
-    </style>
-
-    <style name="BaseTextViewSetting" parent="Widget.MaterialComponents.TextView">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/dimen_16s</item>
-        <item name="android:paddingStart">@dimen/dimen_16</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:layout_gravity">start|center_vertical</item>
-        <item name="android:fontFamily">@font/ys_display_regular</item>
-        <item name="android:textFontWeight">400</item>
-    </style>
-
-    <style name="TextViewSetting" parent="BaseTextViewSetting">
-        <item name="android:textColor">@color/black</item>
-    </style>
-
-    <style name="BaseTextViewSettingHeader">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">@dimen/dimen_48</item>
-        <item name="android:layout_marginStart">@dimen/dimen_60</item>
-        <item name="android:textSize">@dimen/dimen_22s</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:fontFamily">@font/ys_display_medium</item>
-        <item name="android:textFontWeight">500</item>
-    </style>
-
-    <style name="TextViewSettingHeader" parent="BaseTextViewSettingHeader">
-        <item name="android:textColor">@color/grey_100</item>
-    </style>
-
-    <style name="EditTextSearch">
-        <item name="android:textColor">@color/grey_100</item>
-        <item name="android:textColorHint">@color/grey_500</item>
-    </style>
-
-    <style name="ImageButtonSettingHeader">
-        <item name="tint">@color/grey_100</item>
-    </style>
-
-    <style name="BaseImageViewSetting">
-        <item name="android:layout_width">@dimen/dimen_24</item>
-        <item name="android:layout_height">@dimen/dimen_24</item>
-        <item name="android:layout_gravity">end|center_vertical</item>
-        <item name="android:layout_marginEnd">@dimen/dimen_16</item>
-    </style>
-
-    <style name="ImageViewSetting" parent="BaseImageViewSetting">
-        <item name="tint">@color/grey_500</item>
-    </style>
-
-    <style name="ImageViewColor">
-        <item name="tint">@color/grey_500</item>
-    </style>
-
-    <style name="BaseTextViewColor">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">@font/ys_display_regular</item>
-        <item name="android:textFontWeight">400</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:ellipsize">end</item>
-    </style>
-
-    <style name="TextViewH1Color" parent="BaseTextViewColor">
-        <item name="android:textColor">@color/black</item>
-    </style>
-
-    <style name="TextViewH2Color" parent="BaseTextViewColor">
-        <item name="android:textColor">@color/grey_500</item>
-    </style>
-
-    <style name="BaseTextViewHeaderSearchColor">
-        <item name="android:layout_height">@dimen/dimen_22</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:fontFamily">@font/ys_display_medium</item>
-        <item name="android:textFontWeight">500</item>
-        <item name="android:textSize">@dimen/dimen_19s</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="TextViewHeaderSearchColor" parent="BaseTextViewHeaderSearchColor">
-        <item name="android:textColor">@color/grey_100</item>
-    </style>
-
-    <style name="SwitchSetting">
-        <item name="android:thumbTint">@color/grey_500</item>
-        <item name="android:trackTint">@color/grey_700</item>
-    </style>
-
-    <style name="SwitchSettingMaterial">
-        <item name="thumbTint">@color/grey_500</item>
-        <item name="trackTint">@color/grey_700</item>
-        <item name="android:checked">false</item>
-    </style>
-
-    <style name="LayoutStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:orientation">vertical</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:layout_marginTop">@dimen/dimen_102</item>
-    </style>
-
-    <style name="BaseTextPlaceHolder">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/dimen_16</item>
-        <item name="android:textSize">@dimen/dimen_19s</item>
-        <item name="android:fontFamily">@font/ys_display_medium</item>
-        <item name="android:textFontWeight">400</item>
-        <item name="android:gravity">center</item>
-    </style>
-
-    <style name="TextPlaceHolder" parent="BaseTextPlaceHolder">
-        <item name="android:textColor">@color/grey_100</item>
-    </style>
-
-    <style name="BaseButtonPlaceHolder">
-        <item name="android:layout_width">@dimen/dimen_91</item>
-        <item name="android:layout_height">@dimen/dimen_36</item>
-        <item name="android:layout_marginTop">@dimen/dimen_24</item>
-        <item name="android:paddingHorizontal">@dimen/dimen_8</item>
-        <item name="cornerRadius">@dimen/dimen_54</item>
-        <item name="android:fontFamily">@font/ys_display_medium</item>
-        <item name="android:textFontWeight">500</item>
+        <item name="fontFamily">@font/ys_display_medium</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:textSize">@dimen/dimen_14</item>
+        <item name="android:textColor">?attr/colorOnTertiary</item>
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconTint">?attr/colorOnTertiary</item>
     </style>
 
-    <style name="ButtonPlaceHolder" parent="BaseButtonPlaceHolder">
-        <item name="android:backgroundTint">@color/grey_100</item>
-        <item name="android:textColor">@color/white</item>
+    <style name="MenuItemSettingsMenu">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingHorizontal">@dimen/horizontal_padding</item>
+        <item name="android:paddingVertical">24dp</item>
     </style>
 
-    <style name="BaseButtonClearSearchHistory" parent="BaseButtonPlaceHolder">
+    <style name="TextSettingsMenu">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/text_size_regular</item>
+    </style>
+
+    <style name="DrawableSettingsMenu">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_gravity">end</item>
+        <item name="android:foregroundGravity">center_vertical</item>
+        <item name="tint">?attr/colorOnPrimaryFixed</item>
+    </style>
+
+    <style name="SwitchItem" parent="MenuItemSettingsMenu">
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/text_size_regular</item>
+    </style>
+
+    <style name="SearchEditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/search_edittext_shape</item>
+        <item name="android:drawableStart">@drawable/icon_search</item>
+        <item name="android:drawablePadding">@dimen/search_drawable_horizontal_padding</item>
+        <item name="android:drawableTint">?attr/colorOnPrimaryFixedVariant</item>
+        <item name="android:paddingHorizontal">@dimen/search_drawable_horizontal_padding</item>
+        <item name="android:paddingVertical">@dimen/search_text_vertical_padding</item>
+        <item name="android:textColorHint">?attr/colorOnPrimaryFixedVariant</item>
+        <item name="android:textCursorDrawable">@drawable/cursor_search</item>
+        <item name="android:textColor">?attr/colorOnTertiary</item>
+        <item name="android:textSize">@dimen/text_size_regular</item>
+        <item name="fontFamily">@font/ys_display_regular</item>
+    </style>
+
+    <style name="SearchResultTrackName">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/text_size_regular</item>
+    </style>
+
+    <style name="SearchResultArtistAndTrackTime">
+        <item name="android:textColor">?attr/colorOnPrimaryFixed</item>
+        <item name="android:textSize">@dimen/text_size_small_3</item>
+    </style>
+
+    <style name="SearchResultAlbumCover">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:padding">@dimen/dimen_14</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:paddingVertical">@dimen/search_result_album_cover_padding</item>
+        <item name="android:paddingRight">@dimen/search_result_album_cover_padding</item>
     </style>
 
-    <style name="ButtonClearSearchHistory" parent="BaseButtonClearSearchHistory">
-        <item name="android:backgroundTint">@color/grey_100</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="BaseTextViewYSMedium">
+    <style name="SearchPlaceholderText">
+        <item name="android:layout_marginHorizontal">
+            @dimen/search_placeholder_text_margin_horizontal
+        </item>
+        <item name="android:layout_marginTop">@dimen/search_placeholder_text_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/search_placeholder_text_margin_bottom</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
-        <item name="android:textFontWeight">400</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:visibility">gone</item>
     </style>
 
-    <style name="BaseTextViewYSMediumOne" parent="BaseTextViewYSMedium">
-        <item name="android:textSize">@dimen/dimen_22s</item>
+    <style name="SearchPlaceholderButton">
+        <item name="android:backgroundTint">?attr/colorOnPrimary</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="cornerRadius">@dimen/search_menu_button_corner_radius</item>
     </style>
 
-    <style name="TextViewYSMediumOneTheme" parent="BaseTextViewYSMediumOne">
-        <item name="android:textColor">@color/grey_100</item>
+    <style name="PlayerDescriptionItemsLeftColumn">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:textSize">@dimen/text_size_small_2</item>
+        <item name="android:paddingStart">@dimen/player_description_horizontal_padding</item>
     </style>
 
-    <style name="BaseTextViewYSMediumTwo" parent="BaseTextViewYSMedium">
-        <item name="android:textSize">@dimen/dimen_14s</item>
+    <style name="PlayerDescriptionItemsRightColumn">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textAlignment">textEnd</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/text_size_small_2</item>
+        <item name="android:paddingEnd">@dimen/player_description_horizontal_padding</item>
     </style>
 
-    <style name="TextViewYSMediumTwoTheme" parent="BaseTextViewYSMediumTwo">
-        <item name="android:textColor">@color/grey_100</item>
-    </style>
+    <style name="BaseButtonClearSearchHistory"
+        parent="Widget.MaterialComponents.Button.TextButton"/>
 
-    <style name="BaseTextViewYSMediumThree" parent="BaseTextViewYSMedium">
-        <item name="android:textSize">@dimen/dimen_13s</item>
-    </style>
+    <style name="BaseButtonPlaceHolder"
+        parent="Widget.MaterialComponents.Button.TextButton"/>
 
-    <style name="TextViewYSMediumThreeHeader" parent="BaseTextViewYSMediumThree">
-        <item name="android:textColor">@color/grey_500</item>
-    </style>
+    <style name="BaseImageViewSetting"/>
 
-    <style name="TextViewYSMediumThreeTheme" parent="BaseTextViewYSMediumThree">
-        <item name="android:textColor">@color/grey_100</item>
-    </style>
+    <style name="BaseTextPlaceHolder"
+        parent="TextAppearance.MaterialComponents.Body1"/>
 
-    <style name="BaseTextViewYSMediumTimeTrack" parent="BaseTextViewYSMedium">
-        <item name="android:textFontWeight">500</item>
-        <item name="android:textSize">@dimen/dimen_14s</item>
-    </style>
+    <style name="BaseTextViewColor"
+        parent="TextAppearance.MaterialComponents.Body1"/>
 
-    <style name="TextViewYSMediumTimeTrack" parent="BaseTextViewYSMediumTimeTrack">
-        <item name="android:textColor">@color/grey_100</item>
-    </style>
+    <style name="BaseTextViewHeaderSearchColor"
+        parent="TextAppearance.MaterialComponents.Headline6"/>
+
+    <style name="BaseTextViewSetting"
+        parent="TextAppearance.MaterialComponents.Body1"/>
+
+    <style name="BaseTextViewSettingHeader"
+        parent="TextAppearance.MaterialComponents.Subtitle1"/>
+
+    <style name="BaseTextViewYSMediumOne"
+        parent="TextAppearance.MaterialComponents.Body1"/>
+
+    <style name="BaseTextViewYSMediumTwo"
+        parent="TextAppearance.MaterialComponents.Body1"/>
+
+    <style name="BaseTextViewYSMediumThree"
+        parent="TextAppearance.MaterialComponents.Body1"/>
+
+    <style name="BaseTextViewYSMediumTimeTrack"
+        parent="TextAppearance.MaterialComponents.Caption"/>
 
 </resources>
