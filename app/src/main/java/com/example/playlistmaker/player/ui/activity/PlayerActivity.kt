@@ -1,19 +1,17 @@
 package com.example.playlistmaker.player.ui.activity
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
-import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.entity.PlayerState
+import com.example.playlistmaker.player.ui.viewModel.PlayerViewModel
 import com.example.playlistmaker.util.Util.Companion.dpToPx
 import com.example.playlistmaker.util.Util.Companion.getCoverArtwork512
 import com.example.playlistmaker.util.Util.Companion.millisToMmSs
@@ -22,23 +20,21 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
 
+    private lateinit var viewModel: PlayerViewModel
+
     private var previewUrl: String? = null
-    private lateinit var audioPlayerInteractor: AudioPlayerInteractor
-
-    private val handler = Handler(Looper.getMainLooper())
-
-    private val timeRefreshRunnable = object : Runnable {
-
-        override fun run() {
-            binding.listeningTime.text = audioPlayerInteractor.getCurrentPositionConverted()
-            handler.postDelayed(this, TIME_REFRESH_DELAY)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        previewUrl = intent.getStringExtra("preview_url")
+
+        viewModel = ViewModelProvider(
+            this,
+            PlayerViewModel.getFactory(previewUrl)
+        )[PlayerViewModel::class.java]
 
         binding.playerToolbar.setNavigationOnClickListener { finish() }
 
@@ -52,37 +48,29 @@ class PlayerActivity : AppCompatActivity() {
             country.text = intent.getStringExtra("country")
         }
 
-
-        binding.listeningTime.text = millisToMmSs(LISTENING_TIME_DEFAULT)
-        previewUrl = intent.getStringExtra("preview_url")
-
-        try {
-            audioPlayerInteractor = Creator.provideAudioPlayerInteractor(
-                previewUrl = previewUrl,
-                onStateChangedListener = { state ->
-                    when (state) {
-                        is PlayerState.PAUSED -> {
-                            handler.removeCallbacks(timeRefreshRunnable)
-                            binding.playButton.setImageResource(R.drawable.button_play)
-                        }
-
-                        is PlayerState.PLAYING -> {
-                            handler.post(timeRefreshRunnable)
-                            binding.playButton.setImageResource(R.drawable.button_pause)
-                        }
-
-                        is PlayerState.PREPARED -> {
-                            handler.removeCallbacks(timeRefreshRunnable)
-                            binding.listeningTime.text = millisToMmSs(LISTENING_TIME_DEFAULT)
-                            binding.playButton.setImageResource(R.drawable.button_play)
-                        }
-
-                        is PlayerState.DEFAULT -> {}
-                    }
+        viewModel.observePlayerState().observe(this) {
+            when (it) {
+                PlayerState.DEFAULT -> {}
+                PlayerState.PAUSED -> {
+                    binding.playButton.setImageResource(R.drawable.button_play)
                 }
-            )
-        } catch (e: Exception) {
-            showToast(e.message.toString())
+
+                PlayerState.PLAYING -> {
+                    binding.playButton.setImageResource(R.drawable.button_pause)
+                }
+
+                PlayerState.PREPARED -> {
+                    binding.playButton.setImageResource(R.drawable.button_play)
+                }
+            }
+        }
+
+        viewModel.observeProgressTime().observe(this) {
+            binding.listeningTime.text = it
+        }
+
+        viewModel.observeErrorMessage().observe(this) {
+            showToast(it)
         }
 
         val albumName = intent.getStringExtra("collection_name")
@@ -105,7 +93,7 @@ class PlayerActivity : AppCompatActivity() {
 
         binding.playButton.setOnClickListener {
             try {
-                audioPlayerInteractor.onPlayButtonClicked()
+                viewModel.onPlayButtonClicked()
             } catch (e: Exception) {
                 showToast(e.message.toString())
             }
@@ -114,21 +102,10 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        audioPlayerInteractor.pausePlayer()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        handler.removeCallbacks(timeRefreshRunnable)
-        audioPlayerInteractor.releasePlayer()
+        viewModel.onPause()
     }
 
     private fun showToast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
-    }
-
-    companion object {
-        private const val TIME_REFRESH_DELAY = 300L
-        private const val LISTENING_TIME_DEFAULT = 0
     }
 }

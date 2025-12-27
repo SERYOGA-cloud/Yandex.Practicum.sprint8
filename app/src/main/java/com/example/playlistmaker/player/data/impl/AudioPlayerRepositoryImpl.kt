@@ -4,7 +4,7 @@ import android.media.MediaPlayer
 import com.example.playlistmaker.player.domain.api.AudioPlayerRepository
 import com.example.playlistmaker.player.domain.entity.PlayerState
 
-class AudioPlayerRepositoryImpl(private val previewUrl: String?) : AudioPlayerRepository {
+class AudioPlayerRepositoryImpl(private val previewUrl: String) : AudioPlayerRepository {
 
     private val player = MediaPlayer()
     private var playerState: PlayerState = PlayerState.DEFAULT
@@ -36,9 +36,6 @@ class AudioPlayerRepositoryImpl(private val previewUrl: String?) : AudioPlayerRe
     }
 
     private fun preparePlayer() {
-        if (previewUrl == null) {
-            throw Exception("Ошибка. Отсутствует ссылка на отрывок трека")
-        }
         player.setDataSource(previewUrl)
         player.prepareAsync()
         player.setOnPreparedListener {

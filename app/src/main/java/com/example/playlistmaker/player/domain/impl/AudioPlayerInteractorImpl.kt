@@ -11,10 +11,9 @@ class AudioPlayerInteractorImpl(
     private val listener: PlayerStateListener
 ) : AudioPlayerInteractor {
 
-    override fun onPlayButtonClicked() {
-        val playerState = repository.getPlayerState()
+    override fun onPlayButtonClicked(): PlayerState {
 
-        when (playerState) {
+        when (repository.getPlayerState()) {
             is PlayerState.PLAYING -> {
                 pausePlayer()
             }
@@ -27,6 +26,8 @@ class AudioPlayerInteractorImpl(
                 startPlayer()
             }
         }
+
+        return repository.getPlayerState()
     }
 
     override fun pausePlayer() {

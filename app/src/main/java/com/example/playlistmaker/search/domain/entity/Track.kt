@@ -6,7 +6,7 @@ data class Track(
     val artistName: String,
     val collectionName: String?,
     val releaseDate: String,
-    val primaryGenreName: String,
+    val primaryGenreName: String?,
     val country: String,
     val trackTimeConverted: String,
     val artworkUrl100: String,
