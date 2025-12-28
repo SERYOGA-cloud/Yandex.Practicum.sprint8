@@ -67,10 +67,14 @@
             android:nestedScrollingEnabled="false" />
 
         <!-- Список с историей поиска -->
-        <include layout="@layout/search_history_layout" />
+        <include
+            android:id="@+id/history_layout"
+            layout="@layout/search_history_layout" />
 
         <!-- Заглушка -->
-        <include layout="@layout/search_placeholder_layout" />
+        <include
+            android:id="@+id/placeholder_layout"
+            layout="@layout/search_placeholder_layout" />
 
     </FrameLayout>
 

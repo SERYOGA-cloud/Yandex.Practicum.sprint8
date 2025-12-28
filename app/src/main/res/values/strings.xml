@@ -2,7 +2,7 @@
     <string name="app_name">Playlist Maker</string>
     <string name="search">Поиск</string>
     <string name="mediateka">Медиатека</string>
-    <string name="setting">Настройки</string>
+    <string name="settings">Настройки</string>
     <string name="dark_theme">Темная тема</string>
     <string name="share_app">Поделиться приложением</string>
     <string name="text_support">Написать в поддержку</string>
@@ -12,6 +12,7 @@
     <string name="support_email_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
     <string name="support_email_text">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="user_agreement_link">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="seacrh">Поиск</string>
     <string name="nothing_found">Ничего не нашлось</string>
     <string name="connection_issues">Проблемы со связью</string>
     <string name="load_failed_check_connection">Загрузка не удалась. Проверьте подключение к интернету</string>
@@ -25,19 +26,4 @@
     <string name="year">Год</string>
     <string name="genre">Жанр</string>
     <string name="country">Страна</string>
-    <string name="header_one">Вопрос:</string>
-    <string name="question">Этот фильм имеет рейтинг выше 9?</string>
-    <string name="no">Нет</string>
-    <string name="yes">Да</string>
-    <string name="media">Медиатека</string>
-    <string name="light_theme">Светлая тема</string>
-    <string name="header_share">Поделиться</string>
-    <string name="header_support">Написать в поддержку</string>
-    <string name="header_agreement">Пользовательское соглашение</string>
-    <string name="settings">Настройки</string>
-    <string name="name_track">Название трека</string>
-    <string name="name_group">Исполнитель</string>
-    <string name="length_track">00:00</string>
-    <string name="inter_punctum"> • </string>
-
 </resources>
