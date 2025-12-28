@@ -26,6 +26,7 @@ import com.example.playlistmaker.domain.consumer.TrackConsumer
 import com.example.playlistmaker.domain.entity.Resource
 import com.example.playlistmaker.domain.entity.Track
 import com.google.android.material.appbar.MaterialToolbar
+import android.view.View
 
 class SearchActivity : AppCompatActivity() {
 
@@ -36,6 +37,7 @@ class SearchActivity : AppCompatActivity() {
 
     private var searchSavedInput: String = INPUT_DEF
     private val searchResultsList = mutableListOf<Track>()
+    private val historyList = mutableListOf<Track>()
 
     @SuppressLint("NotifyDataSetChanged")
     private val trackSearchConsumer = TrackConsumer { result ->
@@ -91,10 +93,12 @@ class SearchActivity : AppCompatActivity() {
         val toolbar: MaterialToolbar = findViewById(R.id.search_toolbar)
         val clearEditTextButton: ImageView = findViewById(R.id.search_edit_text_clear_button)
 
-        progressBar = findViewById(R.id.progress_circular)
+        progressBar = findViewById(R.id.progress_bar)
 
         searchInput = findViewById(R.id.edit_text_search)
-        searchResultsRecyclerView = findViewById(R.id.search_results_recycler_view)
+        val recyclerLayout: View = findViewById(R.id.recycler_view_layout)
+        searchResultsRecyclerView = recyclerLayout.findViewById(R.id.recycler_view)
+
 
         placeHolderImg = findViewById(R.id.search_placeholder_image)
         placeHolderText = findViewById(R.id.search_placeholder_text)
@@ -109,8 +113,7 @@ class SearchActivity : AppCompatActivity() {
         searchHistoryRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        searchHistoryAdapter =
-            TrackAdapter(searchHistoryInteractor.getHistoryList(), searchHistoryInteractor)
+        searchHistoryAdapter = TrackAdapter(historyList, searchHistoryInteractor)
         searchHistoryRecyclerView.adapter = searchHistoryAdapter
 
         searchResultsAdapter = TrackAdapter(searchResultsList, searchHistoryInteractor)
@@ -129,20 +132,20 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearEditTextButton.isVisible = !s.isNullOrEmpty()
-                if (searchInput.hasFocus()) {
 
-                    if (s?.isEmpty() == true) {
-                        handler.removeCallbacks(searchRunnable)
-                        searchResultsList.clear()
-                        searchResultsAdapter.notifyDataSetChanged()
-                        hideSearchResults()
-                        showSearchHistory()
+                if (s.isNullOrEmpty()) {
+                    handler.removeCallbacks(searchRunnable)
+                    searchResultsList.clear()
+                    searchResultsAdapter.notifyDataSetChanged()
 
-                    } else {
-                        hideSearchHistory()
-                        searchSavedInput = s.toString()
-                        searchDebounce()
-                    }
+                    hideSearchResults()
+                    hideSearchPlaceholders()
+                    showSearchHistory()
+                } else {
+                    hideSearchHistory()
+                    hideSearchPlaceholders()
+                    searchSavedInput = s.toString()
+                    searchDebounce()
                 }
             }
 
@@ -150,12 +153,6 @@ class SearchActivity : AppCompatActivity() {
         }
 
         searchInput.addTextChangedListener(textWatcher)
-        searchInput.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && searchInput.text.isEmpty()) {
-                hideSearchResults()
-                showSearchHistory()
-            } else hideSearchHistory()
-        }
 
         clearEditTextButton.setOnClickListener {
             handler.removeCallbacks(searchRunnable)
@@ -255,12 +252,16 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showSearchHistory() {
-        val history = searchHistoryInteractor.getHistoryList()
-        if (history.isNotEmpty()) {
-            hideSearchPlaceholders()
-            searchHistoryView.isVisible = true
-            clearHistoryButton.isVisible = true
-        }
+        historyList.clear()
+        historyList.addAll(searchHistoryInteractor.getHistoryList())
+        searchHistoryAdapter.notifyDataSetChanged()
+
+        hideSearchResults()
+        hideSearchPlaceholders()
+
+        val shouldShow = historyList.isNotEmpty() && searchInput.text.isNullOrEmpty()
+        searchHistoryView.isVisible = shouldShow
+        clearHistoryButton.isVisible = shouldShow
     }
 
     private fun hideSearchHistory() {

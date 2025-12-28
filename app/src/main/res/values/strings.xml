@@ -25,4 +25,20 @@
     <string name="year">Год</string>
     <string name="genre">Жанр</string>
     <string name="country">Страна</string>
+    <string name="header_agreement">Agreement</string>
+    <string name="header_one">Header</string>
+    <string name="header_share">Share</string>
+    <string name="header_support">Support</string>
+    <string name="light_theme">Light theme</string>
+    <string name="media">Media</string>
+    <string name="no">No</string>
+    <string name="question">Question</string>
+    <string name="setting">Settings</string>
+    <string name="yes">Yes</string>
+    <string name="name_track">Track name</string>
+    <string name="name_group">Artist</string>
+    <string name="length_track">00:00</string>
+    <string name="inter_punctum"> • </string>
+    <string name="connection_issues">Проблемы со связью</string>
+    <string name="load_failed_check_connection">Не удалось загрузить данные. Проверьте подключение к интернету</string>
 </resources>
