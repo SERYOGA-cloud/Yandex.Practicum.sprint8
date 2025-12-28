@@ -23,8 +23,10 @@ import com.example.playlistmaker.search.domain.impl.SearchHistoryInteractorImpl
 import com.example.playlistmaker.settings.domain.impl.ThemeInteractorImpl
 import com.example.playlistmaker.search.domain.impl.TrackSearchInteractorImpl
 import com.example.playlistmaker.sharing.data.impl.ExternalNavigatorImpl
+import com.example.playlistmaker.sharing.data.impl.StringResourceProviderImpl
 import com.example.playlistmaker.sharing.domain.api.ExternalNavigator
 import com.example.playlistmaker.sharing.domain.api.SharingInteractor
+import com.example.playlistmaker.sharing.domain.api.StringResourceProvider
 import com.example.playlistmaker.sharing.domain.impl.SharingInteractorImpl
 
 const val APP_PREFERENCES = "playlist_maker_preferences"
@@ -63,7 +65,10 @@ object Creator {
     }
 
     fun provideSharingInteractor(): SharingInteractor {
-        return SharingInteractorImpl(getExternalNavigator())
+        return SharingInteractorImpl(
+            externalNavigator = getExternalNavigator(),
+            stringResourceProvider = getStringResourceProvider()
+        )
     }
 
     //Internal
@@ -81,7 +86,10 @@ object Creator {
     }
 
     private fun getThemeRepository(): ThemeRepository {
-        return ThemeRepositoryImpl(getSharedPreferences())
+        return ThemeRepositoryImpl(
+            prefs = getSharedPreferences(),
+            app = application
+        )
     }
 
     private fun getSharedPreferences(): SharedPreferences {
@@ -90,5 +98,9 @@ object Creator {
 
     private fun getExternalNavigator(): ExternalNavigator {
         return ExternalNavigatorImpl(application)
+    }
+
+    private fun getStringResourceProvider(): StringResourceProvider {
+        return StringResourceProviderImpl(application)
     }
 }

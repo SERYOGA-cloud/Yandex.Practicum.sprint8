@@ -9,8 +9,6 @@ import com.example.playlistmaker.settings.ui.viewModel.SettingsViewModel
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
-    private var isThemeChanging =
-        false  // без этого активити бесконечно пересоздается при переключении свитча
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,12 +29,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            if (checked != viewModel.observeIsDarkThemeEnabled().value) {
-                isThemeChanging = true
-                viewModel.switchTheme(checked)
-                recreate()
-                isThemeChanging = false
-            }
+            viewModel.onThemeSwitcherClicked(checked)
         }
 
         binding.shareButton.setOnClickListener {

@@ -3,17 +3,15 @@ package com.example.playlistmaker.search.ui.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.WindowCompat
-import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.search.ui.entity.SearchState
@@ -46,17 +44,9 @@ class SearchActivity : AppCompatActivity() {
             onItemClicked = { currentTrack ->
                 viewModel.onItemClicked(currentTrack)
                 val playerIntent =
-                    Intent(this, PlayerActivity::class.java).apply {
-                        putExtra("track_name", currentTrack.trackName)
-                        putExtra("artist_name", currentTrack.artistName)
-                        putExtra("track_time_converted", currentTrack.trackTimeConverted)
-                        putExtra("collection_name", currentTrack.collectionName)
-                        putExtra("release_date", currentTrack.releaseDate)
-                        putExtra("primary_genre_name", currentTrack.primaryGenreName)
-                        putExtra("country", currentTrack.country)
-                        putExtra("artwork_url_100", currentTrack.artworkUrl100)
-                        putExtra("preview_url", currentTrack.previewUrl)
-                    }
+                    Intent(this, PlayerActivity::class.java)
+                        .putExtra("track", currentTrack)
+
                 startActivity(playerIntent)
             }
         )
@@ -66,18 +56,11 @@ class SearchActivity : AppCompatActivity() {
             finish()
         }
 
-        val textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.searchEditTextClearButton.isVisible = !s.isNullOrEmpty()
-                viewModel.onQueryChanged(s.toString())
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
+        binding.editTextSearch.doOnTextChanged { text, _, _, _ ->
+            binding.searchEditTextClearButton.isVisible = !text.isNullOrEmpty()
+            viewModel.onQueryChanged(text.toString())
         }
 
-        binding.editTextSearch.addTextChangedListener(textWatcher)
         binding.editTextSearch.setOnFocusChangeListener { _, hasFocus ->
             viewModel.onEditTextFocusChange(hasFocus)
         }
@@ -115,7 +98,6 @@ class SearchActivity : AppCompatActivity() {
 
         if (searchSavedInput.isNotEmpty()) {
             binding.editTextSearch.setText(searchSavedInput)
-//            trackSearchInteractor.searchTracks(searchSavedInput, trackSearchConsumer)
         }
     }
 
@@ -126,53 +108,75 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun renderState(state: SearchState) {
-
-        // Установка видимостей элементов
-        binding.apply {
-            progressBar.isGone = !state.isShowLoading
-            recyclerViewLayout.root.isGone = !state.isShowHistory && !state.isShowSearchResults
-            recyclerViewLayout.youSearchedText.isGone = !state.isShowHistory
-            recyclerViewLayout.historyClearButton.isGone = !state.isShowHistory
-            placeholderLayout.placeholderImage.isGone = !state.isShowPlaceHolder
-            placeholderLayout.placeholderText.isGone = !state.isShowPlaceHolder
-            placeholderLayout.tryAgainButton.isGone = !state.showTryAgainButton
-        }
-
-        // Обновление элементов
         when (state) {
-            is SearchState.Empty -> {}
-            is SearchState.History -> adapter.updateTrackList(state.trackHistory)
-            is SearchState.Loading -> {}
-            is SearchState.PlaceHolder -> preparePlaceholder(state)
-            is SearchState.SearchResults -> adapter.updateTrackList(state.tracks)
+            is SearchState.Empty -> showEmpty()
+            is SearchState.History -> showHistory(state)
+            is SearchState.Loading -> showLoading()
+            is SearchState.PlaceHolder -> showPlaceholder(state)
+            is SearchState.SearchResults -> showSearchResults(state)
         }
     }
 
-    private fun preparePlaceholder(state: SearchState.PlaceHolder) {
-        binding.placeholderLayout.apply {
-            when (state) {
-                is SearchState.PlaceHolder.NetworkError -> {
-
-                    placeholderImage.setImageDrawable(
-                        AppCompatResources.getDrawable(
-                            this@SearchActivity,
-                            R.drawable.img_connection_issues
-                        )
-                    )
-                    placeholderText.setText(R.string.connection_issues_check_connection)
-                }
-
-                is SearchState.PlaceHolder.NothingFound -> {
-                    placeholderImage.setImageDrawable(
-                        AppCompatResources.getDrawable(
-                            this@SearchActivity,
-                            R.drawable.img_nothing_found
-                        )
-                    )
-                    placeholderText.setText(R.string.nothing_found)
-                }
-            }
+    private fun showEmpty() {
+        binding.apply {
+            progressBar.visibility = View.GONE
+            recyclerViewLayout.root.visibility = View.GONE
+            placeholderLayout.root.visibility = View.GONE
         }
+    }
+
+    private fun showHistory(state: SearchState.History) {
+        binding.apply {
+            progressBar.visibility = View.GONE
+            placeholderLayout.root.visibility = View.GONE
+        }
+        binding.recyclerViewLayout.apply {
+            root.visibility = View.VISIBLE
+            youSearchedText.visibility = View.VISIBLE
+            historyClearButton.visibility = View.VISIBLE
+        }
+        adapter.updateTrackList(state.trackHistory)
+    }
+
+    private fun showLoading() {
+        binding.apply {
+            progressBar.visibility = View.VISIBLE
+            recyclerViewLayout.root.visibility = View.GONE
+            placeholderLayout.root.visibility = View.GONE
+        }
+    }
+
+    private fun showPlaceholder(state: SearchState.PlaceHolder) {
+        binding.apply {
+            progressBar.visibility = View.GONE
+            recyclerViewLayout.root.visibility = View.GONE
+            placeholderLayout.root.visibility = View.VISIBLE
+        }
+        binding.placeholderLayout.apply {
+            placeholderImage.setImageDrawable(
+                AppCompatResources.getDrawable(
+                    this@SearchActivity,
+                    state.imageId
+                )
+            )
+            placeholderText.setText(state.textId)
+
+            placeholderText.visibility = View.VISIBLE
+            tryAgainButton.isVisible = state is SearchState.PlaceHolder.NetworkError
+        }
+    }
+
+    private fun showSearchResults(state: SearchState.SearchResults) {
+        binding.apply {
+            progressBar.visibility = View.GONE
+            recyclerViewLayout.root.visibility = View.VISIBLE
+            placeholderLayout.root.visibility = View.GONE
+        }
+        binding.recyclerViewLayout.apply {
+            youSearchedText.visibility = View.GONE
+            historyClearButton.visibility = View.GONE
+        }
+        adapter.updateTrackList(state.tracks)
     }
 
     companion object {

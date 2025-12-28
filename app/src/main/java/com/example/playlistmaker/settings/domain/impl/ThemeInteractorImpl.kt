@@ -5,15 +5,27 @@ import com.example.playlistmaker.settings.domain.api.ThemeRepository
 
 class ThemeInteractorImpl(private val repository: ThemeRepository) : ThemeInteractor {
 
-    override fun saveTheme(isDarkThemeEnabled: Boolean) {
-        repository.saveDarkThemeEnabled(isDarkThemeEnabled)
+    override fun switchTheme(isDarkThemeEnabled: Boolean) {
+        repository.switchTheme(isDarkThemeEnabled)
     }
 
-    override fun getTheme(): Boolean {
+    override fun saveTheme(isDarkThemeEnabled: Boolean) {
+        repository.saveTheme(isDarkThemeEnabled)
+    }
+
+    override fun isDarkThemeEnabled(): Boolean {
         return repository.isDarkThemeEnabled()
     }
 
     override fun isThemeSaved(): Boolean {
         return repository.isThemeSaved()
+    }
+
+    override fun applyThemeFromSaved() {
+        if (!isThemeSaved()) {
+            repository.applySystemTheme()
+        } else {
+            repository.applySavedTheme()
+        }
     }
 }
