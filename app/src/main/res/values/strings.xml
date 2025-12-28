@@ -14,8 +14,7 @@
     <string name="user_agreement_link">https://yandex.ru/legal/practicum_offer/</string>
     <string name="seacrh">Поиск</string>
     <string name="nothing_found">Ничего не нашлось</string>
-    <string name="connection_issues">Проблемы со связью</string>
-    <string name="load_failed_check_connection">Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="connection_issues_check_connection">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
     <string name="error_player_not_prepared">Ошибка, плеер не подготовлен</string>
     <string name="error_missing_link_to_track_preview">Ошибка. Отсутствует ссылка на отрывок трека</string>
     <string name="reload">Обновить</string>

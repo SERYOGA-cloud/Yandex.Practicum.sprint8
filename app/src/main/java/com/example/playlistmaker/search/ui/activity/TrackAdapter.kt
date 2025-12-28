@@ -1,19 +1,17 @@
 package com.example.playlistmaker.search.ui.activity
 
-import android.content.Intent
+import android.annotation.SuppressLint
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.player.ui.activity.PlayerActivity
-import com.example.playlistmaker.search.domain.api.SearchHistoryInteractor
 import com.example.playlistmaker.search.domain.entity.Track
 
 class TrackAdapter(
-    private val tracks: MutableList<Track>,
-    private val searchHistoryInteractor: SearchHistoryInteractor
+    private val onItemClicked: (track: Track) -> Unit
 ) : RecyclerView.Adapter<TrackViewHolder>() {
+
+    private val tracks = mutableListOf<Track>()
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
 
@@ -24,26 +22,19 @@ class TrackAdapter(
         holder.bind(currentTrack)
         holder.itemView.setOnClickListener {
             if (clickDebounce()) {
-                searchHistoryInteractor.saveTrackToHistory(currentTrack)
-                Log.d("adapter", "saved track ${currentTrack.artistName + " - " + currentTrack.trackName}")
-                val playerIntent =
-                    Intent(holder.itemView.context, PlayerActivity::class.java).apply {
-                        putExtra("track_name", currentTrack.trackName)
-                        putExtra("artist_name", currentTrack.artistName)
-                        putExtra("track_time_converted", currentTrack.trackTimeConverted)
-                        putExtra("collection_name", currentTrack.collectionName)
-                        putExtra("release_date", currentTrack.releaseDate)
-                        putExtra("primary_genre_name", currentTrack.primaryGenreName)
-                        putExtra("country", currentTrack.country)
-                        putExtra("artwork_url_100", currentTrack.artworkUrl100)
-                        putExtra("preview_url", currentTrack.previewUrl)
-                    }
-                holder.itemView.context.startActivity(playerIntent)
+                onItemClicked.invoke(currentTrack)
             }
         }
     }
 
     override fun getItemCount(): Int = tracks.size
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateTrackList(newList: List<Track>) {
+        tracks.clear()
+        tracks.addAll(newList)
+        this.notifyDataSetChanged()
+    }
 
     private fun clickDebounce(): Boolean {
         val current = isClickAllowed

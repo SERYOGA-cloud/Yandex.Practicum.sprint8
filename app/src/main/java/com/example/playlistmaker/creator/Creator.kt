@@ -18,9 +18,14 @@ import com.example.playlistmaker.settings.domain.api.ThemeRepository
 import com.example.playlistmaker.search.domain.api.TrackSearchInteractor
 import com.example.playlistmaker.search.domain.api.TracksRepository
 import com.example.playlistmaker.player.domain.impl.AudioPlayerInteractorImpl
+import com.example.playlistmaker.player.domain.impl.FailedAudioPlayerInteractorImpl
 import com.example.playlistmaker.search.domain.impl.SearchHistoryInteractorImpl
 import com.example.playlistmaker.settings.domain.impl.ThemeInteractorImpl
 import com.example.playlistmaker.search.domain.impl.TrackSearchInteractorImpl
+import com.example.playlistmaker.sharing.data.impl.ExternalNavigatorImpl
+import com.example.playlistmaker.sharing.domain.api.ExternalNavigator
+import com.example.playlistmaker.sharing.domain.api.SharingInteractor
+import com.example.playlistmaker.sharing.domain.impl.SharingInteractorImpl
 
 const val APP_PREFERENCES = "playlist_maker_preferences"
 
@@ -46,11 +51,19 @@ object Creator {
         previewUrl: String?,
         onStateChangedListener: PlayerStateListener
     ): AudioPlayerInteractor {
-        return AudioPlayerInteractorImpl(getAudioPlayerRepository(previewUrl), onStateChangedListener)
+        return if (previewUrl != null) {
+            AudioPlayerInteractorImpl(getAudioPlayerRepository(previewUrl), onStateChangedListener)
+        } else {
+            FailedAudioPlayerInteractorImpl()
+        }
     }
 
     fun provideThemeInteractor(): ThemeInteractor {
         return ThemeInteractorImpl(getThemeRepository())
+    }
+
+    fun provideSharingInteractor(): SharingInteractor {
+        return SharingInteractorImpl(getExternalNavigator())
     }
 
     //Internal
@@ -63,7 +76,7 @@ object Creator {
         return SearchHistoryRepositoryImpl(getSharedPreferences())
     }
 
-    private fun getAudioPlayerRepository(previewUrl: String?): AudioPlayerRepository {
+    private fun getAudioPlayerRepository(previewUrl: String): AudioPlayerRepository {
         return AudioPlayerRepositoryImpl(previewUrl)
     }
 
@@ -73,5 +86,9 @@ object Creator {
 
     private fun getSharedPreferences(): SharedPreferences {
         return application.getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
+    }
+
+    private fun getExternalNavigator(): ExternalNavigator {
+        return ExternalNavigatorImpl(application)
     }
 }
