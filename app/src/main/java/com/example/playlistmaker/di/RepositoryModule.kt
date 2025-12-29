@@ -1,5 +1,6 @@
 package com.example.playlistmaker.di
 
+import android.media.MediaPlayer
 import com.example.playlistmaker.player.data.impl.AudioPlayerRepositoryImpl
 import com.example.playlistmaker.player.domain.api.AudioPlayerRepository
 import com.example.playlistmaker.search.data.impl.SearchHistoryRepositoryImpl
@@ -24,34 +25,22 @@ val repositoryModule = module {
         )
     }
 
-    single<ExternalNavigator> {
-        ExternalNavigatorImpl(
-            context = androidContext()
-        )
-    }
+    single<ExternalNavigator> { ExternalNavigatorImpl(context = androidContext()) }
 
-    single<StringResourceProvider> {
-        StringResourceProviderImpl(
-            context = androidContext()
-        )
-    }
+    single<StringResourceProvider> { StringResourceProviderImpl(context = androidContext()) }
 
-    single<TracksRepository> {
-        TracksRepositoryImpl(
-            networkClient = get()
-        )
-    }
-    
-    single<SearchHistoryRepository> {
-        SearchHistoryRepositoryImpl(
-            prefs = get(),
-            gson = get()
-        )
-    }
+    single<TracksRepository> { TracksRepositoryImpl(networkClient = get()) }
 
+    single<SearchHistoryRepository> { SearchHistoryRepositoryImpl(prefs = get(), gson = get()) }
+
+    // создаём MediaPlayer через DI
+    factory { MediaPlayer() }
+
+    // ОДНА фабрика репозитория и она передаёт player
     factory<AudioPlayerRepository> { (previewUrl: String) ->
         AudioPlayerRepositoryImpl(
-            previewUrl = previewUrl
+            previewUrl = previewUrl,
+            player = get()
         )
     }
 }
