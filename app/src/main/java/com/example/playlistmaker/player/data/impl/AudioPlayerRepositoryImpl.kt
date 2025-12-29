@@ -2,7 +2,7 @@ package com.example.playlistmaker.player.data.impl
 
 import android.media.MediaPlayer
 import com.example.playlistmaker.player.domain.api.AudioPlayerRepository
-import com.example.playlistmaker.player.domain.api.PlayerStateListener
+import com.example.playlistmaker.player.domain.listener.PlayerStateListener
 import com.example.playlistmaker.player.domain.entity.PlayerState
 
 class AudioPlayerRepositoryImpl(private val previewUrl: String) : AudioPlayerRepository {

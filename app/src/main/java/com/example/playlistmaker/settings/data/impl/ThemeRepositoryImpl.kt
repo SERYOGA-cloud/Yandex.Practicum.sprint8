@@ -1,6 +1,6 @@
 package com.example.playlistmaker.settings.data.impl
 
-import android.app.Application
+import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
@@ -12,7 +12,7 @@ private const val DARK_THEME_ENABLED = "dark_theme_enabled"
 
 class ThemeRepositoryImpl(
     private val prefs: SharedPreferences,
-    private val app: Application
+    private val context: Context
 ) : ThemeRepository {
 
     override fun switchTheme(isDarkThemeEnabled: Boolean) {
@@ -44,7 +44,7 @@ class ThemeRepositoryImpl(
     override fun applySystemTheme() {
 
         val isSystemDarkThemeEnabled =
-            (app.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+            (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
         switchTheme(isSystemDarkThemeEnabled)
         saveTheme(isSystemDarkThemeEnabled)
