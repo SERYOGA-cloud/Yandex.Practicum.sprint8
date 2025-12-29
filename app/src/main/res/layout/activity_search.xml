@@ -51,7 +51,7 @@
         android:layout_height="match_parent">
 
         <ProgressBar
-            android:id="@+id/progress_circular"
+            android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/progress_bar_margin_top"
@@ -59,18 +59,15 @@
             android:indeterminateTint="@color/blue"
             android:visibility="gone" />
 
-        <!-- Список с результатами поиска -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/search_results_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false" />
-
-        <!-- Список с историей поиска -->
-        <include layout="@layout/search_history_layout" />
+        <!-- Список найденных треков / поиска -->
+        <include
+            android:id="@+id/recycler_view_layout"
+            layout="@layout/recycler_view_layout" />
 
         <!-- Заглушка -->
-        <include layout="@layout/search_placeholder_layout" />
+        <include
+            android:id="@+id/placeholder_layout"
+            layout="@layout/placeholder_layout" />
 
     </FrameLayout>
 
