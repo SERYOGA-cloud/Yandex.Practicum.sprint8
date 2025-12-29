@@ -24,6 +24,10 @@ class SearchViewModel : ViewModel() {
     private var searchStateLiveData = MutableLiveData<SearchState>(SearchState.Empty)
     fun observeSearchState(): LiveData<SearchState> = searchStateLiveData
 
+    init {
+        updateState()
+    }
+
     private val trackSearchConsumer = TrackConsumer { result ->
         handler.post {
             when (result) {
@@ -65,7 +69,7 @@ class SearchViewModel : ViewModel() {
 
     fun onClearHistoryButtonClicked() {
         searchHistoryInteractor.clearHistory()
-        postState(SearchState.Empty)
+        updateState()
     }
 
     fun onTryAgainButtonClicked() {
@@ -95,16 +99,16 @@ class SearchViewModel : ViewModel() {
     }
 
     private fun updateState() {
-        when {
-            isEditTextInFocus && searchQuery.isNotEmpty() -> {
-                startSearch(true)        // postState(Loading) -> *search* -> postState()
-            }
+        if (searchQuery.isNotEmpty()) {
+            startSearch(true)
+            return
+        }
 
-            isEditTextInFocus && searchQuery.isEmpty() -> {
-                postState(SearchState.History(searchHistoryInteractor.getHistoryList()))
-            }
-
-            else -> postState(SearchState.Empty)
+        val history = searchHistoryInteractor.getHistoryList()
+        if (history.isNotEmpty()) {
+            postState(SearchState.History(history))
+        } else {
+            postState(SearchState.Empty)
         }
     }
 
