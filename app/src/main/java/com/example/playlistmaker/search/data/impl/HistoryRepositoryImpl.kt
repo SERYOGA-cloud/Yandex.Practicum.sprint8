@@ -7,10 +7,12 @@ import com.google.gson.Gson
 
 const val SEARCH_HISTORY = "search_history"
 
-class SearchHistoryRepositoryImpl(private val prefs: SharedPreferences) :
+class SearchHistoryRepositoryImpl(
+    private val prefs: SharedPreferences,
+    private val gson: Gson
+) :
     SearchHistoryRepository {
 
-    private val gson = Gson()
     private val tracksHistory = mutableListOf<TrackDto>()
 
     init {

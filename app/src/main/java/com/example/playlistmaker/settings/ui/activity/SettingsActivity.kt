@@ -2,9 +2,9 @@ package com.example.playlistmaker.settings.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.settings.ui.viewModel.SettingsViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -15,10 +15,12 @@ class SettingsActivity : AppCompatActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val viewModel = ViewModelProvider(
-            this,
-            SettingsViewModel.getFactory()
-        )[SettingsViewModel::class.java]
+//        val viewModel = ViewModelProvider(
+//            this,
+//            SettingsViewModel.getFactory()
+//        )[SettingsViewModel::class.java]
+
+        val viewModel: SettingsViewModel by viewModel()
 
         binding.settingsToolbar.setNavigationOnClickListener {
             finish()

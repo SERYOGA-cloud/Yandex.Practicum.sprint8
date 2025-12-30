@@ -56,4 +56,5 @@ dependencies {
     annotationProcessor(libs.compiler)
     implementation(libs.retrofit)
     implementation(libs.squareup.converter.gson)
+    implementation(libs.koin.android)
 }

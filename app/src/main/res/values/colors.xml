@@ -13,8 +13,8 @@
     <color name="blue_500">#3772FF</color>
     <color name="grey_50">#FAFAFA</color>
     <color name="grey_70">#EEEEEE</color>
-    <color name="grey_500">#9E9E9E</color>
-    <color name="grey_700">#616161</color>
     <color name="violet_100">#E1BEE7</color>
     <color name="violet_500">#9C27B0</color>
+    <color name="grey_500">#9E9E9E</color>
+    <color name="grey_700">#616161</color>
 </resources>

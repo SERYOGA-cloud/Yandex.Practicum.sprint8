@@ -2,12 +2,13 @@ package com.example.playlistmaker.player.data.impl
 
 import android.media.MediaPlayer
 import com.example.playlistmaker.player.domain.api.AudioPlayerRepository
-import com.example.playlistmaker.player.domain.api.PlayerStateListener
+import com.example.playlistmaker.player.domain.listener.PlayerStateListener
 import com.example.playlistmaker.player.domain.entity.PlayerState
 
-class AudioPlayerRepositoryImpl(private val previewUrl: String) : AudioPlayerRepository {
-
-    private val player = MediaPlayer()
+class AudioPlayerRepositoryImpl(
+    private val previewUrl: String,
+    private val player: MediaPlayer
+) : AudioPlayerRepository {
 
     private var playerState: PlayerState = PlayerState.DEFAULT
     private var playerStateListener: PlayerStateListener? = null
@@ -28,20 +29,16 @@ class AudioPlayerRepositoryImpl(private val previewUrl: String) : AudioPlayerRep
         notifyListener()
     }
 
-    override fun getCurrentPosition(): Int {
-        return player.currentPosition
-    }
+    override fun getCurrentPosition(): Int = player.currentPosition
 
-    override fun getPlayerState(): PlayerState {
-        return playerState
-    }
+    override fun getPlayerState(): PlayerState = playerState
 
     override fun releasePlayer() {
         player.release()
     }
 
     override fun setPlayerStateListener(listener: PlayerStateListener) {
-        this.playerStateListener = listener
+        playerStateListener = listener
     }
 
     private fun preparePlayer() {

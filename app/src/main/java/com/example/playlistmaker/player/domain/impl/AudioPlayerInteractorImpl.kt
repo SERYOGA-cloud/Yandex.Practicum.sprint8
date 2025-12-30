@@ -2,18 +2,13 @@ package com.example.playlistmaker.player.domain.impl
 
 import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.api.AudioPlayerRepository
-import com.example.playlistmaker.player.domain.api.PlayerStateListener
+import com.example.playlistmaker.player.domain.listener.PlayerStateListener
 import com.example.playlistmaker.player.domain.entity.PlayerState
 import com.example.playlistmaker.util.Util.Companion.millisToMmSs
 
 class AudioPlayerInteractorImpl(
-    private val repository: AudioPlayerRepository,
-    listener: PlayerStateListener
+    private val repository: AudioPlayerRepository
 ) : AudioPlayerInteractor {
-
-    init {
-        repository.setPlayerStateListener(listener)
-    }
 
     override fun onPlayButtonClicked(): PlayerState {
 
@@ -48,5 +43,9 @@ class AudioPlayerInteractorImpl(
 
     private fun startPlayer() {
         repository.startPlayer()
+    }
+
+    override fun setRepoPlayerStateListener(listener: PlayerStateListener) {
+        repository.setPlayerStateListener(listener)
     }
 }

@@ -1,6 +1,7 @@
 package com.example.playlistmaker.player.domain.api
 
 import com.example.playlistmaker.player.domain.entity.PlayerState
+import com.example.playlistmaker.player.domain.listener.PlayerStateListener
 
 interface AudioPlayerInteractor {
 
@@ -11,4 +12,6 @@ interface AudioPlayerInteractor {
     fun getCurrentPositionConverted() : String
 
     fun releasePlayer()
+
+    fun setRepoPlayerStateListener(listener: PlayerStateListener)
 }

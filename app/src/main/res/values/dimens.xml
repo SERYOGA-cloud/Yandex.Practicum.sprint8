@@ -44,8 +44,6 @@
     <dimen name="player_description_horizontal_padding">16dp</dimen>
     <dimen name="player_description_margin_top">30dp</dimen>
     <dimen name="progress_bar_margin_top">140dp</dimen>
-    <dimen name="dimen_2">2dp</dimen>
-    <dimen name="dimen_4">4dp</dimen>
     <dimen name="dimen_6">6dp</dimen>
     <dimen name="dimen_8">8dp</dimen>
     <dimen name="dimen_9">9dp</dimen>
@@ -66,4 +64,6 @@
     <dimen name="dimen_11s">11sp</dimen>
     <dimen name="dimen_16s">16sp</dimen>
     <dimen name="dimen_24">24dp</dimen>
+    <dimen name="dimen_2">2dp</dimen>
+    <dimen name="dimen_4">4dp</dimen>
 </resources>
