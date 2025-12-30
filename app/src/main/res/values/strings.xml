@@ -26,6 +26,11 @@
     <string name="genre">Жанр</string>
     <string name="country">Страна</string>
     <string name="header_agreement">Agreement</string>
+    <string name="new_playlist">Новый плейлист</string>
+    <string name="your_mediateka_is_empty">Ваша медиатека пуста</string>
+    <string name="you_havent_created_any_playlists">Вы не создали ни одного плейлиста</string>
+    <string name="favorite_tracks">Избранные треки</string>
+    <string name="playlists">Плейлисты</string>
     <string name="header_one">Header</string>
     <string name="header_share">Share</string>
     <string name="header_support">Support</string>

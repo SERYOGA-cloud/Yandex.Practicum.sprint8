@@ -100,7 +100,7 @@
         <item name="android:paddingRight">@dimen/search_result_album_cover_padding</item>
     </style>
 
-    <style name="SearchPlaceholderText">
+    <style name="PlaceholderText">
         <item name="android:layout_marginHorizontal">
             @dimen/search_placeholder_text_margin_horizontal
         </item>
@@ -110,10 +110,9 @@
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:textSize">@dimen/text_size_medium</item>
-        <item name="android:visibility">gone</item>
     </style>
 
-    <style name="SearchPlaceholderButton">
+    <style name="PlaceholderButton">
         <item name="android:backgroundTint">?attr/colorOnPrimary</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textAllCaps">false</item>
@@ -141,6 +140,11 @@
         <item name="android:paddingEnd">@dimen/player_description_horizontal_padding</item>
     </style>
 
+    <style name="ViewPagerTabText">
+        <item name="android:textSize">@dimen/text_size_regular</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
+
     <style name="BaseTextViewYSMediumOne" parent="TextAppearance.MaterialComponents.Body1" />
     <style name="BaseTextViewYSMediumTwo" parent="TextAppearance.MaterialComponents.Body1" />
     <style name="BaseTextViewYSMediumThree" parent="TextAppearance.MaterialComponents.Body1" />
@@ -148,6 +152,9 @@
     <style name="BaseButtonClearSearchHistory" parent="Widget.MaterialComponents.Button">
         <item name="android:textAllCaps">false</item>
     </style>
+
+    <style name="SearchPlaceholderText" parent="PlaceholderText" />
+    <style name="SearchPlaceholderButton" parent="PlaceholderButton" />
 
     <!-- Кнопка "Повторить" на плейсхолдере -->
     <style name="BaseButtonPlaceHolder" parent="Widget.MaterialComponents.Button">
