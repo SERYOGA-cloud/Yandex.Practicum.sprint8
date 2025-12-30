@@ -15,14 +15,14 @@
 
     <TextView
         android:id="@+id/search_placeholder_text"
-        style="@style/SearchPlaceholderText"
+        style="@style/PlaceholderText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
     <Button
         android:id="@+id/search_placeholder_button"
-        style="@style/SearchPlaceholderButton"
+        style="@style/PlaceholderButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reload"

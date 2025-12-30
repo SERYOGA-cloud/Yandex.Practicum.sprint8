@@ -3,6 +3,7 @@
     <dimen name="horizontal_padding">16dp</dimen>
     <dimen name="horizontal_margin">16dp</dimen>
     <dimen name="text_size_large">22sp</dimen>
+    <dimen name="padding_bottom">20dp</dimen>
     <dimen name="text_size_medium">19sp</dimen>
     <dimen name="text_size_regular">16sp</dimen>
     <dimen name="text_size_small">14sp</dimen>
@@ -44,6 +45,10 @@
     <dimen name="player_description_horizontal_padding">16dp</dimen>
     <dimen name="player_description_margin_top">30dp</dimen>
     <dimen name="progress_bar_margin_top">140dp</dimen>
+    <dimen name="mediateka_placeholder_img_margin_top">106dp</dimen>
+    <dimen name="mediateka_placeholder_button_margin_top">24dp</dimen>
+    <dimen name="mediateka_placeholder_text_margin_top">16dp</dimen>
+    <dimen name="mediateka_tabs_margin_horizontal">16dp</dimen>
     <dimen name="dimen_6">6dp</dimen>
     <dimen name="dimen_8">8dp</dimen>
     <dimen name="dimen_9">9dp</dimen>
