@@ -2,8 +2,8 @@ package com.example.playlistmaker.player.domain.impl
 
 import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.api.AudioPlayerRepository
-import com.example.playlistmaker.player.domain.listener.PlayerStateListener
 import com.example.playlistmaker.player.domain.entity.PlayerState
+import com.example.playlistmaker.player.domain.listener.PlayerStateListener
 import com.example.playlistmaker.util.Util.Companion.millisToMmSs
 
 class AudioPlayerInteractorImpl(

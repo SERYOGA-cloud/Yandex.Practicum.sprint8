@@ -1,11 +1,12 @@
 package com.example.playlistmaker.player.domain.impl
 
 import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
-import com.example.playlistmaker.player.domain.listener.PlayerStateListener
 import com.example.playlistmaker.player.domain.entity.PlayerState
+import com.example.playlistmaker.player.domain.listener.PlayerStateListener
 
 // Вместо обычного интерактора на случай, если ссылка на трек == null (чтобы активити не крашилась)
 class FailedAudioPlayerInteractorImpl : AudioPlayerInteractor {
+
 
     override fun onPlayButtonClicked(): PlayerState {
         throw Exception("Ошибка. Отсутствует ссылка на отрывок трека")

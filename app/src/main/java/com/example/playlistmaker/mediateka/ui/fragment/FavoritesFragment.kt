@@ -14,7 +14,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class FavoritesFragment : Fragment() {
 
     private val viewModel: FavoritesViewModel by viewModel()
-    private lateinit var binding: FragmentFavoritesBinding
+    private var binding: FragmentFavoritesBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,7 +22,7 @@ class FavoritesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentFavoritesBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,6 +32,11 @@ class FavoritesFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+
     private fun renderState(state: FavoritesState) {
         when (state) {
             is FavoritesState.Placeholder -> showPlaceholder()
@@ -39,7 +44,7 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun showPlaceholder() {
-        binding.placeholder.apply {
+        binding!!.placeholder.apply {
             placeholderButton.visibility = View.GONE
             placeholderImage.visibility = View.VISIBLE
             placeholderText.visibility = View.VISIBLE

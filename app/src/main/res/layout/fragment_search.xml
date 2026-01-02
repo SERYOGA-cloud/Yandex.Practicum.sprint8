@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".search.ui.fragment.SearchFragment">
 
     <!-- Заголовок -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/search_toolbar"
         style="@style/ScreenTitle"
         android:layout_marginBottom="@dimen/search_toolbar_margin_bottom"
-        app:navigationIcon="@drawable/icon_arrow_back"
         app:title="@string/search"
         app:titleTextAppearance="@style/TitleTextAppearance" />
 

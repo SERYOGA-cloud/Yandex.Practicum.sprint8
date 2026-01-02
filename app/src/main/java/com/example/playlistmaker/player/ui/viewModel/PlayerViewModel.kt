@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
-import com.example.playlistmaker.player.domain.listener.PlayerStateListener
 import com.example.playlistmaker.player.domain.entity.PlayerState
+import com.example.playlistmaker.player.domain.listener.PlayerStateListener
 import com.example.playlistmaker.player.ui.entity.PlayerScreenState
 import com.example.playlistmaker.util.SingleLiveEvent
 
@@ -25,6 +25,7 @@ class PlayerViewModel(
     init {
         playerInteractor.setRepoPlayerStateListener(onStateChangedListener)
     }
+
 
     private val handler = Handler(Looper.getMainLooper())
 

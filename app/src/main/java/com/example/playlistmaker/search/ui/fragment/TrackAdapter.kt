@@ -1,4 +1,4 @@
-package com.example.playlistmaker.search.ui.activity
+package com.example.playlistmaker.search.ui.fragment
 
 import android.annotation.SuppressLint
 import android.os.Handler
@@ -15,7 +15,8 @@ class TrackAdapter(
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder = TrackViewHolder.from(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder =
+        TrackViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         val currentTrack = tracks[position]
