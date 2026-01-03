@@ -21,6 +21,9 @@ class SearchViewModel(
 
     private var searchQuery: String = ""
     private var isEditTextInFocus: Boolean = false
+    private var forceShowResults: Boolean = false
+
+    private val savedSearchResults = mutableListOf<Track>()
 
     private var searchStateLiveData = MutableLiveData<SearchState>(SearchState.Empty)
     fun observeSearchState(): LiveData<SearchState> = searchStateLiveData
@@ -33,13 +36,17 @@ class SearchViewModel(
         handler.post {
             when (result) {
                 is Resource.Error -> {
+                    savedSearchResults.clear()
                     overrideStateLiveData(SearchState.PlaceHolder.NetworkError())
                 }
 
                 is Resource.Success -> {
                     if (result.results.isEmpty()) {
+                        savedSearchResults.clear()
                         overrideStateLiveData(SearchState.PlaceHolder.NothingFound())
                     } else {
+                        savedSearchResults.clear()
+                        savedSearchResults.addAll(result.results)
                         overrideStateLiveData(SearchState.SearchResults(result.results))
                     }
                 }
@@ -100,19 +107,28 @@ class SearchViewModel(
     }
 
     private fun updateState() {
-        handler.removeCallbacks(searchRunnable)
+        when {
+            forceShowResults == true -> {
+                overrideStateLiveData(SearchState.SearchResults(savedSearchResults))
+            }
 
-        if (searchQuery.isNotEmpty()) {
-            startSearch(true)
-            return
-        }
+            searchQuery.isNotEmpty() -> {
+                startSearch(true)
+            }
 
-        val history = searchHistoryInteractor.getHistoryList()
-        if (history.isNotEmpty()) {
-            overrideStateLiveData(SearchState.History(history))
-        } else {
-            overrideStateLiveData(SearchState.Empty)
+            else -> {
+                val history = searchHistoryInteractor.getHistoryList()
+                if (history.isNotEmpty()) {
+                    overrideStateLiveData(SearchState.History(history))
+                } else {
+                    overrideStateLiveData(SearchState.Empty)
+                }
+            }
         }
+    }
+
+    fun onReturnFromPlayer() {
+        forceShowResults = savedSearchResults.isNotEmpty()
     }
 
     companion object {

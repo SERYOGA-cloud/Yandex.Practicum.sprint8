@@ -2,8 +2,8 @@ package com.example.playlistmaker.player.data.impl
 
 import android.media.MediaPlayer
 import com.example.playlistmaker.player.domain.api.AudioPlayerRepository
-import com.example.playlistmaker.player.domain.listener.PlayerStateListener
 import com.example.playlistmaker.player.domain.entity.PlayerState
+import com.example.playlistmaker.player.domain.listener.PlayerStateListener
 
 class AudioPlayerRepositoryImpl(
     private val previewUrl: String,
@@ -12,6 +12,7 @@ class AudioPlayerRepositoryImpl(
 
     private var playerState: PlayerState = PlayerState.DEFAULT
     private var playerStateListener: PlayerStateListener? = null
+
 
     init {
         preparePlayer()
@@ -42,14 +43,29 @@ class AudioPlayerRepositoryImpl(
     }
 
     private fun preparePlayer() {
-        player.setDataSource(previewUrl)
-        player.prepareAsync()
-        player.setOnPreparedListener {
-            playerState = PlayerState.PREPARED
-            notifyListener()
-        }
-        player.setOnCompletionListener {
-            playerState = PlayerState.PREPARED
+        try {
+            player.reset()
+            player.setDataSource(previewUrl)
+
+            player.setOnPreparedListener {
+                playerState = PlayerState.PREPARED
+                notifyListener()
+            }
+
+            player.setOnCompletionListener {
+                playerState = PlayerState.PREPARED
+                notifyListener()
+            }
+
+            player.setOnErrorListener { _, _, _ ->
+                playerState = PlayerState.DEFAULT
+                notifyListener()
+                true
+            }
+
+            player.prepareAsync()
+        } catch (e: Exception) {
+            playerState = PlayerState.DEFAULT
             notifyListener()
         }
     }
