@@ -42,10 +42,11 @@ val interactorModule = module {
     }
 
     factory<AudioPlayerInteractor> { (url: String?) ->
-
-        if (url != null) AudioPlayerInteractorImpl(
-            repository = get { parametersOf(url) }
-        ) else {
+        if (!url.isNullOrBlank()) {
+            AudioPlayerInteractorImpl(
+                repository = get { parametersOf(url) }
+            )
+        } else {
             FailedAudioPlayerInteractorImpl()
         }
     }
