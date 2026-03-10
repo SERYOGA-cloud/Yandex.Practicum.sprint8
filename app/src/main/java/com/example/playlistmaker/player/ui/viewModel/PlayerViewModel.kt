@@ -1,15 +1,17 @@
 package com.example.playlistmaker.player.ui.viewModel
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.entity.PlayerState
 import com.example.playlistmaker.player.domain.listener.PlayerStateListener
 import com.example.playlistmaker.player.ui.entity.PlayerScreenState
 import com.example.playlistmaker.util.SingleLiveEvent
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class PlayerViewModel(
     private val playerInteractor: AudioPlayerInteractor,
@@ -27,24 +29,13 @@ class PlayerViewModel(
     }
 
 
-    private val handler = Handler(Looper.getMainLooper())
+    private var timerJob: Job? = null
 
     private val screenStateLiveData = MutableLiveData<PlayerScreenState>(PlayerScreenState.DEFAULT)
     fun observeScreenState(): LiveData<PlayerScreenState> = screenStateLiveData
 
     private val errorMessageLiveData = SingleLiveEvent<String>()
     fun observeErrorMessage(): LiveData<String> = errorMessageLiveData
-
-    private val timeRefreshRunnable = object : Runnable {
-        override fun run() {
-            val currentPosition: String = playerInteractor.getCurrentPositionConverted()
-            val currentScreenState: PlayerScreenState =
-                screenStateLiveData.value ?: PlayerScreenState.DEFAULT
-            screenStateLiveData.value = currentScreenState.copy(currentPosition = currentPosition)
-            handler.postDelayed(this, TIME_REFRESH_DELAY)
-        }
-
-    }
 
     fun onPlayButtonClicked() {
         try {
@@ -73,15 +64,25 @@ class PlayerViewModel(
     }
 
     private fun startTimer() {
-        handler.post(timeRefreshRunnable)
+        timerJob = viewModelScope.launch {
+
+            while (screenStateLiveData.value?.getPlayerState() is PlayerState.PLAYING) {
+                delay(TIME_REFRESH_DELAY)
+                val currentPosition: String = playerInteractor.getCurrentPositionConverted()
+                val currentScreenState: PlayerScreenState =
+                    screenStateLiveData.value ?: PlayerScreenState.DEFAULT
+                screenStateLiveData.value =
+                    currentScreenState.copy(currentPosition = currentPosition)
+            }
+        }
     }
 
     private fun pauseTimer() {
-        handler.removeCallbacks(timeRefreshRunnable)
+        timerJob?.cancel()
     }
 
     private fun resetTimer() {
-        handler.removeCallbacks(timeRefreshRunnable)
+        timerJob?.cancel()
         val currentScreenState = screenStateLiveData.value ?: PlayerScreenState.DEFAULT
         screenStateLiveData.value = currentScreenState.copy(currentPosition = PROGRESS_TIME_DEFAULT)
     }

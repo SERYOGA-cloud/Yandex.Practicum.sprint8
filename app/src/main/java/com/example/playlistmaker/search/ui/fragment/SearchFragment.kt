@@ -12,6 +12,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
@@ -19,6 +20,8 @@ import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.player.ui.fragment.PlayerFragment
 import com.example.playlistmaker.search.ui.entity.SearchState
 import com.example.playlistmaker.search.ui.viewModel.SearchViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -26,6 +29,8 @@ class SearchFragment : Fragment() {
     private var binding: FragmentSearchBinding? = null
     private val viewModel: SearchViewModel by viewModel()
     private lateinit var adapter: TrackAdapter
+
+    private var isClickAllowed = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,15 +46,18 @@ class SearchFragment : Fragment() {
 
         adapter = TrackAdapter(
             onItemClicked = { currentTrack ->
-                viewModel.onItemClicked(currentTrack)
+                if (clickDebounce()) {
+                    viewModel.onItemClicked(currentTrack)
 
-                findNavController().currentBackStackEntry?.savedStateHandle
-                    ?.set(RETURNING_FROM_PLAYER, true)
+                    findNavController().currentBackStackEntry?.savedStateHandle
+                        ?.set(RETURNING_FROM_PLAYER, true)
 
-                findNavController().navigate(
-                    R.id.action_searchFragment_to_playerFragment,
-                    bundleOf(PlayerFragment.ARGS_TRACK to currentTrack)
-                )
+
+                    findNavController().navigate(
+                        R.id.action_searchFragment_to_playerFragment,
+                        bundleOf(PlayerFragment.ARGS_TRACK to currentTrack)
+                    )
+                }
             }
         )
 
@@ -120,6 +128,18 @@ class SearchFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
+        }
+        return current
     }
 
     private fun renderState(state: SearchState) {
@@ -195,6 +215,8 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
+
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
 
         // для отображения списка результатов поиска при возврате с экрана плеера
         private const val RETURNING_FROM_PLAYER = "returning_from_player"
