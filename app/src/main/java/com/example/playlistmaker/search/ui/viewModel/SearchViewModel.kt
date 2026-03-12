@@ -1,65 +1,33 @@
 package com.example.playlistmaker.search.ui.viewModel
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.search.domain.api.SearchHistoryInteractor
 import com.example.playlistmaker.search.domain.api.TrackSearchInteractor
-import com.example.playlistmaker.search.domain.consumer.TrackConsumer
 import com.example.playlistmaker.search.domain.entity.Resource
 import com.example.playlistmaker.search.domain.entity.Track
 import com.example.playlistmaker.search.ui.entity.SearchState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val trackSearchInteractor: TrackSearchInteractor,
     private val searchHistoryInteractor: SearchHistoryInteractor
 ) : ViewModel() {
 
-    private val handler = Handler(Looper.getMainLooper())
+    private var searchJob: Job? = null
 
     private var searchQuery: String = ""
     private var isEditTextInFocus: Boolean = false
-    private var forceShowResults: Boolean = false
+    private var isForceShowResults: Boolean = false
 
     private val savedSearchResults = mutableListOf<Track>()
 
     private var searchStateLiveData = MutableLiveData<SearchState>(SearchState.Empty)
     fun observeSearchState(): LiveData<SearchState> = searchStateLiveData
-
-    init {
-        updateState()
-    }
-
-    private val trackSearchConsumer = TrackConsumer { result ->
-        handler.post {
-            when (result) {
-                is Resource.Error -> {
-                    savedSearchResults.clear()
-                    overrideStateLiveData(SearchState.PlaceHolder.NetworkError())
-                }
-
-                is Resource.Success -> {
-                    if (result.results.isEmpty()) {
-                        savedSearchResults.clear()
-                        overrideStateLiveData(SearchState.PlaceHolder.NothingFound())
-                    } else {
-                        savedSearchResults.clear()
-                        savedSearchResults.addAll(result.results)
-                        overrideStateLiveData(SearchState.SearchResults(result.results))
-                    }
-                }
-            }
-        }
-    }
-
-    private val searchRunnable = Runnable { searchRequest(searchQuery) }
-
-    override fun onCleared() {
-        super.onCleared()
-        handler.removeCallbacks(searchRunnable)
-    }
 
     fun onEditTextFocusChange(hasFocus: Boolean) {
         isEditTextInFocus = hasFocus
@@ -90,15 +58,41 @@ class SearchViewModel(
             return
         }
         overrideStateLiveData(SearchState.Loading)
-        trackSearchInteractor.searchTracks(searchText, trackSearchConsumer)
+
+        viewModelScope.launch {
+            trackSearchInteractor
+                .searchTracks(searchText)
+                .collect { result ->
+                    when (result) {
+                        is Resource.Error -> {
+                            savedSearchResults.clear()
+                            overrideStateLiveData(SearchState.PlaceHolder.NetworkError())
+                        }
+
+                        is Resource.Success -> {
+                            if (result.results.isEmpty()) {
+                                savedSearchResults.clear()
+                                overrideStateLiveData(SearchState.PlaceHolder.NothingFound())
+                            } else {
+                                savedSearchResults.clear()
+                                savedSearchResults.addAll(result.results)
+                                overrideStateLiveData(SearchState.SearchResults(result.results))
+                            }
+                        }
+                    }
+                }
+        }
     }
 
     private fun startSearch(isDebounce: Boolean) {
+        searchJob?.cancel()
         if (isDebounce) {
-            handler.removeCallbacks(searchRunnable)
-            handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+            searchJob = viewModelScope.launch {
+                delay(SEARCH_DEBOUNCE_DELAY)
+                searchRequest(searchQuery)
+            }
         } else {
-            handler.post(searchRunnable)
+            searchRequest(searchQuery)
         }
     }
 
@@ -107,28 +101,29 @@ class SearchViewModel(
     }
 
     private fun updateState() {
-        when {
-            forceShowResults == true -> {
-                overrideStateLiveData(SearchState.SearchResults(savedSearchResults))
-            }
 
-            searchQuery.isNotEmpty() -> {
-                startSearch(true)
-            }
-
-            else -> {
-                val history = searchHistoryInteractor.getHistoryList()
-                if (history.isNotEmpty()) {
-                    overrideStateLiveData(SearchState.History(history))
-                } else {
-                    overrideStateLiveData(SearchState.Empty)
+        if (!isForceShowResults) {
+            when {
+                isEditTextInFocus && searchQuery.isNotEmpty() -> {
+                    startSearch(true)        // postState(Loading) -> *search* -> postState()
                 }
+                isEditTextInFocus && searchQuery.isEmpty() -> {
+                    val searchHistory = searchHistoryInteractor.getHistoryList()
+                    if (searchHistory.isNotEmpty()) {
+                        overrideStateLiveData(SearchState.History(searchHistoryInteractor.getHistoryList()))
+                    } else {
+                        overrideStateLiveData(SearchState.Empty)
+                    }
+                }
+                else -> overrideStateLiveData(SearchState.Empty)
             }
+        } else {
+            overrideStateLiveData(SearchState.SearchResults(savedSearchResults))
         }
     }
 
     fun onReturnFromPlayer() {
-        forceShowResults = savedSearchResults.isNotEmpty()
+        isForceShowResults = savedSearchResults.isNotEmpty()
     }
 
     companion object {

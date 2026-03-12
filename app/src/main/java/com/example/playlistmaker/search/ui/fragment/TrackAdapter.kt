@@ -12,8 +12,6 @@ class TrackAdapter(
 ) : RecyclerView.Adapter<TrackViewHolder>() {
 
     private val tracks = mutableListOf<Track>()
-    private var isClickAllowed = true
-    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder =
         TrackViewHolder.from(parent)
@@ -22,9 +20,7 @@ class TrackAdapter(
         val currentTrack = tracks[position]
         holder.bind(currentTrack)
         holder.itemView.setOnClickListener {
-            if (clickDebounce()) {
-                onItemClicked.invoke(currentTrack)
-            }
+            onItemClicked.invoke(currentTrack)
         }
     }
 
@@ -35,18 +31,5 @@ class TrackAdapter(
         tracks.clear()
         tracks.addAll(newList)
         this.notifyDataSetChanged()
-    }
-
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
-    }
-
-    companion object {
-        const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }
