@@ -14,4 +14,6 @@ interface AudioPlayerInteractor {
     fun releasePlayer()
 
     fun setRepoPlayerStateListener(listener: PlayerStateListener)
+
+    fun preparePlayer(url: String?)
 }

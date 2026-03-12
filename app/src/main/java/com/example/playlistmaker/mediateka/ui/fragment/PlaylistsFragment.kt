@@ -44,7 +44,8 @@ class PlaylistsFragment : Fragment() {
     }
 
     private fun showPlaceholder() {
-        binding!!.placeholder.apply {
+        binding!!.placeholderLayoutFavorites.apply {
+            root.visibility = View.VISIBLE
             placeholderButton.visibility = View.VISIBLE
             placeholderImage.visibility = View.VISIBLE
             placeholderText.visibility = View.VISIBLE

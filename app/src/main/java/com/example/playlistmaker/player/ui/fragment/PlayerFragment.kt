@@ -1,6 +1,7 @@
 package com.example.playlistmaker.player.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
-import com.example.playlistmaker.player.domain.entity.PlayerState
 import com.example.playlistmaker.player.ui.entity.PlayerScreenState
 import com.example.playlistmaker.player.ui.viewModel.PlayerViewModel
 import com.example.playlistmaker.search.domain.entity.Track
@@ -30,6 +30,11 @@ class PlayerFragment : Fragment() {
     }
     private lateinit var viewModel: PlayerViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("PLAYER", "PlayerFragment onCreate called")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,9 +48,11 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding!!.playerToolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
+        viewModel.initialize(track)
 
+        binding!!.playerToolbar.setNavigationOnClickListener {
+            //            viewModel.resetPlayer()
+            findNavController().navigateUp()
         }
 
         // Секция с информацией о треке
@@ -67,12 +74,7 @@ class PlayerFragment : Fragment() {
         }
 
         viewModel.observeScreenState().observe(viewLifecycleOwner) {
-            when (it.getPlayerState()) {
-                PlayerState.DEFAULT -> showPreparedDefaultOrPaused(it)
-                PlayerState.PAUSED -> showPreparedDefaultOrPaused(it)
-                PlayerState.PLAYING -> showPlaying(it)
-                PlayerState.PREPARED -> showPreparedDefaultOrPaused(it)
-            }
+            renderState(it)
         }
         viewModel.observeErrorMessage().observe(viewLifecycleOwner) {
             showToast(it)
@@ -94,29 +96,46 @@ class PlayerFragment : Fragment() {
                 showToast(e.message.toString())
             }
         }
+
+        binding!!.likeButton.setOnClickListener {
+            viewModel.onFavoriteButtonClicked()
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.onPause()
+        viewModel.pause()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModel.releasePlayer()
         binding = null
     }
 
-    private fun showPreparedDefaultOrPaused(state: PlayerScreenState) {
-        binding!!.apply {
-            playButton.setImageResource(R.drawable.button_play)
-            listeningTime.text = state.getCurrentPosition()
+        private fun renderState(state: PlayerScreenState) {
+            binding!!.apply {
+            showPlaying(state)
+            showFavoriteButtonActive(state.isFavorite())
+                listeningTime.text = state.getCurrentPosition()
         }
     }
 
     private fun showPlaying(state: PlayerScreenState) {
         binding!!.apply {
-            playButton.setImageResource(R.drawable.button_pause)
-            listeningTime.text = state.getCurrentPosition()
+            if (state.isPlayButtonShown()) {
+                playButton.setImageResource(R.drawable.button_play)
+            } else {
+                playButton.setImageResource(R.drawable.button_pause)
+            }
+        }
+    }
+
+    private fun showFavoriteButtonActive(isActive: Boolean) {
+        if (isActive) {
+            binding!!.likeButton.setImageResource(R.drawable.button_like_active)
+        } else {
+            binding!!.likeButton.setImageResource(R.drawable.button_like_inactive)
         }
     }
 

@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.TrackSearchItemBinding
+import com.example.playlistmaker.databinding.ItemTrackSearchBinding
 import com.example.playlistmaker.util.Util.Companion.dpToPx
 import com.example.playlistmaker.search.domain.entity.Track
 
-class TrackViewHolder(private val binding: TrackSearchItemBinding) :
+class TrackViewHolder(private val binding: ItemTrackSearchBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(model: Track) {
@@ -28,7 +28,7 @@ class TrackViewHolder(private val binding: TrackSearchItemBinding) :
     companion object {
         fun from(parent: ViewGroup): TrackViewHolder {
             val inflater = LayoutInflater.from(parent.context)
-            val binding = TrackSearchItemBinding.inflate(inflater, parent, false)
+            val binding = ItemTrackSearchBinding.inflate(inflater, parent, false)
             return TrackViewHolder(binding)
         }
     }

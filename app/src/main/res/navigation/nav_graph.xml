@@ -5,6 +5,10 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/mediatekaFragment">
 
+    <action
+        android:id="@+id/action_global_to_playerFragment"
+        app:destination="@id/playerFragment" />
+
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.playlistmaker.search.ui.fragment.SearchFragment"

@@ -12,7 +12,6 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
@@ -20,8 +19,6 @@ import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.player.ui.fragment.PlayerFragment
 import com.example.playlistmaker.search.ui.entity.SearchState
 import com.example.playlistmaker.search.ui.viewModel.SearchViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -29,8 +26,6 @@ class SearchFragment : Fragment() {
     private var binding: FragmentSearchBinding? = null
     private val viewModel: SearchViewModel by viewModel()
     private lateinit var adapter: TrackAdapter
-
-    private var isClickAllowed = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,21 +41,21 @@ class SearchFragment : Fragment() {
 
         adapter = TrackAdapter(
             onItemClicked = { currentTrack ->
-                if (clickDebounce()) {
-                    viewModel.onItemClicked(currentTrack)
 
-                    findNavController().currentBackStackEntry?.savedStateHandle
-                        ?.set(RETURNING_FROM_PLAYER, true)
+                viewModel.onItemClicked(currentTrack)
+
+                findNavController().currentBackStackEntry?.savedStateHandle
+                    ?.set(RETURNING_FROM_PLAYER, true)
 
 
-                    findNavController().navigate(
-                        R.id.action_searchFragment_to_playerFragment,
-                        bundleOf(PlayerFragment.ARGS_TRACK to currentTrack)
-                    )
-                }
+                findNavController().navigate(
+                    R.id.action_global_to_playerFragment,
+                    bundleOf(PlayerFragment.ARGS_TRACK to currentTrack)
+                )
             }
         )
 
+        // Для принудительного показа результатов поиска после возврата с экрана плеера
         findNavController().currentBackStackEntry?.savedStateHandle
             ?.getLiveData<Boolean>(RETURNING_FROM_PLAYER)
             ?.observe(viewLifecycleOwner) { returning ->
@@ -79,10 +74,10 @@ class SearchFragment : Fragment() {
         }
 
         binding!!.apply {
-            recyclerViewLayout.recyclerView.layoutManager =
+            searchContentLayout.content.layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-            recyclerViewLayout.recyclerView.adapter = adapter
+            searchContentLayout.content.adapter = adapter
 
             editTextSearch.doOnTextChanged { text, _, _, _ ->
                 searchEditTextClearButton.isVisible = !text.isNullOrEmpty()
@@ -107,12 +102,12 @@ class SearchFragment : Fragment() {
                 editTextSearch.clearFocus()
             }
 
-            recyclerViewLayout.historyClearButton.setOnClickListener {
+            searchContentLayout.historyClearButton.setOnClickListener {
                 viewModel.onClearHistoryButtonClicked()
                 adapter.updateTrackList(emptyList())
             }
 
-            placeholderLayout.tryAgainButton.setOnClickListener {
+            searchPlaceholderLayout.tryAgainButton.setOnClickListener {
                 viewModel.onTryAgainButtonClicked()
             }
         }
@@ -122,7 +117,7 @@ class SearchFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         super.onResume()
-        isClickAllowed = true
+        //        isClickAllowed = true
         adapter.notifyDataSetChanged()
     }
 
@@ -131,42 +126,30 @@ class SearchFragment : Fragment() {
         binding = null
     }
 
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            lifecycleScope.launch {
-                delay(CLICK_DEBOUNCE_DELAY)
-                isClickAllowed = true
-            }
-        }
-        return current
-    }
-
     private fun renderState(state: SearchState) {
         when (state) {
             is SearchState.Empty -> showEmpty()
             is SearchState.History -> showHistory(state)
             is SearchState.Loading -> showLoading()
             is SearchState.PlaceHolder -> showPlaceholder(state)
-            is SearchState.SearchResults -> showSearchResults(state)
+            is SearchState.Content -> showSearchResults(state)
         }
     }
 
     private fun showEmpty() {
         binding!!.apply {
             progressBar.visibility = View.GONE
-            recyclerViewLayout.root.visibility = View.GONE
-            placeholderLayout.root.visibility = View.GONE
+            searchContentLayout.root.visibility = View.GONE
+            searchPlaceholderLayout.root.visibility = View.GONE
         }
     }
 
     private fun showHistory(state: SearchState.History) {
         binding!!.apply {
             progressBar.visibility = View.GONE
-            placeholderLayout.root.visibility = View.GONE
+            searchPlaceholderLayout.root.visibility = View.GONE
         }
-        binding!!.recyclerViewLayout.apply {
+        binding!!.searchContentLayout.apply {
             root.visibility = View.VISIBLE
             youSearchedText.visibility = View.VISIBLE
             historyClearButton.visibility = View.VISIBLE
@@ -177,18 +160,18 @@ class SearchFragment : Fragment() {
     private fun showLoading() {
         binding!!.apply {
             progressBar.visibility = View.VISIBLE
-            recyclerViewLayout.root.visibility = View.GONE
-            placeholderLayout.root.visibility = View.GONE
+            searchContentLayout.root.visibility = View.GONE
+            searchPlaceholderLayout.root.visibility = View.GONE
         }
     }
 
     private fun showPlaceholder(state: SearchState.PlaceHolder) {
         binding!!.apply {
             progressBar.visibility = View.GONE
-            recyclerViewLayout.root.visibility = View.GONE
-            placeholderLayout.root.visibility = View.VISIBLE
+            searchContentLayout.root.visibility = View.GONE
+            searchPlaceholderLayout.root.visibility = View.VISIBLE
         }
-        binding!!.placeholderLayout.apply {
+        binding!!.searchPlaceholderLayout.apply {
             placeholderImage.setImageDrawable(
                 AppCompatResources.getDrawable(
                     requireContext(),
@@ -202,13 +185,13 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun showSearchResults(state: SearchState.SearchResults) {
+    private fun showSearchResults(state: SearchState.Content) {
         binding!!.apply {
             progressBar.visibility = View.GONE
-            recyclerViewLayout.root.visibility = View.VISIBLE
-            placeholderLayout.root.visibility = View.GONE
+            searchContentLayout.root.visibility = View.VISIBLE
+            searchPlaceholderLayout.root.visibility = View.GONE
         }
-        binding!!.recyclerViewLayout.apply {
+        binding!!.searchContentLayout.apply {
             youSearchedText.visibility = View.GONE
             historyClearButton.visibility = View.GONE
         }
@@ -216,9 +199,6 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
-
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-
         // для отображения списка результатов поиска при возврате с экрана плеера
         private const val RETURNING_FROM_PLAYER = "returning_from_player"
     }

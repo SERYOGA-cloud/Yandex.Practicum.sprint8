@@ -9,6 +9,7 @@ import com.example.playlistmaker.search.domain.api.TrackSearchInteractor
 import com.example.playlistmaker.search.domain.entity.Resource
 import com.example.playlistmaker.search.domain.entity.Track
 import com.example.playlistmaker.search.ui.entity.SearchState
+import com.example.playlistmaker.util.SEARCH_DEBOUNCE_DELAY
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -76,7 +77,7 @@ class SearchViewModel(
                             } else {
                                 savedSearchResults.clear()
                                 savedSearchResults.addAll(result.results)
-                                overrideStateLiveData(SearchState.SearchResults(result.results))
+                                overrideStateLiveData(SearchState.Content(result.results))
                             }
                         }
                     }
@@ -107,26 +108,28 @@ class SearchViewModel(
                 isEditTextInFocus && searchQuery.isNotEmpty() -> {
                     startSearch(true)        // postState(Loading) -> *search* -> postState()
                 }
+
                 isEditTextInFocus && searchQuery.isEmpty() -> {
-                    val searchHistory = searchHistoryInteractor.getHistoryList()
-                    if (searchHistory.isNotEmpty()) {
-                        overrideStateLiveData(SearchState.History(searchHistoryInteractor.getHistoryList()))
-                    } else {
-                        overrideStateLiveData(SearchState.Empty)
+                    viewModelScope.launch {
+                        searchHistoryInteractor.getHistoryList().collect { searchHistoryList ->
+                            if (searchHistoryList.isNotEmpty()) {
+                                overrideStateLiveData(SearchState.History(searchHistoryList))
+                            } else {
+                                overrideStateLiveData(SearchState.Empty)
+                            }
+                        }
                     }
                 }
+
                 else -> overrideStateLiveData(SearchState.Empty)
             }
+
         } else {
-            overrideStateLiveData(SearchState.SearchResults(savedSearchResults))
+            overrideStateLiveData(SearchState.Content(savedSearchResults))
         }
     }
 
     fun onReturnFromPlayer() {
         isForceShowResults = savedSearchResults.isNotEmpty()
-    }
-
-    companion object {
-        const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }

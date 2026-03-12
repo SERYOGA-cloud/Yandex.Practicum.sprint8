@@ -15,13 +15,13 @@
 
     <TextView
         android:id="@+id/placeholder_text"
-        style="@style/SearchPlaceholderText"
+        style="@style/PlaceholderText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/try_again_button"
-        style="@style/SearchPlaceholderButton"
+        style="@style/PlaceholderButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reload" />

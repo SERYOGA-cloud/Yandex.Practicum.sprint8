@@ -6,7 +6,7 @@
     tools:context=".mediateka.ui.fragment.PlaylistsFragment">
 
     <include
-        android:id="@+id/placeholder"
-        layout="@layout/mediateka_placeholder_layout" />
+        android:id="@+id/placeholder_layout_favorites"
+        layout="@layout/layout_mediateka_placeholder" />
 
 </LinearLayout>

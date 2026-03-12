@@ -91,7 +91,7 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:importantForAccessibility="no"
-        android:src="@drawable/button_like"
+        android:src="@drawable/button_like_inactive"
         app:layout_constraintBottom_toTopOf="@id/play_button"
         app:layout_constraintEnd_toStartOf="@id/right_border"
         app:layout_constraintStart_toEndOf="@id/play_button"

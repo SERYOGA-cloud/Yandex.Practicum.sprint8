@@ -48,4 +48,8 @@ class AudioPlayerInteractorImpl(
     override fun setRepoPlayerStateListener(listener: PlayerStateListener) {
         repository.setPlayerStateListener(listener)
     }
+
+    override fun preparePlayer(url: String?) {
+        repository.preparePlayer(url)
+    }
 }

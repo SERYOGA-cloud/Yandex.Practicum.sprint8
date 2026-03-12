@@ -5,8 +5,10 @@ import com.example.playlistmaker.player.domain.impl.AudioPlayerInteractorImpl
 import com.example.playlistmaker.player.domain.impl.FailedAudioPlayerInteractorImpl
 import com.example.playlistmaker.search.domain.api.SearchHistoryInteractor
 import com.example.playlistmaker.search.domain.api.TrackSearchInteractor
+import com.example.playlistmaker.search.domain.api.TracksDbInteractor
 import com.example.playlistmaker.search.domain.impl.SearchHistoryInteractorImpl
 import com.example.playlistmaker.search.domain.impl.TrackSearchInteractorImpl
+import com.example.playlistmaker.search.domain.impl.TracksDbInteractorImpl
 import com.example.playlistmaker.settings.domain.api.ThemeInteractor
 import com.example.playlistmaker.settings.domain.impl.ThemeInteractorImpl
 import com.example.playlistmaker.sharing.domain.api.SharingInteractor
@@ -44,10 +46,15 @@ val interactorModule = module {
     factory<AudioPlayerInteractor> { (url: String?) ->
         if (!url.isNullOrBlank()) {
             AudioPlayerInteractorImpl(
-                repository = get { parametersOf(url) }
-            )
+                repository = get())
         } else {
             FailedAudioPlayerInteractorImpl()
         }
+    }
+
+    single<TracksDbInteractor> {
+        TracksDbInteractorImpl(
+            repository = get()
+        )
     }
 }

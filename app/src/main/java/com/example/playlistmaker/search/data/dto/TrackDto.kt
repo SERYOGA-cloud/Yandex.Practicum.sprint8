@@ -10,7 +10,8 @@ data class TrackDto(
     val country: String,
     val trackTimeMillis: Int,
     val artworkUrl100: String,
-    val previewUrl: String?
+    val previewUrl: String?,
+    var isFavorite: Boolean
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

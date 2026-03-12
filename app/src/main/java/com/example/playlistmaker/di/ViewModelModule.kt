@@ -28,12 +28,15 @@ val viewModelModule = module {
     viewModel<PlayerViewModel> { (url: String?) ->
 
         PlayerViewModel(
-            playerInteractor = get { parametersOf(url) }
+            playerInteractor = get { parametersOf(url) },
+            tracksDbInteractor = get()
         )
     }
 
     viewModel<FavoritesViewModel> {
-        FavoritesViewModel()
+        FavoritesViewModel(
+            dataBaseInteractor = get()
+        )
     }
 
     viewModel<PlaylistsViewModel> {
