@@ -1,19 +1,22 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.mediateka.favorites.domain.api.TracksInteractor
+import com.example.playlistmaker.mediateka.favorites.domain.impl.TracksInteractorImpl
+import com.example.playlistmaker.mediateka.playlists.domain.api.PlaylistsInteractor
+import com.example.playlistmaker.mediateka.playlists.domain.api.StorageInteractor
+import com.example.playlistmaker.mediateka.playlists.domain.impl.PlaylistsInteractorImpl
+import com.example.playlistmaker.mediateka.playlists.domain.impl.StorageInteractorImpl
 import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.impl.AudioPlayerInteractorImpl
 import com.example.playlistmaker.player.domain.impl.FailedAudioPlayerInteractorImpl
 import com.example.playlistmaker.search.domain.api.SearchHistoryInteractor
 import com.example.playlistmaker.search.domain.api.TrackSearchInteractor
-import com.example.playlistmaker.search.domain.api.TracksDbInteractor
 import com.example.playlistmaker.search.domain.impl.SearchHistoryInteractorImpl
 import com.example.playlistmaker.search.domain.impl.TrackSearchInteractorImpl
-import com.example.playlistmaker.search.domain.impl.TracksDbInteractorImpl
 import com.example.playlistmaker.settings.domain.api.ThemeInteractor
 import com.example.playlistmaker.settings.domain.impl.ThemeInteractorImpl
 import com.example.playlistmaker.sharing.domain.api.SharingInteractor
 import com.example.playlistmaker.sharing.domain.impl.SharingInteractorImpl
-import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
 val interactorModule = module {
@@ -52,8 +55,20 @@ val interactorModule = module {
         }
     }
 
-    single<TracksDbInteractor> {
-        TracksDbInteractorImpl(
+    single<TracksInteractor> {
+        TracksInteractorImpl(
+            repository = get()
+        )
+    }
+
+    factory<PlaylistsInteractor> {
+        PlaylistsInteractorImpl(
+            repository = get()
+        )
+    }
+
+    factory<StorageInteractor> {
+        StorageInteractorImpl(
             repository = get()
         )
     }

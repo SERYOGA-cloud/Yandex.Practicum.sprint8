@@ -34,6 +34,7 @@
         <!-- Цвет текста на фоне кнопок главного меню -->
         <item name="colorOnTertiary">@color/yp_black</item>
 
+        <item name="hintSelectorColor">@color/hint_selector_light</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />

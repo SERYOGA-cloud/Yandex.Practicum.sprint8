@@ -1,6 +1,6 @@
 package com.example.playlistmaker.search.domain.converters
 
-import com.example.playlistmaker.search.data.db.entity.TrackEntity
+import com.example.playlistmaker.mediateka.favorites.db.entity.TrackEntity
 import com.example.playlistmaker.search.data.dto.TrackDto
 import com.example.playlistmaker.search.domain.entity.Track
 import com.example.playlistmaker.util.Util.Companion.mmSsToMillis
@@ -35,7 +35,7 @@ object TrackConverter {
             trackTimeConverted = track.trackTimeConverted,
             artworkUrl100 = track.artworkUrl100,
             previewUrl = track.previewUrl,
-            isFavorite = track.isFavorite
+            isFavorite = if (track.isFavorite) 1 else 0
         )
     }
 
@@ -51,11 +51,11 @@ object TrackConverter {
             trackTimeConverted = trackEntity.trackTimeConverted,
             artworkUrl100 = trackEntity.artworkUrl100,
             previewUrl = trackEntity.previewUrl,
-            isFavorite = trackEntity.isFavorite
+            isFavorite = trackEntity.isFavorite == 1
         )
     }
 
     fun convertFromDbEntityList(dbList: List<TrackEntity>): List<Track> {
-        return dbList.map { trackEntity -> convertFromDbEntity(trackEntity)}
+        return dbList.map { trackEntity -> convertFromDbEntity(trackEntity) }
     }
 }

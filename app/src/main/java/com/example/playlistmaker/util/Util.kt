@@ -31,5 +31,17 @@ class Util {
         fun getCoverArtwork512(url100: String?): String? {
             return url100?.replaceAfterLast('/', "512x512bb.jpg")
         }
+
+        fun getRusNumeralTrackEnding(count: Int): String {
+            val lastDigit = count % 10
+            val lastTwoDigits = count % 100
+
+            return when {
+                lastTwoDigits in 11..14 -> "ов"
+                lastDigit == 1 -> ""
+                lastDigit in 2..4 -> "а"
+                else -> "ов"
+            }
+        }
     }
 }
