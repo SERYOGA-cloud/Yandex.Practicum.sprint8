@@ -21,4 +21,6 @@ class FailedAudioPlayerInteractorImpl : AudioPlayerInteractor {
     override fun releasePlayer() {}
 
     override fun setRepoPlayerStateListener(listener: PlayerStateListener) {}
+
+    override fun preparePlayer(url: String?) {}
 }

@@ -9,7 +9,7 @@ sealed interface SearchState {
 
     data object Loading : SearchState
 
-    data class SearchResults(val tracks: List<Track>) : SearchState
+    data class Content(val tracks: List<Track>) : SearchState
 
     sealed class PlaceHolder(
         open val imageId: Int, open val textId: Int

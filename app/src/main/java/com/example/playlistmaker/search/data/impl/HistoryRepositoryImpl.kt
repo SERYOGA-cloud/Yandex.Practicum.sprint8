@@ -1,13 +1,17 @@
 package com.example.playlistmaker.search.data.impl
 
 import android.content.SharedPreferences
+import com.example.playlistmaker.search.data.db.AppDataBase
 import com.example.playlistmaker.search.data.dto.TrackDto
 import com.example.playlistmaker.search.domain.api.SearchHistoryRepository
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 const val SEARCH_HISTORY = "search_history"
 
 class SearchHistoryRepositoryImpl(
+    private val dataBase: AppDataBase,
     private val prefs: SharedPreferences,
     private val gson: Gson
 ) :
@@ -28,8 +32,16 @@ class SearchHistoryRepositoryImpl(
         saveHistoryToPrefs()
     }
 
-    override fun getHistoryList(): MutableList<TrackDto> {
-        return tracksHistory
+    override fun getHistoryList(): Flow<MutableList<TrackDto>> {
+        return dataBase.trackDao().getAllTrackIds().map { allFavoriteIds ->
+            tracksHistory.map { trackDto ->
+                trackDto.copy(
+                    isFavorite = allFavoriteIds.contains(
+                        trackDto.trackId
+                    )
+                )
+            }.toMutableList()
+        }
     }
 
     override fun clearHistory() {

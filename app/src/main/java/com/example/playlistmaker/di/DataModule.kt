@@ -1,7 +1,9 @@
 package com.example.playlistmaker.di
 
 import android.content.Context
+import androidx.room.Room
 import com.example.playlistmaker.search.data.NetworkClient
+import com.example.playlistmaker.search.data.db.AppDataBase
 import com.example.playlistmaker.search.data.network.ITunesApi
 import com.example.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.google.gson.Gson
@@ -33,5 +35,10 @@ val dataModule = module {
         RetrofitNetworkClient(
             iTunesService = get()
         )
+    }
+
+    single<AppDataBase> {
+        Room.databaseBuilder(androidContext(), AppDataBase::class.java, "database.db")
+            .build()
     }
 }

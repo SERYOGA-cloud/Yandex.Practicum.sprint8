@@ -14,7 +14,8 @@ data class Track(
     val country: String,
     val trackTimeConverted: String,
     val artworkUrl100: String,
-    val previewUrl: String?
+    val previewUrl: String?,
+    var isFavorite: Boolean
 ) :Parcelable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

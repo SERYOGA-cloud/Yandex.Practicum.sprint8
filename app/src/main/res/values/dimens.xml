@@ -53,6 +53,7 @@
     <dimen name="mediateka_placeholder_text_margin_top">16dp</dimen>
     <dimen name="mediateka_tabs_margin_horizontal">16dp</dimen>
     <dimen name="bottom_nav_menu_horizontal_divider">0.5dp</dimen>
+    <dimen name="mediateka_fragment_container_margin_top">24dp</dimen>
     <dimen name="dimen_6">6dp</dimen>
     <dimen name="dimen_8">8dp</dimen>
     <dimen name="dimen_9">9dp</dimen>

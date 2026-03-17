@@ -61,13 +61,13 @@
 
         <!-- Список найденных треков / поиска -->
         <include
-            android:id="@+id/recycler_view_layout"
-            layout="@layout/recycler_view_layout" />
+            android:id="@+id/search_content_layout"
+            layout="@layout/layout_search_recycler_view" />
 
         <!-- Заглушка -->
         <include
-            android:id="@+id/placeholder_layout"
-            layout="@layout/placeholder_layout" />
+            android:id="@+id/search_placeholder_layout"
+            layout="@layout/layout_search_placeholder" />
 
     </FrameLayout>
 </LinearLayout>

@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="@dimen/horizontal_padding"
-    android:paddingBottom="@dimen/padding_bottom">
+    android:paddingBottom="@dimen/padding_bottom"
+    android:visibility="gone">
 
     <Button
         android:id="@+id/placeholder_button"
