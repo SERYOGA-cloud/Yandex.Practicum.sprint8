@@ -23,12 +23,14 @@ class RootActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
 
             when (destination.id) {
-                R.id.playerFragment -> {
+                R.id.playerFragment, R.id.newPlayerFragment -> {
                     binding.bottomNavView.isGone = true
+                    binding.navMenuTopLine.isGone = true
                 }
 
                 else -> {
                     binding.bottomNavView.isVisible = true
+                    binding.navMenuTopLine.isVisible = true
                 }
             }
 

@@ -11,4 +11,10 @@ interface StringResourceProvider {
     fun provideSupportMsgSubject(): String
 
     fun provideSupportMsgText(): String
+
+    fun getPlaylistCreatedMsg(playlistTitle: String): String
+
+    fun getTrackAlreadyAddedMsg(playlistName: String): String
+
+    fun getTrackAddedSuccessfullyMsg(playlistName: String): String
 }

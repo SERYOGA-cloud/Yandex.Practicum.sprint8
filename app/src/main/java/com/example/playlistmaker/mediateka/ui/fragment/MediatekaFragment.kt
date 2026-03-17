@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentMediatekaBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MediatekaFragment : Fragment() {
@@ -28,6 +29,21 @@ class MediatekaFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding!!.apply {
+            // Добаляем нижний отступ для ViewPager,
+            // равный высоте bottom navigation для правильной отрисовки списков
+            viewPager.post {
+                view.post {
+                    val bottomNav =
+                        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+                    bottomNav?.let { bottomNavigationView ->
+                        val params =
+                            binding?.viewPager?.layoutParams as ViewGroup.MarginLayoutParams
+                        params.bottomMargin = bottomNavigationView.height
+                        binding?.viewPager?.layoutParams = params
+                    }
+                }
+            }
+
             viewPager.adapter = MediatekaViewPagerAdapter(
                 fragmentManager = childFragmentManager,
                 lifecycle = lifecycle

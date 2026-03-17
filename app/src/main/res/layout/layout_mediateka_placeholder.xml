@@ -7,17 +7,6 @@
     android:paddingBottom="@dimen/padding_bottom"
     android:visibility="gone">
 
-    <Button
-        android:id="@+id/placeholder_button"
-        style="@style/PlaceholderButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/mediateka_placeholder_button_margin_top"
-        android:text="@string/new_playlist"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageView
         android:id="@+id/placeholder_image"
         android:layout_width="wrap_content"

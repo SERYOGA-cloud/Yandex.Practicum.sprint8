@@ -25,4 +25,15 @@ class StringResourceProviderImpl(private val context: Context) : StringResourceP
         return context.getString(R.string.support_email_text)
     }
 
+    override fun getPlaylistCreatedMsg(playlistTitle: String): String {
+        return context.getString(R.string.playlist_created, playlistTitle)
+    }
+
+    override fun getTrackAlreadyAddedMsg(playlistName: String): String {
+        return context.getString(R.string.track_already_added_to_playlist, playlistName)
+    }
+
+    override fun getTrackAddedSuccessfullyMsg(playlistName: String): String {
+        return context.getString(R.string.track_added_successfully_to_playlist, playlistName)
+    }
 }
