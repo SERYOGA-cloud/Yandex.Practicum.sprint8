@@ -3,6 +3,7 @@ package com.example.playlistmaker.mediateka.playlists.db.entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import com.example.playlistmaker.mediateka.playlists.db.entity.PlaylistTrackEntity
 import com.example.playlistmaker.mediateka.favorites.db.entity.TrackEntity
 
 @Entity(
@@ -16,7 +17,7 @@ import com.example.playlistmaker.mediateka.favorites.db.entity.TrackEntity
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = TrackEntity::class,
+            entity = PlaylistTrackEntity::class,
             parentColumns = ["trackId"],
             childColumns = ["trackId"],
             onDelete = ForeignKey.CASCADE

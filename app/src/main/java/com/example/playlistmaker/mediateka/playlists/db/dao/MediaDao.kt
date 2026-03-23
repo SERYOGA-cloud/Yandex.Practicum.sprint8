@@ -12,6 +12,7 @@ import com.example.playlistmaker.mediateka.playlists.db.entity.PlaylistEntity
 import com.example.playlistmaker.mediateka.playlists.db.entity.PlaylistTrackRelation
 import com.example.playlistmaker.mediateka.playlists.db.entity.PlaylistWithTracks
 import kotlinx.coroutines.flow.Flow
+import com.example.playlistmaker.mediateka.playlists.db.entity.PlaylistTrackEntity
 
 @Dao
 interface MediaDao {
@@ -69,6 +70,12 @@ interface MediaDao {
     @Query("SELECT COUNT(*) FROM playlists_tracks WHERE playlistId =:playlistId AND trackId =:trackId")
     suspend fun isTrackInPlaylist(playlistId: Int, trackId: Int): Int
 
+    @Query("SELECT * FROM playlist_track_table WHERE trackId = :trackId")
+    suspend fun getPlaylistTrack(trackId: Int): PlaylistTrackEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPlaylistTrack(track: PlaylistTrackEntity)
+
     @Transaction
     suspend fun addTrackToPlaylist(playlistId: Int, track: TrackEntity): Boolean {
         val isInPlaylist = isTrackInPlaylist(playlistId, track.trackId) > 0
@@ -76,9 +83,22 @@ interface MediaDao {
             return false
         }
 
-        val existingTrack = getTrackById(track.trackId)
+        val existingTrack = getPlaylistTrack(track.trackId)
         if (existingTrack == null) {
-            insertTrack(track)
+            insertPlaylistTrack(
+                PlaylistTrackEntity(
+                    trackId = track.trackId,
+                    trackName = track.trackName,
+                    artistName = track.artistName,
+                    collectionName = track.collectionName,
+                    releaseDate = track.releaseDate,
+                    primaryGenreName = track.primaryGenreName,
+                    country = track.country,
+                    trackTimeConverted = track.trackTimeConverted,
+                    artworkUrl100 = track.artworkUrl100,
+                    previewUrl = track.previewUrl
+                )
+            )
         }
 
         insertPlaylistTrackRelation(PlaylistTrackRelation(playlistId, track.trackId))

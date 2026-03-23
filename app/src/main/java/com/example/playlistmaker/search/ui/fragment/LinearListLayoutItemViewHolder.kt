@@ -50,6 +50,8 @@ class LinearListLayoutItemViewHolder(private val binding: ItemLinearListLayoutBi
 
             dotTextDivider.visibility = View.GONE
             trackTime.visibility = View.GONE
+
+            buttonToTrack.visibility = View.GONE
         }
         Glide.with(itemView)
             .load(playlist.coverUri)

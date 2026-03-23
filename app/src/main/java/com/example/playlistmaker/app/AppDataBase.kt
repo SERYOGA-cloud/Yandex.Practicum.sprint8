@@ -6,8 +6,9 @@ import com.example.playlistmaker.mediateka.favorites.db.entity.TrackEntity
 import com.example.playlistmaker.mediateka.playlists.db.dao.MediaDao
 import com.example.playlistmaker.mediateka.playlists.db.entity.PlaylistEntity
 import com.example.playlistmaker.mediateka.playlists.db.entity.PlaylistTrackRelation
+import com.example.playlistmaker.mediateka.playlists.db.entity.PlaylistTrackEntity
 
-@Database(version = 1, entities = [TrackEntity::class, PlaylistEntity::class, PlaylistTrackRelation::class])
+@Database(version = 1, entities = [TrackEntity::class, PlaylistEntity::class, PlaylistTrackEntity::class, PlaylistTrackRelation::class])
 abstract class AppDataBase : RoomDatabase() {
 
     abstract fun mediaDao(): MediaDao

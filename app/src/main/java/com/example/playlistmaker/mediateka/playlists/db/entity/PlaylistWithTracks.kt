@@ -3,6 +3,7 @@ package com.example.playlistmaker.mediateka.playlists.db.entity
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
+import com.example.playlistmaker.mediateka.playlists.db.entity.PlaylistTrackEntity
 import com.example.playlistmaker.mediateka.favorites.db.entity.TrackEntity
 
 class PlaylistWithTracks(
@@ -18,5 +19,5 @@ class PlaylistWithTracks(
             entityColumn = "trackId"
         )
     )
-    val tracks: List<TrackEntity>
+    val tracks: List<PlaylistTrackEntity>
 )

@@ -29,7 +29,7 @@
             android:layout_height="wrap_content">
 
             <!-- Обложка альбома/место для обложки -->
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/new_photo_view"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -42,11 +42,10 @@
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
 
-            </ImageView>
+                app:shapeAppearanceOverlay="@style/RoundedImage" />
 
-            <!-- Поле для ввода названия -->
             <com.google.android.material.textfield.TextInputLayout
 
                 android:id="@+id/new_playlist_title"

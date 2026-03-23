@@ -17,6 +17,10 @@ import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.example.playlistmaker.mediateka.playlists.ui.viewModel.NewPlaylistViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.activity.OnBackPressedCallback
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class NewPlaylistFragment : Fragment() {
 
@@ -37,6 +41,15 @@ class NewPlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    setupBackNavigation()
+                }
+            }
+        )
+
         viewModel.observeToastMessage().observe(viewLifecycleOwner) { message ->
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
@@ -55,7 +68,15 @@ class NewPlaylistFragment : Fragment() {
                     val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
                     requireContext().contentResolver.takePersistableUriPermission(uri, flag)
 
-                    binding!!.newPhotoView.setImageURI(uri)
+                    // Правильное использование Glide с закруглением
+                    val radius = com.example.playlistmaker.util.Util.dpToPx(8f, requireContext())
+
+                    Glide.with(this)
+                        .load(uri)
+                        .transform(com.bumptech.glide.load.resource.bitmap.CenterCrop(),
+                            com.bumptech.glide.load.resource.bitmap.RoundedCorners(radius))
+                        .into(binding!!.newPhotoView)
+
                     viewModel.onImageLoaded(uri)
                 } else {
                     Log.d("NEW_PLAYLIST_FRAGMENT", "No media selected")

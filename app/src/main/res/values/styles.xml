@@ -159,4 +159,9 @@
         <item name="android:textSize">@dimen/text_size_small_4</item>
     </style>
 
+    <style name="RoundedImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
 </resources>

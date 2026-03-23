@@ -159,6 +159,9 @@ class PlayerViewModel(
             } else {
                 val message = stringResourceProvider.getTrackAddedSuccessfullyMsg(playlist.title)
                 _toastMessageLiveData.value = message
+
+                val currentState = _screenStateLiveData.value
+                _screenStateLiveData.value = currentState?.copy(isBottomSheetVisible = false)
             }
         }
     }
