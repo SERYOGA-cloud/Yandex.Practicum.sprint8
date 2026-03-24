@@ -1,7 +1,7 @@
 package com.example.playlistmaker.search.data.impl
 
 import com.example.playlistmaker.search.data.NetworkClient
-import com.example.playlistmaker.search.data.db.AppDataBase
+import com.example.playlistmaker.app.AppDataBase
 import com.example.playlistmaker.search.data.dto.TrackSearchRequest
 import com.example.playlistmaker.search.data.dto.TrackSearchResponse
 import com.example.playlistmaker.search.data.mapper.TrackListFromDtoMapper
@@ -27,7 +27,7 @@ class TrackSearchRepositoryImpl(
                 }
 
                 response.results.isNotEmpty() -> {
-                    dataBase.trackDao().getAllTrackIds()
+                    dataBase.mediaDao().getAllTrackIds()
                         .map { allFavoriteIds ->
                             TrackListFromDtoMapper.map(response.results, allFavoriteIds)
                         }

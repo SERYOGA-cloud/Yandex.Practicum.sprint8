@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Пунктирная рамка -->
+    <item>
+        <shape android:shape="rectangle">
+
+            <stroke
+                android:width="@dimen/new_photo_dashed_outline_width"
+                android:color="@color/grey"
+                android:dashWidth="@dimen/new_photo_dashed_outline_dash_width"
+                android:dashGap="@dimen/new_photo_dashed_outline_dash_gap" />
+
+            <corners android:radius="@dimen/new_photo_dashed_outline_dash_corner_radius" />
+        </shape>
+    </item>
+
+    <!-- Иконка "добавить обложку" -->
+    <item
+        android:left="@dimen/new_photo_icon_inside_padding"
+        android:right="@dimen/new_photo_icon_inside_padding"
+        android:top="@dimen/new_photo_icon_inside_padding"
+        android:bottom="@dimen/new_photo_icon_inside_padding"
+        android:drawable="@drawable/icon_add_photo"
+        android:gravity="center" />
+</layer-list>

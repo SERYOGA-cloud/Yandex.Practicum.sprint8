@@ -45,7 +45,7 @@ class SearchFragment : Fragment() {
                 viewModel.onItemClicked(currentTrack)
 
                 findNavController().currentBackStackEntry?.savedStateHandle
-                    ?.set(RETURNING_FROM_PLAYER, true)
+                    ?.set(RETURNING_TO_SEARCH, true)
 
 
                 findNavController().navigate(
@@ -55,15 +55,15 @@ class SearchFragment : Fragment() {
             }
         )
 
-        // Для принудительного показа результатов поиска после возврата с экрана плеера
+        // Для принудительного показа результатов поиска после возврата с другого экрана
         findNavController().currentBackStackEntry?.savedStateHandle
-            ?.getLiveData<Boolean>(RETURNING_FROM_PLAYER)
+            ?.getLiveData<Boolean>(RETURNING_TO_SEARCH)
             ?.observe(viewLifecycleOwner) { returning ->
                 if (returning) {
                     viewModel.onReturnFromPlayer()
 
                     findNavController().currentBackStackEntry?.savedStateHandle?.set(
-                        RETURNING_FROM_PLAYER,
+                        RETURNING_TO_SEARCH,
                         false
                     )
                 }
@@ -117,7 +117,6 @@ class SearchFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         super.onResume()
-        //        isClickAllowed = true
         adapter.notifyDataSetChanged()
     }
 
@@ -199,7 +198,7 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
-        // для отображения списка результатов поиска при возврате с экрана плеера
-        private const val RETURNING_FROM_PLAYER = "returning_from_player"
+        // для отображения списка результатов поиска
+        private const val RETURNING_TO_SEARCH = "returning_to_search"
     }
 }

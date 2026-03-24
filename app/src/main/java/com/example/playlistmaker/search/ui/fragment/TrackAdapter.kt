@@ -4,23 +4,19 @@ import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.search.domain.entity.Track
-import com.example.playlistmaker.util.CLICK_DEBOUNCE_DELAY
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.example.playlistmaker.util.ClickDebouncer
 
 class TrackAdapter(
     private val onItemClicked: (track: Track) -> Unit
-) : RecyclerView.Adapter<TrackViewHolder>() {
+) : RecyclerView.Adapter<LinearListLayoutItemViewHolder>(), ClickDebouncer {
 
     private val tracks = mutableListOf<Track>()
-    private var isClickAllowed = true
+    override var isClickAllowed = true
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder =
-        TrackViewHolder.from(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinearListLayoutItemViewHolder =
+        LinearListLayoutItemViewHolder.from(parent)
 
-    override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: LinearListLayoutItemViewHolder, position: Int) {
         val currentTrack = tracks[position]
         holder.bind(currentTrack)
         holder.itemView.setOnClickListener {
@@ -37,17 +33,5 @@ class TrackAdapter(
         tracks.clear()
         tracks.addAll(newList)
         this.notifyDataSetChanged()
-    }
-
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            CoroutineScope(Dispatchers.Main).launch {
-                delay(CLICK_DEBOUNCE_DELAY)
-                isClickAllowed = true
-            }
-        }
-        return current
     }
 }

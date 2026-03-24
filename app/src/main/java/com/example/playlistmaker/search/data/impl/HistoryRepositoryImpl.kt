@@ -1,7 +1,7 @@
 package com.example.playlistmaker.search.data.impl
 
 import android.content.SharedPreferences
-import com.example.playlistmaker.search.data.db.AppDataBase
+import com.example.playlistmaker.app.AppDataBase
 import com.example.playlistmaker.search.data.dto.TrackDto
 import com.example.playlistmaker.search.domain.api.SearchHistoryRepository
 import com.google.gson.Gson
@@ -33,7 +33,7 @@ class SearchHistoryRepositoryImpl(
     }
 
     override fun getHistoryList(): Flow<MutableList<TrackDto>> {
-        return dataBase.trackDao().getAllTrackIds().map { allFavoriteIds ->
+        return dataBase.mediaDao().getAllTrackIds().map { allFavoriteIds ->
             tracksHistory.map { trackDto ->
                 trackDto.copy(
                     isFavorite = allFavoriteIds.contains(

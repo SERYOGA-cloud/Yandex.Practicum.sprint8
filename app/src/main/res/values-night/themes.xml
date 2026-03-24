@@ -32,5 +32,7 @@
         <!-- Цвет текста на фоне кнопок главного меню -->
         <item name="colorOnTertiary">@color/yp_black</item>
 
+        <item name="hintSelectorColor">@color/hint_selector_dark</item>
+
     </style>
 </resources>

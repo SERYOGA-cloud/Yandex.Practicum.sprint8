@@ -1,7 +1,8 @@
 package com.example.playlistmaker.di
 
-import com.example.playlistmaker.mediateka.ui.viewModel.FavoritesViewModel
-import com.example.playlistmaker.mediateka.ui.viewModel.PlaylistsViewModel
+import com.example.playlistmaker.mediateka.favorites.ui.viewModel.FavoritesViewModel
+import com.example.playlistmaker.mediateka.playlists.ui.viewModel.NewPlaylistViewModel
+import com.example.playlistmaker.mediateka.playlists.ui.viewModel.PlaylistsViewModel
 import com.example.playlistmaker.player.ui.viewModel.PlayerViewModel
 import com.example.playlistmaker.search.ui.viewModel.SearchViewModel
 import com.example.playlistmaker.settings.ui.viewModel.SettingsViewModel
@@ -29,7 +30,9 @@ val viewModelModule = module {
 
         PlayerViewModel(
             playerInteractor = get { parametersOf(url) },
-            tracksDbInteractor = get()
+            tracksInteractor = get(),
+            playlistsInteractor = get(),
+            stringResourceProvider = get()
         )
     }
 
@@ -40,6 +43,16 @@ val viewModelModule = module {
     }
 
     viewModel<PlaylistsViewModel> {
-        PlaylistsViewModel()
+        PlaylistsViewModel(
+            playlistsInteractor = get()
+        )
+    }
+
+    viewModel<NewPlaylistViewModel> {
+        NewPlaylistViewModel(
+            playlistsInteractor = get(),
+            storageInteractor = get(),
+            stringResProvider = get()
+        )
     }
 }
