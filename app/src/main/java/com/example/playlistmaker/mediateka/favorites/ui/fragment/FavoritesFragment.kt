@@ -40,6 +40,8 @@ class FavoritesFragment : Fragment() {
                     R.id.action_global_to_playerFragment,
                     bundleOf(PlayerFragment.ARGS_TRACK to currentTrack)
                 )
+            },
+            onItemLongClicked = { track ->
             }
         )
 

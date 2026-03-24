@@ -1,5 +1,8 @@
 package com.example.playlistmaker.sharing.domain.impl
 
+import com.example.playlistmaker.mediateka.playlists.domain.converter.PlaylistConverter
+import com.example.playlistmaker.mediateka.playlists.domain.converter.PlaylistConverter.toPlaylistDto
+import com.example.playlistmaker.mediateka.playlists.domain.entity.Playlist
 import com.example.playlistmaker.sharing.domain.api.ExternalNavigator
 import com.example.playlistmaker.sharing.domain.api.SharingInteractor
 import com.example.playlistmaker.sharing.domain.api.StringResourceProvider
@@ -12,6 +15,10 @@ class SharingInteractorImpl(
 
     override fun shareApp() {
         externalNavigator.shareLink(getShareAppLink())
+    }
+
+    override fun sharePlaylist(playlist: Playlist) {
+        externalNavigator.sharePlaylist(toPlaylistDto(playlist))
     }
 
     override fun openTerms() {

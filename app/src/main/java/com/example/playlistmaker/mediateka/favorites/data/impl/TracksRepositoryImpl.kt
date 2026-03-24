@@ -12,8 +12,8 @@ class TracksRepositoryImpl(val dataBase: AppDataBase) : TracksRepository {
 
     private val mediaDao = dataBase.mediaDao()
 
-    override suspend fun addToDataBase(track: TrackEntity) {
-        mediaDao.insertTrack(track)
+    override suspend fun addToFavorites(track: TrackEntity) {
+        mediaDao.addTrackToFavorites(track)
     }
 
     override suspend fun deleteFromFavorites(track: TrackEntity) {

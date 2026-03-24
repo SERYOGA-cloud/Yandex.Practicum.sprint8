@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 class TracksInteractorImpl(val repository: TracksRepository) : TracksInteractor {
     override suspend fun addToDataBase(track: Track) {
-        repository.addToDataBase(convertToDbEntity(track))
+        repository.addToFavorites(convertToDbEntity(track))
     }
 
     override suspend fun deleteFromFavorites(track: Track) {

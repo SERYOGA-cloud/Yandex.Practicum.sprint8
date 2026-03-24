@@ -1,5 +1,6 @@
 package com.example.playlistmaker.sharing.domain.api
 
+import com.example.playlistmaker.playlist.data.dto.PlaylistDto
 import com.example.playlistmaker.sharing.domain.entity.EmailData
 
 interface ExternalNavigator {
@@ -9,4 +10,5 @@ interface ExternalNavigator {
     fun openLink(link: String)
 
     fun openEmail(emailData: EmailData)
+    fun sharePlaylist(playlist: PlaylistDto)
 }

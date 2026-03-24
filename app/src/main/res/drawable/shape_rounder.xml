@@ -3,4 +3,7 @@
 
     <solid android:color="?attr/colorOnPrimaryContainer" />
     <corners android:radius="@dimen/bottom_sheet_rounder_corners_radius" />
+    <size
+        android:width="@dimen/bottom_sheet_rounder_width"
+        android:height="@dimen/bottom_sheet_rounder_height" />
 </shape>

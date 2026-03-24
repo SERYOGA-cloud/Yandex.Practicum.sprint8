@@ -7,7 +7,7 @@
     android:paddingVertical="@dimen/playlist_grid_item_padding_vertical">
 
     <ImageView
-        android:id="@+id/playlist_cover"
+        android:id="@+id/item_playlist_cover"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:importantForAccessibility="no"
@@ -17,21 +17,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/playlist_title"
+        android:id="@+id/item_playlist_title"
         style="@style/PlaylistGridText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/playlist_cover" />
+        app:layout_constraintTop_toBottomOf="@id/item_playlist_cover" />
 
     <TextView
-        android:id="@+id/playlist_tracks_count"
+        android:id="@+id/item_playlist_tracks_count"
         style="@style/PlaylistGridText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/playlist_title" />
+        app:layout_constraintTop_toBottomOf="@id/item_playlist_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

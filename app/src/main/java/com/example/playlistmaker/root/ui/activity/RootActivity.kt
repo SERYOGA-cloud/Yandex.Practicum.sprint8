@@ -23,19 +23,27 @@ class RootActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
 
             when (destination.id) {
-                R.id.playerFragment, R.id.newPlayerFragment -> {
-                    binding.bottomNavView.isGone = true
-                    binding.navMenuTopLine.isGone = true
+                R.id.playerFragment, R.id.newPlaylistFragment, R.id.playlistFragment -> {
+                    showBottomNav(binding, false)
                 }
 
                 else -> {
-                    binding.bottomNavView.isVisible = true
-                    binding.navMenuTopLine.isVisible = true
+                    showBottomNav(binding, true)
                 }
             }
 
         }
 
         binding.bottomNavView.setupWithNavController(navController)
+    }
+
+    private fun showBottomNav(b: ActivityRootBinding, show: Boolean) {
+        if (!show) {
+            b.bottomNavView.isGone = true
+            b.navMenuTopLine.isGone = true
+        } else {
+            b.bottomNavView.isVisible = true
+            b.navMenuTopLine.isVisible = true
+        }
     }
 }

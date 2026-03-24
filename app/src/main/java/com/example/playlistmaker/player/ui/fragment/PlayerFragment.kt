@@ -102,17 +102,17 @@ class PlayerFragment : Fragment() {
         }
 
         //Все, что относится к нижней шторке
-        bottomSheetBehavior = BottomSheetBehavior.from(binding!!.bottomSheet)
+        bottomSheetBehavior = BottomSheetBehavior.from(binding!!.playerBottomSheet)
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_EXPANDED -> {
-                        binding?.overlay?.isVisible = true
+                        binding?.playerOverlay?.isVisible = true
                     }
 
                     else -> {
-                        binding?.overlay?.isGone = true
+                        binding?.playerOverlay?.isGone = true
                     }
                 }
             }
@@ -126,7 +126,7 @@ class PlayerFragment : Fragment() {
             }
         )
         binding!!.apply {
-            overlay.setOnClickListener {
+            playerOverlay.setOnClickListener {
                 viewModel.onOverlayClicked()
             }
             addToPlaylistButton.setOnClickListener {
@@ -137,9 +137,9 @@ class PlayerFragment : Fragment() {
                 findNavController().navigate(R.id.action_global_to_newPlaylistFragment)
             }
 
-            bottomSheetRecyclerView.layoutManager =
+            playerBottomSheetRecyclerView.layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            bottomSheetRecyclerView.adapter = adapter
+            playerBottomSheetRecyclerView.adapter = adapter
         }
     }
 

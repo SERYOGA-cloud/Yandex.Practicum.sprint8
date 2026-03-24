@@ -7,7 +7,8 @@ import com.example.playlistmaker.search.domain.entity.Track
 import com.example.playlistmaker.util.ClickDebouncer
 
 class TrackAdapter(
-    private val onItemClicked: (track: Track) -> Unit
+    val onItemClicked: (track: Track) -> Unit,
+    val onItemLongClicked: (track: Track) -> Unit
 ) : RecyclerView.Adapter<LinearListLayoutItemViewHolder>(), ClickDebouncer {
 
     private val tracks = mutableListOf<Track>()
@@ -22,6 +23,14 @@ class TrackAdapter(
         holder.itemView.setOnClickListener {
             if (clickDebounce()) {
                 onItemClicked.invoke(currentTrack)
+            }
+        }
+        holder.itemView.setOnLongClickListener {
+            if (clickDebounce()) {
+                onItemLongClicked.invoke(currentTrack)
+                true
+            } else {
+                false
             }
         }
     }

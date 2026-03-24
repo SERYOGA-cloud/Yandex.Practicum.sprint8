@@ -17,4 +17,6 @@ interface StringResourceProvider {
     fun getTrackAlreadyAddedMsg(playlistName: String): String
 
     fun getTrackAddedSuccessfullyMsg(playlistName: String): String
+    fun getNoTracksInPlaylistToShareMsg(): String
+    fun getNoChangesInPlaylistMadeMsg(): String
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.TypedValue
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlin.math.roundToInt
 
 class Util {
     companion object {
@@ -18,6 +19,10 @@ class Util {
             val seconds = parts[1].toInt()
 
             return (minutes * 60 + seconds) * 1000
+        }
+
+        fun millisToMinutes(millis: Int): Int {
+            return (millis / 1000 / 60.0).roundToInt()
         }
 
         fun dpToPx(dp: Float, context: Context): Int {
@@ -41,6 +46,18 @@ class Util {
                 lastDigit == 1 -> ""
                 lastDigit in 2..4 -> "а"
                 else -> "ов"
+            }
+        }
+
+        fun getRusNumeralMinutesEnding(count: Int): String {
+            val lastDigit = count % 10
+            val lastTwoDigits = count % 100
+
+            return when {
+                lastTwoDigits in 11..14 -> ""
+                lastDigit == 1 -> "а"
+                lastDigit in 2..4 -> "ы"
+                else -> ""
             }
         }
     }

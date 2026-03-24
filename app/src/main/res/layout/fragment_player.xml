@@ -248,7 +248,7 @@
 
     <!-- Затемнитель -->
     <View
-        android:id="@+id/overlay"
+        android:id="@+id/player_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#99000000"
@@ -256,7 +256,7 @@
 
     <!-- Нижняя шторка -->
     <LinearLayout
-        android:id="@+id/bottom_sheet"
+        android:id="@+id/player_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/shape_bottom_sheet"
@@ -291,7 +291,7 @@
             android:text="@string/new_playlist" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/bottom_sheet_recycler_view"
+            android:id="@+id/player_bottom_sheet_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/bottom_sheet_recycler_view_margin_top" />

@@ -8,18 +8,38 @@ import com.example.playlistmaker.mediateka.playlists.domain.api.PlaylistsReposit
 import kotlinx.coroutines.flow.Flow
 
 class PlaylistsRepositoryImpl(dataBase: AppDataBase) : PlaylistsRepository {
-    private val playlistDao = dataBase.mediaDao()
+    private val mediaDao = dataBase.mediaDao()
 
     override suspend fun createPlaylist(playlist: PlaylistEntity) {
-        playlistDao.insertPlaylist(playlist)
+        mediaDao.insertPlaylist(playlist)
     }
 
     override suspend fun addTrackToPlaylist(playlistId: Int, track: TrackEntity): Boolean {
-        val isSuccess: Boolean = playlistDao.addTrackToPlaylist(playlistId, track)
+        val isSuccess: Boolean = mediaDao.addTrackToPlaylist(playlistId, track)
         return isSuccess
     }
 
     override fun getAllPlaylists(): Flow<List<PlaylistWithTracks>> {
-        return playlistDao.getAllPlaylists()
+        return mediaDao.getAllPlaylists()
+    }
+
+    override fun getTracksByPlaylistId(playlistId: Int): Flow<List<TrackEntity>?> {
+        return mediaDao.getAllTracksByPlaylistId(playlistId)
+    }
+
+    override suspend fun deleteTrackFromPlaylist(playlistId: Int, trackId: Int) {
+        mediaDao.removeTrackFromPlaylist(playlistId, trackId)
+    }
+
+    override fun getPlaylistById(playlistId: Int): Flow<PlaylistWithTracks> {
+        return mediaDao.getPlaylistById(playlistId)
+    }
+
+    override suspend fun deletePlaylist(playlist: PlaylistEntity) {
+        mediaDao.deletePlaylist(playlist)
+    }
+
+    override suspend fun updatePlaylist(playlist: PlaylistEntity) {
+        mediaDao.updatePlaylist(playlist)
     }
 }

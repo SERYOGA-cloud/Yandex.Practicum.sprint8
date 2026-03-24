@@ -18,8 +18,8 @@
 
         <activity
             android:name=".root.ui.activity.RootActivity"
-            android:theme="@style/Theme.PlaylistMaker"
             android:exported="true"
+            android:theme="@style/Theme.PlaylistMaker"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

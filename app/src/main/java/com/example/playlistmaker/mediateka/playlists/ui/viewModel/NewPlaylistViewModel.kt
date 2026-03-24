@@ -13,16 +13,25 @@ import com.example.playlistmaker.util.SingleLiveEvent
 import kotlinx.coroutines.launch
 
 class NewPlaylistViewModel(
-    private val playlistsInteractor: PlaylistsInteractor,
-    private val storageInteractor: StorageInteractor,
-    private val stringResProvider: StringResourceProvider
+    val playlistsInteractor: PlaylistsInteractor,
+    val storageInteractor: StorageInteractor,
+    val stringResProvider: StringResourceProvider,
+    val existingPlaylist: Playlist?
 ) : ViewModel() {
 
     private var playlistTitle: String = ""
     private var playlistCoverUri: Uri? = null
     private var playlistDescription: String? = null
 
-    private val _isCreateButtonEnabled = MutableLiveData<Boolean>(false)
+    init {
+        if (existingPlaylist != null) {
+            playlistTitle = existingPlaylist.title
+            playlistCoverUri = existingPlaylist.coverUri
+            playlistDescription = existingPlaylist.description
+        }
+    }
+
+    private val _isCreateButtonEnabled = MutableLiveData<Boolean>(existingPlaylist != null)
     fun observeIsCreateButtonEnabled(): LiveData<Boolean> = _isCreateButtonEnabled
 
     private val _toastMessage = SingleLiveEvent<String>()
@@ -66,10 +75,40 @@ class NewPlaylistViewModel(
         }
     }
 
-    fun checkShowDialogConditions(): Boolean {
-        val hasSomeText: Boolean = !playlistTitle.isEmpty() || !playlistDescription.isNullOrEmpty()
-        val hasImageLoaded: Boolean = playlistCoverUri != null
+    fun onUpdatePlaylist() {
+        if (checkNothingChanged()) {
+            _toastMessage.value = stringResProvider.getNoChangesInPlaylistMadeMsg()
+            return
+        } else {
+            viewModelScope.launch {
 
-        return hasSomeText || hasImageLoaded
+                val updatedPlaylist = existingPlaylist!!.copy(
+                    title = playlistTitle,
+                    description = playlistDescription,
+                    coverUri = playlistCoverUri
+                )
+                playlistsInteractor.updatePlaylist(updatedPlaylist)
+                _shouldCloseScreen.postValue(Unit)
+            }
+        }
+
+    }
+
+    fun checkShowDialogConditions(): Boolean {
+        if (existingPlaylist == null) {
+            val hasSomeText: Boolean =
+                !playlistTitle.isEmpty() || !playlistDescription.isNullOrEmpty()
+            val hasImageLoaded: Boolean = playlistCoverUri != null
+
+            return hasSomeText || hasImageLoaded
+        } else {
+            return false
+        }
+    }
+
+    private fun checkNothingChanged(): Boolean {
+        return playlistTitle == existingPlaylist?.title
+                && playlistDescription == existingPlaylist.description
+                && playlistCoverUri == existingPlaylist.coverUri
     }
 }

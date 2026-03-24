@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface TracksRepository {
 
-    suspend fun addToDataBase(track: TrackEntity)
+    suspend fun addToFavorites(track: TrackEntity)
 
     suspend fun deleteFromFavorites(track: TrackEntity)
 
