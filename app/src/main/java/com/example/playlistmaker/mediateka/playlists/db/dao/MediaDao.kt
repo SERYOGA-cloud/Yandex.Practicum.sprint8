@@ -64,15 +64,13 @@ interface MediaDao {
     @Query("SELECT * FROM track_table WHERE trackId =:trackId")
     suspend fun getTrackById(trackId: Int): TrackEntity?
 
-    @Query(
-        """
-        SELECT t.* 
-FROM playlists_tracks pt 
-JOIN track_table t 
-ON pt.trackId = t.trackId 
-WHERE pt.playlistId = :playlistId"""
-    )
-    fun getAllTracksByPlaylistId(playlistId: Int): Flow<List<TrackEntity>?>
+    @Query("""
+    SELECT t.* 
+    FROM playlists_tracks pt 
+    JOIN playlist_track_table t ON pt.trackId = t.trackId 
+    WHERE pt.playlistId = :playlistId
+""")
+    fun getAllTracksByPlaylistId(playlistId: Int): Flow<List<PlaylistTrackEntity>>
 
     // Работа с плейлистами
     @Insert(onConflict = OnConflictStrategy.REPLACE)

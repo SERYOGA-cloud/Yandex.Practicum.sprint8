@@ -39,4 +39,26 @@
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
 
+    <style name="CustomDialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <!-- Белый фон окна -->
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:background">@color/white</item>
+
+        <!-- Цвет текста заголовка и сообщения -->
+        <item name="android:textColorPrimary">@color/yp_black</item>
+
+        <!-- Цвет кнопок (Синий) -->
+        <item name="colorPrimary">@color/blue</item>
+        <item name="colorAccent">@color/blue</item>
+
+        <!-- Стиль текста кнопок -->
+        <item name="buttonBarPositiveButtonStyle">@style/DialogButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/DialogButtonStyle</item>
+    </style>
+
+    <style name="DialogButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/blue</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
 </resources>

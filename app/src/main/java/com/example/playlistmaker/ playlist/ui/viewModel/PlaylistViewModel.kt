@@ -85,8 +85,8 @@ class PlaylistViewModel(
     private fun loadTracks() {
         viewModelScope.launch {
             playlistsInteractor.getTracksByPlaylistId(playlistId).collect { tracks ->
+                _tracks.postValue(tracks)
                 postContentBottomSheetOrEmpty(tracks)
-                _tracks.value = tracks
             }
         }
     }

@@ -148,9 +148,9 @@ class PlaylistFragment : Fragment() {
     private fun renderBottomSheetState(state: PlaylistScreenState) {
         when (state) {
             PlaylistScreenState.Empty -> {
-                hideContentBottomSheet()
-                hideMenuBottomSheet()
                 showPlaceholder(true)
+                hideMenuBottomSheet()
+                bottomSheetBehaviorContent.state = BottomSheetBehavior.STATE_HIDDEN
             }
 
             PlaylistScreenState.ContentBottomSheet -> {
@@ -174,10 +174,9 @@ class PlaylistFragment : Fragment() {
     private fun showContentBottomSheet() {
         binding?.root?.post {
             hideMenuBottomSheet()
-
             bottomSheetBehaviorContent.isHideable = false
             setupContentBottomSheetPeekHeight()
-            bottomSheetBehaviorContent.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            bottomSheetBehaviorContent.state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
 
@@ -333,16 +332,8 @@ class PlaylistFragment : Fragment() {
     }
 
     private fun showPlaceholder(show: Boolean) {
-        binding?.playlistPlaceholder?.apply {
-            if (show) {
-                root.isVisible = true
-                placeholderText.setTextColor(getColor(requireContext(), R.color.yp_black))
-                placeholderText.text = getString(R.string.no_tracks_added_to_playlist)
-            } else {
-                root.isGone = false
-            }
-        }
-
+        binding?.playlistPlaceholder?.root?.isVisible = show
+        binding?.playlistRecyclerView?.isVisible = !show
     }
 
     companion object {
