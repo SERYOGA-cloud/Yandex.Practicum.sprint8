@@ -9,15 +9,13 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.example.playlistmaker.mediateka.favorites.db.entity.TrackEntity
 import com.example.playlistmaker.mediateka.playlists.db.entity.PlaylistEntity
+import com.example.playlistmaker.mediateka.playlists.db.entity.PlaylistTrackEntity
 import com.example.playlistmaker.mediateka.playlists.db.entity.PlaylistTrackRelation
 import com.example.playlistmaker.mediateka.playlists.db.entity.PlaylistWithTracks
 import kotlinx.coroutines.flow.Flow
-import com.example.playlistmaker.mediateka.playlists.db.entity.PlaylistTrackEntity
 
 @Dao
 interface MediaDao {
-
-    // Работа с треками
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrack(track: TrackEntity)
@@ -46,33 +44,31 @@ interface MediaDao {
         val updatedTrack = track.copy(isFavorite = 0)
         updateTrack(updatedTrack)
 
-// Проверяем, есть ли трек в каких-либо плейлистах
         val playlistCount = getPlaylistCountForTrack(track.trackId)
 
-        // Если трек не в избранном и не в плейлистах - удаляем из таблицы
         if (playlistCount == 0) {
             deleteTrack(updatedTrack)
         }
     }
 
-    @Query("SELECT * FROM track_table WHERE isFavorite= 1 ORDER BY createdAtTime DESC")
+    @Query("SELECT * FROM track_table WHERE isFavorite = 1 ORDER BY createdAtTime DESC")
     fun getFavoriteTracks(): Flow<List<TrackEntity>>
 
     @Query("SELECT trackId FROM track_table")
     fun getAllTrackIds(): Flow<List<Int>>
 
-    @Query("SELECT * FROM track_table WHERE trackId =:trackId")
+    @Query("SELECT * FROM track_table WHERE trackId = :trackId")
     suspend fun getTrackById(trackId: Int): TrackEntity?
 
     @Query("""
-    SELECT t.* 
-    FROM playlists_tracks pt 
-    JOIN playlist_track_table t ON pt.trackId = t.trackId 
-    WHERE pt.playlistId = :playlistId
-""")
+        SELECT t.*
+        FROM playlists_tracks pt
+        JOIN playlist_track_table t ON pt.trackId = t.trackId
+        WHERE pt.playlistId = :playlistId
+        ORDER BY pt.addedAt DESC
+    """)
     fun getAllTracksByPlaylistId(playlistId: Int): Flow<List<PlaylistTrackEntity>>
 
-    // Работа с плейлистами
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlaylist(playlistEntity: PlaylistEntity)
 
@@ -89,15 +85,13 @@ interface MediaDao {
     @Query("SELECT * FROM playlist_table WHERE id = :playlistId")
     fun getPlaylistById(playlistId: Int): Flow<PlaylistWithTracks>
 
-    // Треки - плейлисты
-
     @Query("DELETE FROM playlists_tracks WHERE playlistId = :playlistId AND trackId = :trackId")
     suspend fun deletePlaylistTrackRelation(playlistId: Int, trackId: Int)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertPlaylistTrackRelation(relation: PlaylistTrackRelation)
 
-    @Query("SELECT COUNT(*) FROM playlists_tracks WHERE playlistId =:playlistId AND trackId =:trackId")
+    @Query("SELECT COUNT(*) FROM playlists_tracks WHERE playlistId = :playlistId AND trackId = :trackId")
     suspend fun isTrackInPlaylist(playlistId: Int, trackId: Int): Int
 
     @Query("SELECT * FROM playlist_track_table WHERE trackId = :trackId")
@@ -124,16 +118,21 @@ interface MediaDao {
                     releaseDate = track.releaseDate,
                     primaryGenreName = track.primaryGenreName,
                     country = track.country,
-                    trackTimeConverted = track.trackTimeConverted,
-                    // ДОБАВЬ ЭТУ СТРОКУ:
                     trackTimeMillis = track.trackTimeMillis.toLong(),
+                    trackTimeConverted = track.trackTimeConverted,
                     artworkUrl100 = track.artworkUrl100,
                     previewUrl = track.previewUrl
                 )
             )
         }
 
-        insertPlaylistTrackRelation(PlaylistTrackRelation(playlistId, track.trackId))
+        insertPlaylistTrackRelation(
+            PlaylistTrackRelation(
+                playlistId = playlistId,
+                trackId = track.trackId,
+                addedAt = System.currentTimeMillis()
+            )
+        )
         return true
     }
 
@@ -141,13 +140,10 @@ interface MediaDao {
     suspend fun removeTrackFromPlaylist(playlistId: Int, trackId: Int) {
         deletePlaylistTrackRelation(playlistId, trackId)
 
-        // Проверка, остался ли трек в избранных
         val track = getTrackById(trackId)
         if (track != null && track.isFavorite == 0) {
-            // Проверка, есть ли трек в других плейлистах
             val playlistCount = getPlaylistCountForTrack(trackId)
 
-            // Если не в любимых и не в плейлистах - удалить
             if (playlistCount == 0) {
                 deleteTrack(track)
             }

@@ -15,7 +15,7 @@ object PlaylistConverter {
             id = playlist.id,
             title = playlist.title,
             description = playlist.description,
-            coverUri = playlist.coverUri.toString()
+            coverUri = playlist.coverUri?.toString()
         )
     }
 

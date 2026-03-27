@@ -3,8 +3,6 @@ package com.example.playlistmaker.mediateka.playlists.db.entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
-import com.example.playlistmaker.mediateka.playlists.db.entity.PlaylistTrackEntity
-import com.example.playlistmaker.mediateka.favorites.db.entity.TrackEntity
 
 @Entity(
     tableName = "playlists_tracks",
@@ -27,5 +25,6 @@ import com.example.playlistmaker.mediateka.favorites.db.entity.TrackEntity
 )
 data class PlaylistTrackRelation(
     val playlistId: Int,
-    val trackId: Int
+    val trackId: Int,
+    val addedAt: Long
 )

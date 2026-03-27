@@ -1,20 +1,20 @@
 package com.example.playlistmaker.mediateka.playlists.ui.fragment
 
 import android.content.Intent
-import android.graphics.Outline
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewOutlineProvider
-import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.example.playlistmaker.mediateka.playlists.domain.entity.Playlist
@@ -22,10 +22,6 @@ import com.example.playlistmaker.mediateka.playlists.ui.viewModel.NewPlaylistVie
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.getKoin
 import org.koin.core.parameter.parametersOf
-import androidx.activity.OnBackPressedCallback
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class NewPlaylistFragment : Fragment() {
 
@@ -35,18 +31,18 @@ class NewPlaylistFragment : Fragment() {
     private lateinit var viewModel: NewPlaylistViewModel
     private var confirmExitDialog: MaterialAlertDialogBuilder? = null
 
-    // 1. Регистрация перенесена в свойства класса
-    private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        if (uri != null) {
-            val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            requireContext().contentResolver.takePersistableUriPermission(uri, flag)
+    private val pickMedia =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                requireContext().contentResolver.takePersistableUriPermission(uri, flag)
 
-            loadCover(uri.toString())
-            viewModel.onImageLoaded(uri)
-        } else {
-            Log.d("NEW_PLAYLIST_FRAGMENT", "No media selected")
+                loadCover(uri.toString())
+                viewModel.onImageLoaded(uri)
+            } else {
+                Log.d("NEW_PLAYLIST_FRAGMENT", "No media selected")
+            }
         }
-    }
 
     private val existingPlaylist: Playlist? by lazy {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
@@ -129,7 +125,14 @@ class NewPlaylistFragment : Fragment() {
     private fun fillPlaylistInfo() {
         existingPlaylist?.let { playlist ->
             binding.apply {
-                playlist.coverUri?.let { loadCover(it.toString()) }
+                newPlaylistToolbar.setTitle(R.string.edit)
+
+                if (playlist.coverUri != null) {
+                    loadCover(playlist.coverUri.toString())
+                } else {
+                    newPhotoView.setImageResource(R.drawable.layer_list_new_photo)
+                }
+
                 newPlaylistTitleEdittext.setText(playlist.title)
                 newPlaylistDescriptionEdittext.setText(playlist.description)
                 createButton.setText(R.string.save)
@@ -137,7 +140,6 @@ class NewPlaylistFragment : Fragment() {
         }
     }
 
-    // Универсальный метод загрузки изображения
     private fun loadCover(uri: String) {
         val radius = resources.getDimensionPixelSize(R.dimen.new_playlist_photo_corner_radius)
         Glide.with(this)
@@ -171,7 +173,7 @@ class NewPlaylistFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        confirmExitDialog = null // Очищаем ссылку на диалог
+        confirmExitDialog = null
     }
 
     companion object {
