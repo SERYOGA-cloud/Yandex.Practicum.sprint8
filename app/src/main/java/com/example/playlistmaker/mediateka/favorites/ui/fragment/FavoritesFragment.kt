@@ -12,8 +12,8 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavoritesBinding
 import com.example.playlistmaker.mediateka.favorites.ui.entity.FavoritesState
 import com.example.playlistmaker.mediateka.favorites.ui.viewModel.FavoritesViewModel
-import com.example.playlistmaker.player.ui.fragment.PlayerFragment
 import com.example.playlistmaker.search.ui.fragment.TrackAdapter
+import com.example.playlistmaker.util.ARGS_TRACK
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoritesFragment : Fragment() {
@@ -38,7 +38,7 @@ class FavoritesFragment : Fragment() {
             onItemClicked = { currentTrack ->
                 findNavController().navigate(
                     R.id.action_global_to_playerFragment,
-                    bundleOf(PlayerFragment.ARGS_TRACK to currentTrack)
+                    bundleOf(ARGS_TRACK to currentTrack)
                 )
             },
             onItemLongClicked = { track ->

@@ -4,41 +4,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
-import com.example.playlistmaker.player.domain.entity.PlayerState
-import com.example.playlistmaker.player.domain.listener.PlayerStateListener
-import com.example.playlistmaker.player.ui.entity.PlayerScreenState
 import com.example.playlistmaker.mediateka.favorites.domain.api.TracksInteractor
 import com.example.playlistmaker.mediateka.playlists.domain.api.PlaylistsInteractor
 import com.example.playlistmaker.mediateka.playlists.domain.entity.Playlist
+import com.example.playlistmaker.player.domain.api.AudioPlayerControl
+import com.example.playlistmaker.player.domain.entity.PlayerState
+import com.example.playlistmaker.player.ui.entity.PlayerScreenState
 import com.example.playlistmaker.search.domain.entity.Track
 import com.example.playlistmaker.sharing.domain.api.StringResourceProvider
 import com.example.playlistmaker.util.SingleLiveEvent
-import com.example.playlistmaker.util.TIME_REFRESH_DELAY
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class PlayerViewModel(
-    private val playerInteractor: AudioPlayerInteractor,
     private val tracksInteractor: TracksInteractor,
     private val playlistsInteractor: PlaylistsInteractor,
     private val stringResourceProvider: StringResourceProvider
 ) : ViewModel() {
 
     private var track: Track? = null
-
-    private val onStateChangedListener = PlayerStateListener { newPlayerState ->
-        val currentScreenState = _screenStateLiveData.value ?: PlayerScreenState.Default
-        _screenStateLiveData.value = currentScreenState.copy(playerState = newPlayerState)
-
-        if (newPlayerState == PlayerState.PREPARED) {
-            postStatePlaying(false)
-            resetTimer()
-        }
-    }
-
-    private var timerJob: Job? = null
+    private var audioPlayerControl: AudioPlayerControl? = null
 
     private val _screenStateLiveData = MutableLiveData<PlayerScreenState>(PlayerScreenState.Default)
     fun observeScreenState(): LiveData<PlayerScreenState> = _screenStateLiveData
@@ -46,15 +30,35 @@ class PlayerViewModel(
     private val _toastMessageLiveData = SingleLiveEvent<String>()
     fun observeToastMessage(): LiveData<String> = _toastMessageLiveData
 
-    override fun onCleared() {
-        super.onCleared()
-        playerInteractor.releasePlayer()
+    fun onAppMinimized() {
+        val isPlaying = (_screenStateLiveData.value?.isPlayButtonShown == false)
+        if (isPlaying) {
+            startForegroundNotification()
+        }
+    }
+
+        fun onAppResumed() {
+            stopForegroundNotification()
+        }
+
+        fun setAudioPlayerControl(audioPlayerControl: AudioPlayerControl) {
+            this.audioPlayerControl = audioPlayerControl
+
+            viewModelScope.launch {
+                audioPlayerControl.getPlayerState().collect { newPlayerState ->
+                    val isPlaying = newPlayerState is PlayerState.Playing
+                    val progress = newPlayerState.progress
+                    updatePlayButtonAndProgress(isPlaying, progress)
+                }
+            }
+        }
+
+        fun removeAudioPlayerControl() {
+            this.audioPlayerControl = null
     }
 
     fun initializeTrack(track: Track) {
         this.track = track
-        playerInteractor.setRepoPlayerStateListener(onStateChangedListener)
-        playerInteractor.preparePlayer(track.previewUrl)
         updateIsFavorite()
     }
 
@@ -67,36 +71,8 @@ class PlayerViewModel(
         }
     }
 
-    fun releasePlayer() {
-        playerInteractor.releasePlayer()
-        timerJob?.cancel()
-    }
-
     fun onPlayButtonClicked() {
-        try {
-            val playerStateAfterClick = playerInteractor.onPlayButtonClicked()
-
-            when (playerStateAfterClick) {
-                PlayerState.DEFAULT -> {}
-
-                PlayerState.PAUSED -> {
-                    postStatePlaying(false)
-                    pauseTimer()
-                }
-
-                PlayerState.PLAYING -> {
-                    postStatePlaying(true)
-                    startTimer()
-                }
-
-                PlayerState.PREPARED -> {
-                    postStatePlaying(false)
-                    resetTimer()
-                }
-            }
-        } catch (e: Exception) {
-            _toastMessageLiveData.postValue(e.message)
-        }
+        audioPlayerControl?.onPlayButtonClicked()
     }
 
     fun onFavoriteButtonClicked() {
@@ -138,13 +114,6 @@ class PlayerViewModel(
     fun onNewPlaylistButtonClicked() {
         val currentState = _screenStateLiveData.value
         _screenStateLiveData.value = currentState?.copy(isBottomSheetVisible = false)
-        pause()
-    }
-
-    //  Это про жизненный цикл фрагмента
-    fun pause() {
-        pauseTimer()
-        playerInteractor.pausePlayer()
     }
 
     fun addTrackToPlaylist(playlist: Playlist) {
@@ -166,34 +135,10 @@ class PlayerViewModel(
         }
     }
 
-    private fun postStatePlaying(isPlaying: Boolean) {
+    private fun updatePlayButtonAndProgress(isPlaying: Boolean, progress: String) {
         val currentScreenState: PlayerScreenState = _screenStateLiveData.value!!
-        _screenStateLiveData.value = currentScreenState.copy(isPlayButtonShown = !isPlaying)
-    }
-
-    private fun startTimer() {
-        timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-
-            while (_screenStateLiveData.value?.playerState is PlayerState.PLAYING) {
-                delay(TIME_REFRESH_DELAY)
-                val currentPosition: String = playerInteractor.getCurrentPositionConverted()
-                val currentScreenState: PlayerScreenState = _screenStateLiveData.value!!
-                _screenStateLiveData.value =
-                    currentScreenState.copy(currentPosition = currentPosition)
-            }
-        }
-    }
-
-    private fun pauseTimer() {
-        timerJob?.cancel()
-    }
-
-    private fun resetTimer() {
-        timerJob?.cancel()
-        val currentScreenState = _screenStateLiveData.value ?: PlayerScreenState.Default
         _screenStateLiveData.value =
-            currentScreenState.copy(currentPosition = PROGRESS_TIME_DEFAULT)
+            currentScreenState.copy(isPlayButtonShown = !isPlaying, currentPosition = progress)
     }
 
     private fun updateIsFavorite() {
@@ -205,7 +150,11 @@ class PlayerViewModel(
         }
     }
 
-    companion object {
-        private const val PROGRESS_TIME_DEFAULT = "00:00"
+    private fun startForegroundNotification() {
+        audioPlayerControl?.startForegroundNotification()
+    }
+
+    private fun stopForegroundNotification() {
+        audioPlayerControl?.stopForegroundNotification()
     }
 }

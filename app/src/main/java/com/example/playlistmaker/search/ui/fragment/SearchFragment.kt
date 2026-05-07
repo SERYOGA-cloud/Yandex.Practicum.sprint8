@@ -16,9 +16,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
-import com.example.playlistmaker.player.ui.fragment.PlayerFragment
 import com.example.playlistmaker.search.ui.entity.SearchState
 import com.example.playlistmaker.search.ui.viewModel.SearchViewModel
+import com.example.playlistmaker.util.ARGS_TRACK
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -50,7 +50,7 @@ class SearchFragment : Fragment() {
 
                 findNavController().navigate(
                     R.id.action_global_to_playerFragment,
-                    bundleOf(PlayerFragment.ARGS_TRACK to currentTrack)
+                    bundleOf(ARGS_TRACK to currentTrack)
                 )
             },
             onItemLongClicked = {}

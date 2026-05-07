@@ -1,11 +1,10 @@
 package com.example.playlistmaker.player.ui.entity
 
 import com.example.playlistmaker.mediateka.playlists.domain.entity.Playlist
-import com.example.playlistmaker.player.domain.entity.PlayerState
+import com.example.playlistmaker.util.TRACK_PROGRESS_TIME_DEFAULT
 
 data class PlayerScreenState(
     val currentPosition: String,
-    val playerState: PlayerState,
     val isFavorite: Boolean,
     val isPlayButtonShown: Boolean,
     val isBottomSheetVisible: Boolean,
@@ -14,8 +13,7 @@ data class PlayerScreenState(
 
     companion object {
         val Default = PlayerScreenState(
-            currentPosition = "00:00",
-            playerState = PlayerState.DEFAULT,
+            currentPosition = TRACK_PROGRESS_TIME_DEFAULT,
             isFavorite = false,
             isPlayButtonShown = true,
             isBottomSheetVisible = false,

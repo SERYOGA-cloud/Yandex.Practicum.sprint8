@@ -9,7 +9,6 @@ import com.example.playlistmaker.playlist.ui.viewModel.PlaylistViewModel
 import com.example.playlistmaker.search.ui.viewModel.SearchViewModel
 import com.example.playlistmaker.settings.ui.viewModel.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
 val viewModelModule = module {
@@ -28,10 +27,8 @@ val viewModelModule = module {
         )
     }
 
-    viewModel<PlayerViewModel> { (url: String?) ->
-
+    viewModel<PlayerViewModel> {
         PlayerViewModel(
-            playerInteractor = get { parametersOf(url) },
             tracksInteractor = get(),
             playlistsInteractor = get(),
             stringResourceProvider = get()

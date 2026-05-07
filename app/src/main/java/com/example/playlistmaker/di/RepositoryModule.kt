@@ -1,8 +1,6 @@
 package com.example.playlistmaker.di
 
 import android.media.MediaPlayer
-import com.example.playlistmaker.player.data.impl.AudioPlayerRepositoryImpl
-import com.example.playlistmaker.player.domain.api.AudioPlayerRepository
 import com.example.playlistmaker.search.data.impl.SearchHistoryRepositoryImpl
 import com.example.playlistmaker.mediateka.favorites.data.impl.TracksRepositoryImpl
 import com.example.playlistmaker.search.data.impl.TrackSearchRepositoryImpl
@@ -58,11 +56,6 @@ val repositoryModule = module {
 
     // з DIсоздаём MediaPlayer чере
     factory { MediaPlayer() }
-
-    // ОДНА фабрика репозитория и она передаёт player
-    factory<AudioPlayerRepository> {
-        AudioPlayerRepositoryImpl()
-    }
 
     factory<TracksRepository> {
         TracksRepositoryImpl(
