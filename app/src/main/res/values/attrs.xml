@@ -2,4 +2,10 @@
 <resources>
 
     <attr name="hintSelectorColor" format="reference" />
+
+    <declare-styleable name="PlaybackButtonView">
+        <attr name="playButtonReference" format="reference" />
+        <attr name="pauseButtonReference" format="reference" />
+    </declare-styleable>
+
 </resources>
