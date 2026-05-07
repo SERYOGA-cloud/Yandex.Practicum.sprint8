@@ -22,8 +22,8 @@ class PlaylistGridViewHolder(private val binding: ItemPlaylistGridBinding) :
             val totalTracksText =
                 root.context.getString(R.string.tracks, trackCount, getRusNumeralTrackEnding(trackCount))
 
-            playlistTitle.text = model.title
-            playlistTracksCount.text = totalTracksText
+            itemPlaylistTitle.text = model.title
+            itemPlaylistTracksCount.text = totalTracksText
             Glide.with(itemView)
                 .load(model.coverUri)
                 .placeholder(R.drawable.album_placeholder)
@@ -31,7 +31,7 @@ class PlaylistGridViewHolder(private val binding: ItemPlaylistGridBinding) :
                     CenterCrop(),
                     RoundedCorners(dpToPx(8f, itemView.context))
                 )
-                .into(binding.playlistCover)
+                .into(binding.itemPlaylistCover)
         }
     }
 }

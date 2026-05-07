@@ -3,9 +3,10 @@
     <dimen name="horizontal_padding">16dp</dimen>
     <dimen name="horizontal_margin">16dp</dimen>
     <dimen name="text_size_large">22sp</dimen>
-
+    <dimen name="text_size_large_2">24sp</dimen>
     <dimen name="padding_bottom">20dp</dimen>
     <dimen name="text_size_medium">19sp</dimen>
+    <dimen name="text_size_medium_2">18sp</dimen>
     <dimen name="text_size_regular">16sp</dimen>
     <dimen name="text_size_small">14sp</dimen>
     <dimen name="text_size_small_2">13sp</dimen>
@@ -57,7 +58,7 @@
     <dimen name="new_photo_dashed_outline_width">1dp</dimen>
     <dimen name="new_photo_dashed_outline_dash_width">30dp</dimen>
     <dimen name="new_photo_dashed_outline_dash_gap">30dp</dimen>
-    <dimen name="new_photo_dashed_outline_dash_corner_radius">8dp</dimen>
+    <dimen name="new_playlist_photo_corner_radius">8dp</dimen>
     <dimen name="new_photo_icon_inside_padding">106dp</dimen>
     <dimen name="new_playlist_cover_margin_top">26dp</dimen>
     <dimen name="new_playlist_margin_horizontal">16dp</dimen>
@@ -83,6 +84,15 @@
     <dimen name="new_playlist_edittext_padding_horizontal">16dp</dimen>
     <dimen name="new_playlist_edittext_padding_vertical">18dp</dimen>
     <dimen name="new_playlist_button_corners_radius">8dp</dimen>
+    <dimen name="playlist_title_margin_top">24dp</dimen>
+    <dimen name="playlist_items_margin_edges">16dp</dimen>
+    <dimen name="playlist_description_margin_top">8dp</dimen>
+    <dimen name="playlist_total_time_margin_top">8dp</dimen>
+    <dimen name="playlist_menu_button_margin_start">16dp</dimen>
+    <dimen name="playlist_buttons_margin_top">16dp</dimen>
+    <dimen name="playlist_recycler_view_margin_top">12dp</dimen>
+    <dimen name="playlist_bottom_sheet_margin_top">24dp</dimen>
+    <dimen name="playlist_menu_items_margin_top">8dp</dimen>
     <dimen name="dimen_6">6dp</dimen>
     <dimen name="dimen_8">8dp</dimen>
     <dimen name="dimen_9">9dp</dimen>

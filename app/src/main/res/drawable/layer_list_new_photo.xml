@@ -11,7 +11,7 @@
                 android:dashWidth="@dimen/new_photo_dashed_outline_dash_width"
                 android:dashGap="@dimen/new_photo_dashed_outline_dash_gap" />
 
-            <corners android:radius="@dimen/new_photo_dashed_outline_dash_corner_radius" />
+            <corners android:radius="@dimen/new_playlist_photo_corner_radius" />
         </shape>
     </item>
 

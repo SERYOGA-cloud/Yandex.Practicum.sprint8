@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -12,6 +13,7 @@ import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.mediateka.playlists.domain.entity.Playlist
 import com.example.playlistmaker.mediateka.playlists.ui.entity.PlaylistsState
 import com.example.playlistmaker.mediateka.playlists.ui.viewModel.PlaylistsViewModel
+import com.example.playlistmaker.playlist.ui.fragment.PlaylistFragment
 import com.example.playlistmaker.util.PLAYLISTS_GRID_COLUMNS_COUNT
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -35,8 +37,11 @@ class PlaylistsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = PlaylistGridAdapter(
-            onItemClicked = {
-                //Здесь потом будет открываться экран плейлиста
+            onItemClicked = { playlist ->
+                findNavController().navigate(
+                    R.id.action_global_to_playlistFragment,
+                    bundleOf(PlaylistFragment.ARGS_PLAYLIST to playlist)
+                )
             }
         )
 

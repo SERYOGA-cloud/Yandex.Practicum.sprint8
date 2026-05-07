@@ -11,6 +11,7 @@ data class Track(
     val collectionName: String?,
     val releaseDate: String,
     val primaryGenreName: String?,
+    val trackTimeMillis: Int,
     val country: String,
     val trackTimeConverted: String,
     val artworkUrl100: String,

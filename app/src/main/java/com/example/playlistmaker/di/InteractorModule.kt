@@ -6,6 +6,8 @@ import com.example.playlistmaker.mediateka.playlists.domain.api.PlaylistsInterac
 import com.example.playlistmaker.mediateka.playlists.domain.api.StorageInteractor
 import com.example.playlistmaker.mediateka.playlists.domain.impl.PlaylistsInteractorImpl
 import com.example.playlistmaker.mediateka.playlists.domain.impl.StorageInteractorImpl
+import com.example.playlistmaker.mediateka.playlists.domain.api.StorageRepository
+import com.example.playlistmaker.mediateka.playlists.domain.api.PlaylistsRepository
 import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.impl.AudioPlayerInteractorImpl
 import com.example.playlistmaker.player.domain.impl.FailedAudioPlayerInteractorImpl
@@ -46,10 +48,12 @@ val interactorModule = module {
         )
     }
 
-    factory<AudioPlayerInteractor> { (url: String?) ->
+    factory<AudioPlayerInteractor> { params ->
+        val url: String? = params.getOrNull()
         if (!url.isNullOrBlank()) {
             AudioPlayerInteractorImpl(
-                repository = get())
+                repository = get()
+            )
         } else {
             FailedAudioPlayerInteractorImpl()
         }
@@ -63,13 +67,13 @@ val interactorModule = module {
 
     factory<PlaylistsInteractor> {
         PlaylistsInteractorImpl(
-            repository = get()
+            repository = get<PlaylistsRepository>()
         )
     }
 
     factory<StorageInteractor> {
         StorageInteractorImpl(
-            repository = get()
+            repository = get<StorageRepository>()
         )
     }
 }

@@ -52,7 +52,8 @@ class SearchFragment : Fragment() {
                     R.id.action_global_to_playerFragment,
                     bundleOf(PlayerFragment.ARGS_TRACK to currentTrack)
                 )
-            }
+            },
+            onItemLongClicked = {}
         )
 
         // Для принудительного показа результатов поиска после возврата с другого экрана

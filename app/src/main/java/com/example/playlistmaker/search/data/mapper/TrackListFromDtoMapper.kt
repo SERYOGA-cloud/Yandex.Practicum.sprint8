@@ -18,7 +18,8 @@ object TrackListFromDtoMapper {
                 trackTimeConverted = millisToMmSs(it.trackTimeMillis),
                 artworkUrl100 = it.artworkUrl100,
                 previewUrl = it.previewUrl,
-                isFavorite = favoritesIds.contains(it.trackId)
+                isFavorite = favoritesIds.contains(it.trackId),
+                trackTimeMillis = it.trackTimeMillis
             )
         }
     }
@@ -36,7 +37,8 @@ object TrackListFromDtoMapper {
                 trackTimeConverted = millisToMmSs(it.trackTimeMillis),
                 artworkUrl100 = it.artworkUrl100,
                 previewUrl = it.previewUrl,
-                isFavorite = it.isFavorite
+                isFavorite = it.isFavorite,
+                trackTimeMillis = it.trackTimeMillis
             )
         }
     }
