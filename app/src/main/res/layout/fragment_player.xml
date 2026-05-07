@@ -76,18 +76,17 @@
             app:layout_constraintTop_toBottomOf="@id/play_button" />
 
         <!-- Кнопка "стоп-плей" -->
-        <ImageButton
+        <com.example.playlistmaker.player.ui.view.PlaybackButtonView
             android:id="@+id/play_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/player_play_button_margin_top"
-            android:background="@null"
-            android:importantForAccessibility="no"
-            android:src="@drawable/button_play"
             app:layout_constraintBottom_toTopOf="@id/listening_time"
             app:layout_constraintEnd_toStartOf="@id/like_button"
             app:layout_constraintStart_toEndOf="@id/add_to_playlist_button"
-            app:layout_constraintTop_toBottomOf="@id/artist_name" />
+            app:layout_constraintTop_toBottomOf="@id/artist_name"
+            app:pauseButtonReference="@drawable/button_pause"
+            app:playButtonReference="@drawable/button_play" />
 
         <!-- Кнопка "лайк" -->
         <ImageButton

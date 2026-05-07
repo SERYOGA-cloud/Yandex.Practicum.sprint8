@@ -55,7 +55,7 @@ class PlayerFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        // Секция с информацией о треке
+        // region Секция с информацией о треке
         binding!!.apply {
             trackName.text = track.trackName
             artistName.text = track.artistName
@@ -73,6 +73,8 @@ class PlayerFragment : Fragment() {
             binding!!.albumName.text = albumName
         }
 
+        // endregion
+
         viewModel.observeScreenState().observe(viewLifecycleOwner) {
             renderState(it)
         }
@@ -89,7 +91,7 @@ class PlayerFragment : Fragment() {
             .transform(RoundedCorners(dpToPx(8f, requireContext())))
             .into(binding!!.albumCover)
 
-        binding!!.playButton.setOnClickListener {
+        binding!!.playButton.onClickAction = {
             try {
                 viewModel.onPlayButtonClicked()
             } catch (e: Exception) {
@@ -180,9 +182,9 @@ class PlayerFragment : Fragment() {
     private fun showPlaying(state: PlayerScreenState) {
         binding!!.apply {
             if (state.isPlayButtonShown) {
-                playButton.setImageResource(R.drawable.button_play)
+                playButton.showPlayButton()
             } else {
-                playButton.setImageResource(R.drawable.button_pause)
+                playButton.showPauseButton()
             }
         }
     }
