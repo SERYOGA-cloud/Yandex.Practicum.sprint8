@@ -15,13 +15,13 @@
 
     <dimen name="end_margin">18dp</dimen>
     <dimen name="main_menu_button_corner_radius">16dp</dimen>
-    <dimen name="search_menu_button_corner_radius">54dp</dimen>
+    <dimen name="custom_button_corner_radius">54dp</dimen>
     <dimen name="screen_title_margin_bottom">24dp</dimen>
-    <dimen name="search_bar_margin_bottom">24dp</dimen>
+    <dimen name="search_bar_padding_vertical">8dp</dimen>
     <dimen name="search_text_vertical_padding">8.5dp</dimen>
-    <dimen name="search_drawable_horizontal_padding">12dp</dimen>
+    <dimen name="search_icon_start_end_padding">12dp</dimen>
     <dimen name="search_result_view_padding_right">12dp</dimen>
-    <dimen name="right_icon_padding_left">8dp</dimen>
+    <dimen name="search_icon_padding_to_text">8dp</dimen>
     <dimen name="search_toolbar_text_nav_icon_padding">0dp</dimen>
     <dimen name="search_toolbar_margin_bottom">8dp</dimen>
     <dimen name="search_result_view_padding_left">13dp</dimen>
@@ -29,15 +29,20 @@
     <dimen name="search_result_text_container_padding_vertical">14dp</dimen>
     <dimen name="search_x_horizontal_padding">10dp</dimen>
     <dimen name="search_placeholder_image_margin_top">110dp</dimen>
-    <dimen name="search_placeholder_text_margin_top">16dp</dimen>
-    <dimen name="search_placeholder_text_margin_horizontal">24dp</dimen>
-    <dimen name="search_placeholder_text_margin_bottom">24dp</dimen>
+    <dimen name="search_placeholder_text_padding_top">16dp</dimen>
+    <dimen name="search_placeholder_text_padding_horizontal">24dp</dimen>
+    <dimen name="search_placeholder_text_padding_bottom">24dp</dimen>
+
     <dimen name="status_bar_height">24dp</dimen>
+
     <dimen name="track_history_title_margin_bottom">8dp</dimen>
-    <dimen name="track_history_title_padding_top">18dp</dimen>
-    <dimen name="track_history_title_padding_bottom">12dp</dimen>
-    <dimen name="clear_history_button_margin_top">24dp</dimen>
+    <dimen name="track_history_header_padding_top">18dp</dimen>
+    <dimen name="track_history_header_padding_bottom">12dp</dimen>
+    <dimen name="track_history_header_padding_horizontal">6dp</dimen>
+
+    <dimen name="clear_history_button_top_spacer">24dp</dimen>
     <dimen name="clear_history_button_margin_bottom">28dp</dimen>
+
     <dimen name="player_album_cover_margin_top">26dp</dimen>
     <dimen name="player_track_name_margin_top">24dp</dimen>
     <dimen name="player_artist_name_margin_top">12dp</dimen>
@@ -48,7 +53,7 @@
     <dimen name="player_horizontal_guide_bottom">20dp</dimen>
     <dimen name="player_description_horizontal_padding">16dp</dimen>
     <dimen name="player_description_margin_top">30dp</dimen>
-    <dimen name="progress_bar_margin_top">140dp</dimen>
+    <dimen name="progress_bar_padding_top">140dp</dimen>
     <dimen name="mediateka_placeholder_img_margin_top">106dp</dimen>
     <dimen name="mediateka_placeholder_button_margin_top">24dp</dimen>
     <dimen name="mediateka_placeholder_text_margin_top">16dp</dimen>
@@ -67,7 +72,7 @@
     <dimen name="new_playlist_description_text_margin_top">16dp</dimen>
     <dimen name="new_playlist_name_text_margin_top">32dp</dimen>
     <dimen name="new_playlist_text_outline_radius">4dp</dimen>
-    <dimen name="playlist_grid_item_padding_horizontal">4dp</dimen>
+    <dimen name="grid_item_image_padding">4dp</dimen>
     <dimen name="playlist_grid_item_padding_vertical">8dp</dimen>
     <dimen name="mediateka_content_margin_horizontal">12dp</dimen>
     <dimen name="mediateka_content_margin_top">8dp</dimen>
@@ -115,4 +120,22 @@
     <dimen name="dimen_24">24dp</dimen>
     <dimen name="dimen_2">2dp</dimen>
     <dimen name="dimen_4">4dp</dimen>
+    <dimen name="search_placeholder_padding_top">46dp</dimen>
+    <dimen name="search_icon_padding_vertical">10dp</dimen>
+    <dimen name="search_bar_padding_horizontal">16dp</dimen>
+    <dimen name="track_item_padding_vertical">8dp</dimen>
+    <dimen name="search_bar_bottom_spacer">16dp</dimen>
+    <dimen name="you_searched_top_spacer">26dp</dimen>
+    <dimen name="you_searched_bottom_spacer">20dp</dimen>
+    <dimen name="settings_menu_item_padding_start">16dp</dimen>
+    <dimen name="settings_menu_item_padding_end">18dp</dimen>
+    <dimen name="settings_menu_item_padding_vertical">21dp</dimen>
+    <dimen name="settings_header_bottom_spacer">24dp</dimen>
+    <dimen name="favorites_content_top_spacer">20dp</dimen>
+    <dimen name="playlists_button_top_spacer">24dp</dimen>
+    <dimen name="playlists_page_padding_horizontal">12dp</dimen>
+    <dimen name="playlists_button_bottom_spacer">12dp</dimen>
+    <dimen name="grid_item_image_radius">8dp</dimen>
+    <dimen name="list_item_image_radius">2dp</dimen>
+    <dimen name="grid_item_padding_bottom">16dp</dimen>
 </resources>

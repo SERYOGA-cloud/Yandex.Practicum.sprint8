@@ -14,6 +14,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -281,5 +284,11 @@ class PlayerFragment : Fragment() {
         return Intent(requireContext(), PlayerService::class.java).apply {
             putExtra(ARGS_TRACK, track)
         }
+    }
+
+    @Preview
+    @Composable
+    fun Foo() {
+        Text("Hello")
     }
 }

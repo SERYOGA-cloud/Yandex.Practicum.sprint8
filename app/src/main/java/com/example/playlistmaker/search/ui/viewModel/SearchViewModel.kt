@@ -12,6 +12,10 @@ import com.example.playlistmaker.search.ui.entity.SearchState
 import com.example.playlistmaker.util.SEARCH_DEBOUNCE_DELAY
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -20,23 +24,22 @@ class SearchViewModel(
 ) : ViewModel() {
 
     private var searchJob: Job? = null
-
-    private var searchQuery: String = ""
     private var isEditTextInFocus: Boolean = false
     private var isForceShowResults: Boolean = false
 
     private val savedSearchResults = mutableListOf<Track>()
+    private val searchStateLiveData = MutableLiveData<SearchState>(SearchState.Empty)
+    private val _searchQuery = MutableStateFlow<String>("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-    private var searchStateLiveData = MutableLiveData<SearchState>(SearchState.Empty)
     fun observeSearchState(): LiveData<SearchState> = searchStateLiveData
-
     fun onEditTextFocusChange(hasFocus: Boolean) {
         isEditTextInFocus = hasFocus
         updateState()
     }
 
     fun onQueryChanged(newQuery: String) {
-        searchQuery = newQuery
+        _searchQuery.update { newQuery }
         updateState()
     }
 
@@ -90,10 +93,10 @@ class SearchViewModel(
         if (isDebounce) {
             searchJob = viewModelScope.launch {
                 delay(SEARCH_DEBOUNCE_DELAY)
-                searchRequest(searchQuery)
+                searchRequest(_searchQuery.value)
             }
         } else {
-            searchRequest(searchQuery)
+            searchRequest(_searchQuery.value)
         }
     }
 
@@ -105,11 +108,11 @@ class SearchViewModel(
 
         if (!isForceShowResults) {
             when {
-                isEditTextInFocus && searchQuery.isNotEmpty() -> {
+                isEditTextInFocus && _searchQuery.value.isNotEmpty() -> {
                     startSearch(true)        // postState(Loading) -> *search* -> postState()
                 }
 
-                isEditTextInFocus && searchQuery.isEmpty() -> {
+                isEditTextInFocus && _searchQuery.value.isEmpty() -> {
                     viewModelScope.launch {
                         searchHistoryInteractor.getHistoryList().collect { searchHistoryList ->
                             if (searchHistoryList.isNotEmpty()) {
@@ -126,6 +129,7 @@ class SearchViewModel(
 
         } else {
             overrideStateLiveData(SearchState.Content(savedSearchResults))
+            isForceShowResults = false
         }
     }
 

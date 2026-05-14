@@ -59,9 +59,9 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/search_edittext_shape</item>
         <item name="android:drawableStart">@drawable/icon_search</item>
-        <item name="android:drawablePadding">@dimen/search_drawable_horizontal_padding</item>
+        <item name="android:drawablePadding">@dimen/search_icon_start_end_padding</item>
         <item name="android:drawableTint">?attr/colorOnPrimaryFixedVariant</item>
-        <item name="android:paddingHorizontal">@dimen/search_drawable_horizontal_padding</item>
+        <item name="android:paddingHorizontal">@dimen/search_icon_start_end_padding</item>
         <item name="android:paddingVertical">@dimen/search_text_vertical_padding</item>
         <item name="android:textColorHint">?attr/colorOnPrimaryFixedVariant</item>
         <item name="android:textCursorDrawable">@drawable/cursor_search</item>
@@ -91,10 +91,10 @@
 
     <style name="PlaceholderText">
         <item name="android:layout_marginHorizontal">
-            @dimen/search_placeholder_text_margin_horizontal
+            @dimen/search_placeholder_text_padding_horizontal
         </item>
-        <item name="android:layout_marginTop">@dimen/search_placeholder_text_margin_top</item>
-        <item name="android:layout_marginBottom">@dimen/search_placeholder_text_margin_bottom</item>
+        <item name="android:layout_marginTop">@dimen/search_placeholder_text_padding_top</item>
+        <item name="android:layout_marginBottom">@dimen/search_placeholder_text_padding_bottom</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
@@ -107,7 +107,7 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textSize">@dimen/text_size_small</item>
-        <item name="cornerRadius">@dimen/search_menu_button_corner_radius</item>
+        <item name="cornerRadius">@dimen/custom_button_corner_radius</item>
     </style>
 
     <style name="PlayerDescriptionItemsLeftColumn">

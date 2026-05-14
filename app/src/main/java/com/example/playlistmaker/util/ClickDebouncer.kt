@@ -20,3 +20,8 @@ interface ClickDebouncer {
         return current
     }
 }
+
+class Debouncer() : ClickDebouncer {
+    override var isClickAllowed = true
+
+}
