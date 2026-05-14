@@ -116,8 +116,8 @@ class PlaybackButtonView @JvmOverloads constructor(
             }
 
             MotionEvent.ACTION_UP -> {
-                onClickAction?.invoke()
                 toggle()
+                onClickAction?.invoke()
                 return true
             }
         }

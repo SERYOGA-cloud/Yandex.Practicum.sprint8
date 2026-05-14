@@ -21,11 +21,11 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistBinding
 import com.example.playlistmaker.mediateka.playlists.domain.entity.Playlist
 import com.example.playlistmaker.mediateka.playlists.ui.fragment.NewPlaylistFragment
-import com.example.playlistmaker.player.ui.fragment.PlayerFragment
 import com.example.playlistmaker.playlist.ui.entity.PlaylistScreenState
 import com.example.playlistmaker.playlist.ui.viewModel.PlaylistViewModel
 import com.example.playlistmaker.search.domain.entity.Track
 import com.example.playlistmaker.search.ui.fragment.TrackAdapter
+import com.example.playlistmaker.util.ARGS_TRACK
 import com.example.playlistmaker.util.Util.Companion.dpToPx
 import com.example.playlistmaker.util.Util.Companion.getRusNumeralMinutesEnding
 import com.example.playlistmaker.util.Util.Companion.getRusNumeralTrackEnding
@@ -284,7 +284,7 @@ class PlaylistFragment : Fragment() {
             onItemClicked = { currentTrack ->
                 findNavController().navigate(
                     R.id.playerFragment,
-                    bundleOf(PlayerFragment.ARGS_TRACK to currentTrack)
+                    bundleOf(ARGS_TRACK to currentTrack)
                 )
             },
             onItemLongClicked = { currentTrack ->

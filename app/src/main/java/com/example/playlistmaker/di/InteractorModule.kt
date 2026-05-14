@@ -8,9 +8,6 @@ import com.example.playlistmaker.mediateka.playlists.domain.impl.PlaylistsIntera
 import com.example.playlistmaker.mediateka.playlists.domain.impl.StorageInteractorImpl
 import com.example.playlistmaker.mediateka.playlists.domain.api.StorageRepository
 import com.example.playlistmaker.mediateka.playlists.domain.api.PlaylistsRepository
-import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
-import com.example.playlistmaker.player.domain.impl.AudioPlayerInteractorImpl
-import com.example.playlistmaker.player.domain.impl.FailedAudioPlayerInteractorImpl
 import com.example.playlistmaker.search.domain.api.SearchHistoryInteractor
 import com.example.playlistmaker.search.domain.api.TrackSearchInteractor
 import com.example.playlistmaker.search.domain.impl.SearchHistoryInteractorImpl
@@ -46,17 +43,6 @@ val interactorModule = module {
         SearchHistoryInteractorImpl(
             repository = get()
         )
-    }
-
-    factory<AudioPlayerInteractor> { params ->
-        val url: String? = params.getOrNull()
-        if (!url.isNullOrBlank()) {
-            AudioPlayerInteractorImpl(
-                repository = get()
-            )
-        } else {
-            FailedAudioPlayerInteractorImpl()
-        }
     }
 
     single<TracksInteractor> {

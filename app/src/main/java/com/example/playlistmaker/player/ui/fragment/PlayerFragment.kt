@@ -1,11 +1,20 @@
 package com.example.playlistmaker.player.ui.fragment
 
-import android.annotation.SuppressLint
+import android.Manifest
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -15,9 +24,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
+import com.example.playlistmaker.player.services.PlayerService
 import com.example.playlistmaker.player.ui.entity.PlayerScreenState
 import com.example.playlistmaker.player.ui.viewModel.PlayerViewModel
 import com.example.playlistmaker.search.domain.entity.Track
+import com.example.playlistmaker.util.ARGS_TRACK
 import com.example.playlistmaker.util.Util.Companion.dpToPx
 import com.example.playlistmaker.util.Util.Companion.getCoverArtwork512
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -35,6 +46,23 @@ class PlayerFragment : Fragment() {
     private lateinit var adapter: PlaylistLinearAdapter
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as PlayerService.PlayerServiceBinder
+            viewModel.setAudioPlayerControl(binder.getService())
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            viewModel.removeAudioPlayerControl()
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        viewModel.onPlayButtonClicked()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,6 +76,7 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        bindPlayerService()
         viewModel.initializeTrack(track)
         viewModel.updatePlaylists()
 
@@ -93,7 +122,7 @@ class PlayerFragment : Fragment() {
 
         binding!!.playButton.onClickAction = {
             try {
-                viewModel.onPlayButtonClicked()
+                handlePlayButtonClick()
             } catch (e: Exception) {
                 showToast(e.message.toString())
             }
@@ -103,7 +132,7 @@ class PlayerFragment : Fragment() {
             viewModel.onFavoriteButtonClicked()
         }
 
-        //Все, что относится к нижней шторке
+        // region Все, что относится к нижней шторке
         bottomSheetBehavior = BottomSheetBehavior.from(binding!!.playerBottomSheet)
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
@@ -143,23 +172,58 @@ class PlayerFragment : Fragment() {
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             playerBottomSheetRecyclerView.adapter = adapter
         }
+        // endregion
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.pause()
+        viewModel.onAppMinimized()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.onAppResumed()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.releasePlayer()
+        unbindPlayerService()
         binding = null
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    override fun onResume() {
-        super.onResume()
+    private fun handlePlayButtonClick() {
+        // Android < 13
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            viewModel.onPlayButtonClicked()
+            return
+        }
+
+        // Android >= 13
+        if (isPermissionToPostNotificationsGranted()) {
+            viewModel.onPlayButtonClicked()
+        } else {
+            requestPostNotificationsPermission()
+        }
+
     }
+
+    private fun requestPostNotificationsPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    private fun isPermissionToPostNotificationsGranted(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PERMISSION_GRANTED
+        } else {
+            true
+        }
+    }
+
 
     private fun renderState(state: PlayerScreenState) {
             binding!!.apply {
@@ -201,7 +265,21 @@ class PlayerFragment : Fragment() {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
     }
 
-    companion object {
-        const val ARGS_TRACK = "track"
+    private fun bindPlayerService() {
+        requireContext().bindService(
+            getPlayerServiceIntent(),
+            serviceConnection,
+            Context.BIND_AUTO_CREATE
+        )
+    }
+
+    private fun unbindPlayerService() {
+        requireContext().unbindService(serviceConnection)
+    }
+
+    private fun getPlayerServiceIntent(): Intent {
+        return Intent(requireContext(), PlayerService::class.java).apply {
+            putExtra(ARGS_TRACK, track)
+        }
     }
 }
