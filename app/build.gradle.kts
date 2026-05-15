@@ -1,18 +1,20 @@
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     id("kotlin-parcelize")
     id("kotlin-kapt")
 }
 
 android {
     namespace = "com.example.playlistmaker"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.playlistmaker"
         minSdk = 29
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -30,20 +32,26 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "11"
+
+    kotlin {
+        jvmToolchain(17)
     }
 
     buildFeatures {
         viewBinding = true
+        compose = true
     }
 }
 
-dependencies {
+kapt {
+    correctErrorTypes = true
+}
 
+dependencies {
+    // Основные зависимости
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -54,20 +62,44 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.fragment.ktx)
+
+    // UI и Compose
+    implementation(libs.androidx.material3)
+    implementation(libs.ui) // библиотека из libs.ui
+    implementation(libs.androidx.ui) // библиотека из libs.androidx.ui (проверь в toml что они разные)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.koin.androidx.compose)
+    debugImplementation(libs.androidx.ui.tooling)
+
+    // Тесты
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+
+    // Картинки
     implementation(libs.glide)
-    annotationProcessor(libs.compiler)
+    kapt(libs.compiler)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
+    // Сеть
     implementation(libs.retrofit)
     implementation(libs.squareup.converter.gson)
+
+    // DI (Koin)
     implementation(libs.koin.android)
+
+    // Навигация
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.fragment.ktx)
+
+    // Корутины
     implementation(libs.kotlinx.coroutines.android)
+
+    // База данных (Room)
     implementation(libs.androidx.room.runtime)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
-
 }

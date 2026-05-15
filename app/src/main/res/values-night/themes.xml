@@ -5,8 +5,6 @@
         <!-- Не дает содержимому экрана уходить под статус бар -->
         <item name="android:windowTranslucentStatus">false</item>
 
-        <item name="android:fitsSystemWindows">true</item>
-
         <!-- Цвет фона -->
         <item name="colorPrimary">@color/yp_black</item>
 
