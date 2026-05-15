@@ -82,11 +82,11 @@
     </style>
 
     <style name="SearchResultAlbumCover">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">@dimen/dimen_45</item>
+        <item name="android:layout_height">@dimen/dimen_45</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:paddingVertical">@dimen/search_result_album_cover_padding</item>
-        <item name="android:paddingRight">@dimen/search_result_album_cover_padding</item>
+        <item name="android:layout_marginEnd">@dimen/search_result_album_cover_padding</item>
+        <item name="android:scaleType">centerCrop</item>
     </style>
 
     <style name="PlaceholderText">

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -116,8 +117,9 @@ fun TrackItem(
                 .build(),
             contentDescription = null,
             modifier = Modifier
-                .clip(RoundedCornerShape(dimensionResource(R.dimen.list_item_image_radius)))
-                .padding(end = dimensionResource(R.dimen.search_result_album_cover_padding)),
+                .padding(end = dimensionResource(R.dimen.search_result_album_cover_padding))
+                .size(dimensionResource(R.dimen.dimen_45))
+                .clip(RoundedCornerShape(dimensionResource(R.dimen.list_item_image_radius))),
             contentScale = ContentScale.Crop,
             placeholder = painterResource(R.drawable.album_placeholder)
         )
